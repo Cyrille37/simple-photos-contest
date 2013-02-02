@@ -1,0 +1,30 @@
+## generic files to ignore
+*~
+*.lock
+*.DS_Store
+*.swp
+*.out
+*.o
+*.a
+sitemap.xml.gz
+.settings/
+log/
+tmp/
+build/
+bin/
+bin-debug/
+bin-release/
+cache/
+# wordpress specific
+wp-content/uploads/
+wp-content/cache/
+wp-content/upgrade/
+wp-content/backups/
+wp-content/backup-db/
+# java specific
+*.class
+# python specific
+*.pyc
+# netbeans ignore personal stuff
+nbproject/private/
+
