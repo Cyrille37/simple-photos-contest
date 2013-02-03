@@ -207,6 +207,10 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 				break;
 
 			case self::PAGE_PHOTOS:
+
+				require_once(__DIR__ . '/photos-list-table.php');
+				$photosListTable = new Photod_List_Table();
+				$photosListTable->prepare_items();
 				include( self::$templates_folder . '/admin-photos-page.php' );
 				break;
 
