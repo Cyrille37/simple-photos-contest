@@ -1,0 +1,17 @@
+/* 
+    Document   : dashboard_widget_vote
+    Created on : 3 févr. 2013, 20:23:39
+    Author     : cyrille
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+#custom_dashboard_widget_vote .approved {
+	color: green;
+}
+#custom_dashboard_widget_vote .waiting {
+	color: yellow;
+}
+#custom_dashboard_widget_vote .unconfigured {
+	color: red;
+}
