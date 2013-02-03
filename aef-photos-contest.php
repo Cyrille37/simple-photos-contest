@@ -50,7 +50,7 @@ if (!class_exists('AefPhotosContest')) {
 		public static $styles_url;
 		public static $adminConfigPageName;
 		public static $options_name;
-		public static $dbtable_pictures;
+		public static $dbtable_photos;
 		public static $dbtable_votes;
 
 		/**
@@ -104,7 +104,7 @@ if (!class_exists('AefPhotosContest')) {
 			self::$images_url = plugins_url(self::PLUGIN) . '/images/';
 			self::$styles_url = plugins_url(self::PLUGIN) . '/css/';
 
-			self::$dbtable_pictures = $wpdb->prefix . self::DBTABLE_PREFIX . '_pictures';
+			self::$dbtable_photos = $wpdb->prefix . self::DBTABLE_PREFIX . '_photos';
 			self::$dbtable_votes = $wpdb->prefix . self::DBTABLE_PREFIX . '_votes';
 
 			self::$options_name = self::PLUGIN;

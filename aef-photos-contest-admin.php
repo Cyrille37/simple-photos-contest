@@ -10,9 +10,19 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 
 	const PAGE_OVERVIEW = 'aef-photos-contest_overview';
 	const PAGE_PHOTOS = 'aef-photos-contest_photos';
-	const PAGE_PICTURE_EDIT = 'aef-photos-contest_photo_edit';
+	const PAGE_PHOTO_EDIT = 'aef-photos-contest_photo_edit';
 	const PAGE_CONFIGURATION = 'aef-photos-contest_configuration';
 	const WP_ROLE = 'edit_pages';
+
+	/**
+	 * The loaded photo, if there is one.
+	 * Could be:
+	 * - filled : photo found
+	 * - keys but empty value : no photo id specified
+	 * - null : photo id not found
+	 * @var array|null
+	 */
+	protected $photo;
 
 	public function __construct() {
 
@@ -63,17 +73,17 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 		// dbDelta génère des erreurs et ne fait pas le boulot de DIFF quand il y a des changements ...
 		// Du coup j'ajoute "IF NOT EXISTS" ...
 
-		$sql = 'CREATE TABLE IF NOT EXISTS `' . self::$dbtable_pictures . '` (
+		$sql = 'CREATE TABLE IF NOT EXISTS `' . self::$dbtable_photos . '` (
 				`id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-				`picture_name` VARCHAR(255) NOT NULL,
-				`picture_order` TINYINT UNSIGNED NOT NULL,
+				`photo_name` VARCHAR(255) NOT NULL,
+				`photo_order` TINYINT UNSIGNED NOT NULL,
 				`photographer_name` VARCHAR(255) NOT NULL,
 				`photographer_email` VARCHAR(255) NOT NULL,
 				`notes` TINYTEXT,
 				`created_at` DATETIME,
 				`updated_at` DATETIME,
 				PRIMARY KEY (`id`),
-				UNIQUE KEY `UQ_picture_name` (`picture_name`)
+				UNIQUE KEY `UQ_photo_name` (`photo_name`)
 			) DEFAULT CHARSET=utf8 ;'; // DEFAULT CHARSET=utf8
 
 		dbDelta($sql);
@@ -83,7 +93,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 				`voter_name` varchar(255) NOT NULL,
 				`voter_email` varchar(255) NOT NULL,
 				`vote_date` datetime,
-				`picture_id` int(11),
+				`photo_id` int(11),
 				PRIMARY KEY (`id`)
 			) DEFAULT CHARSET=utf8 ;';
 		dbDelta($sql);
@@ -118,16 +128,6 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 		return false;
 	}
 
-	/**
-	 * The loaded picture, if there is one.
-	 * Could be:
-	 * - filled : picture found
-	 * - keys but empty value : no picture id specified
-	 * - null : picture id not found
-	 * @var array|null
-	 */
-	protected $picture;
-
 	public function wp_admin_init() {
 
 		global $pagenow, $wpdb;
@@ -143,18 +143,18 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 					$this->configuration_save();
 					break;
 
-				case self::PAGE_PICTURE_EDIT :
+				case self::PAGE_PHOTO_EDIT :
 
 					if (isset($_REQUEST['id'])) {
-						$this->picture = $wpdb->get_row($wpdb->prepare('SELECT * FROM ' . self::$dbtable_pictures . ' WHERE id = %d',
+						$this->photo = $wpdb->get_row($wpdb->prepare('SELECT * FROM ' . self::$dbtable_photos . ' WHERE id = %d',
 								$_REQUEST['id']), ARRAY_A);
-						if (empty($this->picture))
-							$this->errors[] = __('Requested picture not found');
+						if (empty($this->photo))
+							$this->errors[] = __('Requested photo not found');
 					}
 					else {
-						$this->picture = array();
-						foreach ($wpdb->get_col('DESC ' . self::$dbtable_pictures, 0) as $column_name) {
-							$this->picture[$column_name] = '';
+						$this->photo = array();
+						foreach ($wpdb->get_col('DESC ' . self::$dbtable_photos, 0) as $column_name) {
+							$this->photo[$column_name] = '';
 						}
 					}
 
@@ -162,7 +162,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 						
 					}
 					else {
-						$this->picture_save();
+						$this->photo_save();
 					}
 					break;
 
@@ -187,7 +187,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 			self::PAGE_PHOTOS, array($this, 'wp_on_menu'));
 
 		add_submenu_page(self::PAGE_OVERVIEW, __('Add photo', self::PLUGIN), __('Add photo', self::PLUGIN), self::WP_ROLE,
-			self::PAGE_PICTURE_EDIT, array($this, 'wp_on_menu'));
+			self::PAGE_PHOTO_EDIT, array($this, 'wp_on_menu'));
 
 		add_submenu_page(self::PAGE_OVERVIEW, __('Configuration', self::PLUGIN), __('Configuration', self::PLUGIN),
 			self::WP_ROLE, self::PAGE_CONFIGURATION, array($this, 'wp_on_menu'));
@@ -210,7 +210,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 				include( self::$templates_folder . '/admin-photos-page.php' );
 				break;
 
-			case self::PAGE_PICTURE_EDIT:
+			case self::PAGE_PHOTO_EDIT:
 				include( self::$templates_folder . '/admin-photo-edit-page.php' );
 				break;
 
@@ -405,18 +405,18 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 		//exit();
 	}
 
-	public function picture_save() {
+	public function photo_save() {
 
 		global $wpdb;
 
 		_log(__METHOD__);
 
-		if (!isset($_POST[self::PAGE_PICTURE_EDIT . '_nonce']))
+		if (!isset($_POST[self::PAGE_PHOTO_EDIT . '_nonce']))
 			return;
-		check_admin_referer(self::PAGE_PICTURE_EDIT, self::PAGE_PICTURE_EDIT . '_nonce');
+		check_admin_referer(self::PAGE_PHOTO_EDIT, self::PAGE_PHOTO_EDIT . '_nonce');
 
 		$errors = array();
-		$picture = array();
+		$photo = array();
 
 		if (isset($_POST['photographer_name'])) {
 			$v = htmlspecialchars(trim($_POST['photographer_name']));
@@ -424,7 +424,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 				_log('Photographer name could not be empty.');
 				$errors['photographer_name'] = __('Photographer name could not be empty.');
 			}
-			$picture['photographer_name'] = $v;
+			$photo['photographer_name'] = $v;
 		}
 		else {
 			_log('Photographer name could not be empty.');
@@ -437,20 +437,20 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 				_log('Photographer email is not valid : [' . $v . ']');
 				$errors['photographer_email'] = __('Photographer email is not valid.');
 			}
-			$picture['photographer_email'] = $v;
+			$photo['photographer_email'] = $v;
 		}
 
-		if (isset($_POST['picture_name'])) {
-			$v = htmlspecialchars(trim($_POST['picture_name']));
+		if (isset($_POST['photo_name'])) {
+			$v = htmlspecialchars(trim($_POST['photo_name']));
 			if ($v == '') {
-				_log('Picture name could not be empty.');
-				$errors['picture_name'] = __('Picture name could not be empty.');
+				_log('Photo name could not be empty.');
+				$errors['photo_name'] = __('Photo name could not be empty.');
 			}
-			$picture['picture_name'] = $v;
+			$photo['photo_name'] = $v;
 		}
 		else {
-			_log('Picture name could not be empty.');
-			$errors['picture_name'] = __('Picture name could not be empty.');
+			_log('Photo name could not be empty.');
+			$errors['photo_name'] = __('Photo name could not be empty.');
 		}
 
 		if (count($errors) > 0) {
@@ -458,10 +458,10 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 			return;
 		}
 
-		ksort($picture);
-		$wpdb->query($wpdb->prepare('INSERT INTO ' . self::$dbtable_pictures
-				. '(' . implode(',', array_keys($picture)) . ')'
-				. 'VALUES (' . implode(',', array_fill(0, count($picture), '%s')) . ')', array_values($picture)
+		ksort($photo);
+		$wpdb->query($wpdb->prepare('INSERT INTO ' . self::$dbtable_photos
+				. '(' . implode(',', array_keys($photo)) . ')'
+				. 'VALUES (' . implode(',', array_fill(0, count($photo), '%s')) . ')', array_values($photo)
 			));
 	}
 
