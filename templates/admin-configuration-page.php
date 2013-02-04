@@ -8,7 +8,7 @@
 	<div id="icon-options-general" class="icon32">
 		<br>
 	</div>
-	
+
 	<h2><?php _e('Photos contest configuration', AefPhotosContest::PLUGIN); ?></h2>
 
 	<form name="configuration" method="post" action="<?php echo $_SERVER['REQUEST_URI']; ?>">
@@ -41,6 +41,35 @@
 				</td>
 			</tr>
 		</table>
+		
+		<h3><?php _e('Photos',AefPhotosContest::PLUGIN); ?></h3>
+		<table class="form-table">
+			<tr valign="top">
+				<th align="left">
+					<?php _e('Thumbnails size', AefPhotosContest::PLUGIN); ?>
+				</th>
+				<td>
+					<?php _e('width',AefPhotosContest::PLUGIN) ?><input class="" type="text" size="4" name="thumb_w" value="<?php echo $aefPC->getOption('thumbW'); ?>" />
+					<?php _e('height',AefPhotosContest::PLUGIN) ?><input class="" type="text" size="4" name="thumb_h" value="<?php echo $aefPC->getOption('thumbH'); ?>" />
+					<span class="setting-description">
+						<?php _e('This is photos thumbnail size.', AefPhotosContest::PLUGIN); ?>
+					</span>
+				</td>
+			</tr>
+			<tr valign="top">
+				<th align="left">
+					<?php _e('Views size', AefPhotosContest::PLUGIN); ?>
+				</th>
+				<td>
+					<?php _e('width',AefPhotosContest::PLUGIN) ?><input class="" type="text" size="4" name="view_w" value="<?php echo $aefPC->getOption('viewW'); ?>" />
+					<?php _e('height',AefPhotosContest::PLUGIN) ?><input class="" type="text" size="4" name="view_h" value="<?php echo $aefPC->getOption('viewH'); ?>" />
+					<span class="setting-description">
+						<?php _e('This is photo view size.', AefPhotosContest::PLUGIN); ?>
+					</span>
+				</td>
+			</tr>
+		</table>
+
 
 		<h3><?php _e('Advanced options',AefPhotosContest::PLUGIN); ?></h3>
 		<table class="form-table">

@@ -52,6 +52,12 @@ if (!class_exists('AefPhotosContest')) {
 		public static $options_name;
 		public static $dbtable_photos;
 		public static $dbtable_votes;
+		/**
+		 * @var array Plugin Options
+		 */
+		protected $options;
+		protected $notices= array();
+		protected $errors = array();
 
 		/**
 		 * Several date formats
@@ -82,15 +88,12 @@ if (!class_exists('AefPhotosContest')) {
 		);
 		protected static $options_default = array(
 			'photoFolder' => self::PLUGIN,
-			'dateFormat' => 1
+			'dateFormat' => 1,
+			'thumbW' => 150 ,
+			'thumbH' => 150 ,
+			'viewW' => 1920 ,
+			'viewH' => 1440 
 		);
-
-		/**
-		 * @var array Plugin Options
-		 */
-		protected $options;
-		protected $notices= array();
-		protected $errors = array();
 
 		public function __construct() {
 

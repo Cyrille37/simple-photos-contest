@@ -362,6 +362,33 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 				$this->options['photoFolder'] = $photoFolder;
 		}
 
+		if (isset($_POST['thumb_w']) && is_numeric($_POST['thumb_w'])) {
+			$this->options['thumbW'] = $_POST['thumb_w'];
+		}
+		else {
+			$this->errors['thumb_w'] = _('Thumbnail width must be set');
+		}
+		if (isset($_POST['thumb_h']) && is_numeric($_POST['thumb_h'])) {
+			$this->options['thumbH'] = $_POST['thumb_h'];
+		}
+		else {
+			$this->errors['thumb_h'] = _('Thumbnail height must be set');
+		}
+
+		if (isset($_POST['view_w']) && is_numeric($_POST['view_w'])) {
+			$this->options['viewW'] = $_POST['view_w'];
+		}
+		else {
+			$this->errors['view_w'] = _('View width must be set');
+		}
+		if (isset($_POST['view_h']) && is_numeric($_POST['view_h'])) {
+			$this->options['viewH'] = $_POST['view_h'];
+		}
+		else {
+			$this->errors['view_h'] = _('View height must be set');
+		}
+
+
 		// dateFormat
 
 		if (isset($_POST['dateFormat'])) {
@@ -538,6 +565,10 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 
 		if ($file['error'] != UPLOAD_ERR_OK) {
 			switch ($file['error']) {
+				case UPLOAD_ERR_NO_FILE:
+					// No file, silently return
+					//$this->errors['photo_file'] = __('UPLOAD_ERR_NO_FILE');
+					break;
 				case UPLOAD_ERR_INI_SIZE:
 					$this->errors['photo_file'] = __('UPLOAD_ERR_INI_SIZE');
 					break;
@@ -546,9 +577,6 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 					break;
 				case UPLOAD_ERR_PARTIAL:
 					$this->errors['photo_file'] = __('UPLOAD_ERR_PARTIAL');
-					break;
-				case UPLOAD_ERR_NO_FILE:
-					$this->errors['photo_file'] = __('UPLOAD_ERR_NO_FILE');
 					break;
 				case UPLOAD_ERR_NO_TMP_DIR:
 					$this->errors['photo_file'] = __('UPLOAD_ERR_NO_TMP_DIR');
@@ -584,10 +612,11 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 			return false;
 		}
 
-		$ext = explode('/', $ftype);
-		$ext = $ext[1];
+		$dest_file_ext = explode('/', $ftype);
+		$dest_file_ext = $dest_file_ext[1];
 
-		$dest_file = path_join($photoFolderPath, $this->photo['id'] . '.' . $ext);
+		$dest_file_without_ext = path_join($photoFolderPath, $this->photo['id']);
+		$dest_file = $dest_file_without_ext . '.' . $dest_file_ext;
 
 		if (!@move_uploaded_file($temp_file, $dest_file)) {
 			_log('Upload error, the file could not be moved to: [' . $photoFolderPath . ']');
@@ -600,6 +629,17 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 		$this->photo['photo_user_filename'] = $file['name'];
 		$this->photo['photo_mime_type'] = $ftype;
 
+		$image_thumbs = wp_get_image_editor($dest_file); // WP_Image_Editor
+		if (!is_wp_error($image_thumbs)) {
+			$image_thumbs->resize($this->getOption('thumbW'), $this->getOption('thumbH'), true);
+			$image_thumbs->save($dest_file_without_ext . '-thumbs.' . $dest_file_ext);
+		}
+
+		$image_view = wp_get_image_editor($dest_file); // WP_Image_Editor
+		if (!is_wp_error($image_view)) {
+			$image_view->resize($this->getOption('viewW'), $this->getOption('viewH'), true);
+			$image_view->save($dest_file_without_ext . '-view.' . $dest_file_ext);
+		}
 		return true;
 	}
 
