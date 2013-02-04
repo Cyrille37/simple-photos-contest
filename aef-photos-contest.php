@@ -34,7 +34,7 @@ if (!defined('ABSPATH')) {
 
 if (!class_exists('AefPhotosContest')) {
 
-	class AefPhotosContest {
+	abstract class AefPhotosContest {
 
 		const PLUGIN = 'aef-photos-contest';
 		const DBTABLE_PREFIX = 'aef_spc';
