@@ -631,13 +631,13 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 
 		$image_thumbs = wp_get_image_editor($dest_file); // WP_Image_Editor
 		if (!is_wp_error($image_thumbs)) {
-			$image_thumbs->resize($this->getOption('thumbW'), $this->getOption('thumbH'), true);
+			$image_thumbs->resize($this->getOption('thumbW'), $this->getOption('thumbH'), false);
 			$image_thumbs->save($dest_file_without_ext . '-thumbs.' . $dest_file_ext);
 		}
 
 		$image_view = wp_get_image_editor($dest_file); // WP_Image_Editor
 		if (!is_wp_error($image_view)) {
-			$image_view->resize($this->getOption('viewW'), $this->getOption('viewH'), true);
+			$image_view->resize($this->getOption('viewW'), $this->getOption('viewH'), false);
 			$image_view->save($dest_file_without_ext . '-view.' . $dest_file_ext);
 		}
 		return true;
