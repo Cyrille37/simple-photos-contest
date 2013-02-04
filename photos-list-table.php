@@ -10,7 +10,7 @@ if (!class_exists('WP_List_Table')) {
  */
 class Photod_List_Table extends WP_List_Table {
 
-	const DEFAULT_ORDERBY = 'id' ; // 'photo_name';
+	const DEFAULT_ORDERBY = 'id'; // 'photo_name';
 	const DEFAULT_ORDER = 'asc';
 	const DEFAULT_ITEMS_PER_PAGE = 5;
 	const DEFAULT_COLUMN_TYPE = 'str';
@@ -26,7 +26,7 @@ class Photod_List_Table extends WP_List_Table {
 		));
 
 		$this->columns = array(
-			'id' => array('label' => __('Id'), 'type'=>'int', 'hidden' => true),
+			'id' => array('label' => __('Id'), 'type' => 'int', 'hiddenZ' => true),
 			'photo_name' => array('label' => __('Photo name')),
 			'photographer_name' => array('label' => __('Photographer name')),
 			'photographer_email' => array('label' => __('Photographer email'))
@@ -43,19 +43,26 @@ class Photod_List_Table extends WP_List_Table {
 	}
 
 	function get_sortable_columns() {
-		
+
 		$sortable_columns = array();
 		foreach ($this->columns as $k => $v) {
-			$sortable_columns[$k] = array( $k, $k==self::DEFAULT_ORDERBY ? true : false );
+			$sortable_columns[$k] = array($k, $k == self::DEFAULT_ORDERBY ? true : false);
 		}
 		return $sortable_columns;
 	}
 
 	function column_default($item, $column_name) {
 
+		if ($column_name == 'id') {
+			return '<a href="'
+				. admin_url('admin.php?page=' . AefPhotosContestAdmin::PAGE_PHOTO_EDIT . '&id=' . $item['id'])
+				. '" >'
+				. $item['id'] . '</a>'
+			;
+		}
+
 		$cType = self::DEFAULT_COLUMN_TYPE;
-		if( isset($this->columns[$column_name]['type']) )
-		{
+		if (isset($this->columns[$column_name]['type'])) {
 			$cType = $this->columns[$column_name]['type'];
 		}
 		switch ($cType) {
@@ -67,11 +74,11 @@ class Photod_List_Table extends WP_List_Table {
 	}
 
 	function get_hidden_columns() {
-		
+
 		$columns = array();
 		foreach ($this->columns as $k => $v) {
-			if( isset($this->columns[$k]['hidden']))
-				$columns[] = $k ;
+			if (isset($this->columns[$k]['hidden']))
+				$columns[] = $k;
 		}
 		return $columns;
 	}
@@ -89,10 +96,10 @@ class Photod_List_Table extends WP_List_Table {
 
 		$current_page = $this->get_pagenum();
 
-		$dataCount = $wpdb->get_var( 'SELECT COUNT(*) FROM '.AefPhotosContest::$dbtable_photos );
+		$dataCount = $wpdb->get_var('SELECT COUNT(*) FROM ' . AefPhotosContest::$dbtable_photos);
 
 		$data = $wpdb->get_results(
-			'SELECT '. implode(',',array_keys($this->columns) ) .' FROM ' . AefPhotosContest::$dbtable_photos
+			'SELECT ' . implode(',', array_keys($this->columns)) . ' FROM ' . AefPhotosContest::$dbtable_photos
 			. ' ORDER BY ' . (!empty($_REQUEST['orderby']) ? $_REQUEST['orderby'] : self::DEFAULT_ORDERBY)
 			. ' ' . (!empty($_REQUEST['order']) && ( $_REQUEST['order'] == 'asc' || $_REQUEST['order'] == 'desc') ? $_REQUEST['order'] : self::DEFAULT_ORDER)
 			. ' LIMIT ' . $per_page . ' OFFSET ' . (($current_page - 1) * $per_page)

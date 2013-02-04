@@ -145,23 +145,41 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 
 				case self::PAGE_PHOTO_EDIT :
 
-					if (isset($_REQUEST['id'])) {
+					if (isset($_GET['id'])) {
+						// Load the photo
 						$this->photo = $wpdb->get_row($wpdb->prepare('SELECT * FROM ' . self::$dbtable_photos . ' WHERE id = %d',
-								$_REQUEST['id']), ARRAY_A);
+								$_GET['id']), ARRAY_A);
 						if (empty($this->photo))
 							$this->errors[] = __('Requested photo not found');
 					}
 					else {
+						// Init empty photo
 						$this->photo = array();
 						foreach ($wpdb->get_col('DESC ' . self::$dbtable_photos, 0) as $column_name) {
-							$this->photo[$column_name] = '';
+							$this->photo[$column_name] = null;
 						}
 					}
 
-					if (empty($_POST)) {
-						
-					}
-					else {
+					if (!empty($_POST)) {
+						// Data sent
+
+						if (!isset($_POST[self::PAGE_PHOTO_EDIT . '_nonce']))
+							return;
+						check_admin_referer(self::PAGE_PHOTO_EDIT . (isset($_GET['id']) ? $_GET['id'] : ''),
+							self::PAGE_PHOTO_EDIT . '_nonce');
+
+						if (isset($_GET['id'])) {
+							if (!isset($_POST['id']) || $_POST['id'] != $_GET['id']) {
+								$this->errors[] = __('Requested photo not found');
+							}
+						}
+
+						// Copy sent photo's fields into photo
+						foreach ($wpdb->get_col('DESC ' . self::$dbtable_photos, 0) as $column_name) {
+							if (isset($_POST[$column_name]))
+								$this->photo[$column_name] = $_POST[$column_name];
+						}
+
 						$this->photo_save();
 					}
 					break;
@@ -258,7 +276,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 
 		if (count($this->errors) > 0) {
 			echo '<div class="error">';
-			foreach ($this->errors as $fieldName => $error) {
+			foreach ($this->errors as $name => $error) {
 				echo '<p>' . $error . '</p>';
 			}
 			echo '</div>';
@@ -415,42 +433,37 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 
 		_log(__METHOD__);
 
-		if (!isset($_POST[self::PAGE_PHOTO_EDIT . '_nonce']))
-			return;
-		check_admin_referer(self::PAGE_PHOTO_EDIT, self::PAGE_PHOTO_EDIT . '_nonce');
-
 		$errors = array();
-		$photo = array();
 
-		if (isset($_POST['photographer_name'])) {
-			$v = htmlspecialchars(trim($_POST['photographer_name']));
+		if (isset($this->photo['photographer_name'])) {
+			$v = htmlspecialchars(trim($this->photo['photographer_name']));
 			if ($v == '') {
 				_log('Photographer name could not be empty.');
 				$errors['photographer_name'] = __('Photographer name could not be empty.');
 			}
-			$photo['photographer_name'] = $v;
+			$this->photo['photographer_name'] = $v;
 		}
 		else {
 			_log('Photographer name could not be empty.');
 			$errors['photographer_name'] = __('Photographer name could not be empty.');
 		}
 
-		if (isset($_POST['photographer_email'])) {
-			$v = sanitize_email(trim($_POST['photographer_email']));
+		if (isset($this->photo['photographer_email'])) {
+			$v = sanitize_email(trim($this->photo['photographer_email']));
 			if (!is_email($v)) {
 				_log('Photographer email is not valid : [' . $v . ']');
 				$errors['photographer_email'] = __('Photographer email is not valid.');
 			}
-			$photo['photographer_email'] = $v;
+			$this->photo['photographer_email'] = $v;
 		}
 
-		if (isset($_POST['photo_name'])) {
-			$v = htmlspecialchars(trim($_POST['photo_name']));
+		if (isset($this->photo['photo_name'])) {
+			$v = htmlspecialchars(trim($this->photo['photo_name']));
 			if ($v == '') {
 				_log('Photo name could not be empty.');
 				$errors['photo_name'] = __('Photo name could not be empty.');
 			}
-			$photo['photo_name'] = $v;
+			$this->photo['photo_name'] = $v;
 		}
 		else {
 			_log('Photo name could not be empty.');
@@ -462,11 +475,36 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 			return;
 		}
 
-		ksort($photo);
-		$wpdb->query($wpdb->prepare('INSERT INTO ' . self::$dbtable_photos
-				. '(' . implode(',', array_keys($photo)) . ')'
-				. 'VALUES (' . implode(',', array_fill(0, count($photo), '%s')) . ')', array_values($photo)
-			));
+		ksort($this->photo);
+
+		if (!empty($this->photo['id'])) {
+			$sql = '';
+			foreach ($this->photo as $k => $v) {
+				if ($sql != '')
+					$sql.=',';
+				$sql.= $k . '=%s';
+			}
+			$sql = 'UPDATE ' . self::$dbtable_photos . ' SET ' . $sql . ' WHERE id=%d';
+			$res = $wpdb->query($wpdb->prepare($sql, array_merge(array_values($this->photo), array($this->photo['id']))));
+			if ($res) {
+				$this->notices[] = __('Photo updates');
+			}
+			else {
+				$this->errors[] = __('Failed to update photo');
+			}
+		}
+		else {
+			$res = $wpdb->query($wpdb->prepare('INSERT INTO ' . self::$dbtable_photos
+					. '(' . implode(',', array_keys($this->photo)) . ')'
+					. 'VALUES (' . implode(',', array_fill(0, count($this->photo), '%s')) . ')', array_values($this->photo)
+				));
+			if ($res) {
+				$this->notices[] = __('Photo saved');
+			}
+			else {
+				$this->errors[] = __('Failed to save photo');
+			}
+		}
 	}
 
 	public function wp_dashboard_setup() {

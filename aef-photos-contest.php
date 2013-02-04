@@ -89,8 +89,8 @@ if (!class_exists('AefPhotosContest')) {
 		 * @var array Plugin Options
 		 */
 		protected $options;
-		protected $notices;
-		protected $errors;
+		protected $notices= array();
+		protected $errors = array();
 
 		public function __construct() {
 

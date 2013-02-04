@@ -14,31 +14,33 @@
 	<?php if( isset($this->photo) ) { ?>
 	
 	<form name="configuration" method="post" action="<?php echo $_SERVER['REQUEST_URI']; ?>">
-		<?php wp_nonce_field(AefPhotosContestAdmin::PAGE_PHOTO_EDIT, AefPhotosContestAdmin::PAGE_PHOTO_EDIT.'_nonce') ?>
+		<?php wp_nonce_field(AefPhotosContestAdmin::PAGE_PHOTO_EDIT.$this->photo['id'], AefPhotosContestAdmin::PAGE_PHOTO_EDIT.'_nonce') ?>
+
+		<input type="hidden" name="id" value="<?php echo $this->photo['id']; ?>"/>
 
 		<?php submit_button(); ?>
 
 		<div class="width_full p_box">
 		<p>
-			<label><?php _e('Photographer name'); ?><br/>
+			<label class="<?php echo($aefPC->hasFieldError('photographer_name')?'error-message':'')?>"><?php _e('Photographer name'); ?><br/>
 				<input type="text" name="photographer_name" class="regular-text" value="<?php echo $this->photo['photographer_name']; ?>">
 			</label>
 			<span class="description"><?php _e('This is the photographer lastname and firstname'); ?></span>
 		</p>
 		<p>
-			<label><?php _e('Photographer email'); ?><br/>
+			<label class="<?php echo($aefPC->hasFieldError('photographer_email')?'error-message':'')?>"><?php _e('Photographer email'); ?><br/>
 				<input type="text" name="photographer_email" class="regular-text" value="<?php echo $this->photo['photographer_email']; ?>">
 			</label>
 			<span class="description"><?php _e('This is the photographer email'); ?></span>
 		</p>
 		<p>
-			<label><?php _e('Photo name'); ?><br/>
+			<label class="<?php echo($aefPC->hasFieldError('photo_name')?'error-message':'')?>"><?php _e('Photo name'); ?><br/>
 				<input type="text" name="photo_name" class="regular-text" value="<?php echo $this->photo['photo_name']; ?>">
 			</label>
 			<span class="description"><?php _e('This is the photo name'); ?></span>
 		</p>
 		<p>
-			<label><?php _e('Notes'); ?><br/>
+			<label class="<?php echo($aefPC->hasFieldError('notes')?'error-message':'')?>"><?php _e('Notes'); ?><br/>
 				<textarea name="notes" cols="40" rows="5" ><?php echo $this->photo['notes']; ?></textarea>
 			</label>
 			<span class="description"><?php _e('Here you can write any comment, it only be visible in admin page'); ?></span>
