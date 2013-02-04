@@ -14,6 +14,8 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 	const PAGE_CONFIGURATION = 'aef-photos-contest_configuration';
 	const WP_ROLE = 'edit_pages';
 
+	public static $photo_valid_filetypes = array('image/jpeg', 'image/png', 'image/gif');
+
 	/**
 	 * The loaded photo, if there is one.
 	 * Could be:
@@ -76,6 +78,8 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 		$sql = 'CREATE TABLE IF NOT EXISTS `' . self::$dbtable_photos . '` (
 				`id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
 				`photo_name` VARCHAR(255) NOT NULL,
+				`photo_mime_type` VARCHAR(50) NOT NULL,
+				`photo_user_filename` VARCHAR(255) NOT NULL,
 				`photo_order` TINYINT UNSIGNED NOT NULL,
 				`photographer_name` VARCHAR(255) NOT NULL,
 				`photographer_email` VARCHAR(255) NOT NULL,
@@ -478,6 +482,12 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 		ksort($this->photo);
 
 		if (!empty($this->photo['id'])) {
+			// Update
+
+			$this->photo['updated_at'] = date("Y-m-d H:i:s");
+
+			$this->photo_save_file();
+
 			$sql = '';
 			foreach ($this->photo as $k => $v) {
 				if ($sql != '')
@@ -487,13 +497,16 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 			$sql = 'UPDATE ' . self::$dbtable_photos . ' SET ' . $sql . ' WHERE id=%d';
 			$res = $wpdb->query($wpdb->prepare($sql, array_merge(array_values($this->photo), array($this->photo['id']))));
 			if ($res) {
-				$this->notices[] = __('Photo updates');
+				$this->notices[] = __('Photo updated');
 			}
 			else {
 				$this->errors[] = __('Failed to update photo');
 			}
 		}
 		else {
+			// Create
+
+			$this->photo['created_at'] = date("Y-m-d H:i:s");
 			$res = $wpdb->query($wpdb->prepare('INSERT INTO ' . self::$dbtable_photos
 					. '(' . implode(',', array_keys($this->photo)) . ')'
 					. 'VALUES (' . implode(',', array_fill(0, count($this->photo), '%s')) . ')', array_values($this->photo)
@@ -505,6 +518,89 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 				$this->errors[] = __('Failed to save photo');
 			}
 		}
+	}
+
+	public function photo_save_file() {
+
+		if (!isset($_FILES['photo_file']))
+			return false;
+
+		/*
+		 * [name] => baum_80.jpg
+		 * [type] => image/jpeg
+		 * [tmp_name] => /tmp/phpdDMXfy
+		 * [error] => 0
+		 * [size] => 3216
+		 */
+		//_log('photo_file: ' . print_r($_FILES['photo_file'], true));
+
+		$file = & $_FILES['photo_file'];
+
+		if ($file['error'] != UPLOAD_ERR_OK) {
+			switch ($file['error']) {
+				case UPLOAD_ERR_INI_SIZE:
+					$this->errors['photo_file'] = __('UPLOAD_ERR_INI_SIZE');
+					break;
+				case UPLOAD_ERR_FORM_SIZE:
+					$this->errors['photo_file'] = __('UPLOAD_ERR_FORM_SIZE');
+					break;
+				case UPLOAD_ERR_PARTIAL:
+					$this->errors['photo_file'] = __('UPLOAD_ERR_PARTIAL');
+					break;
+				case UPLOAD_ERR_NO_FILE:
+					$this->errors['photo_file'] = __('UPLOAD_ERR_NO_FILE');
+					break;
+				case UPLOAD_ERR_NO_TMP_DIR:
+					$this->errors['photo_file'] = __('UPLOAD_ERR_NO_TMP_DIR');
+					break;
+				case UPLOAD_ERR_CANT_WRITE:
+					$this->errors['photo_file'] = __('UPLOAD_ERR_CANT_WRITE');
+					break;
+				case UPLOAD_ERR_EXTENSION:
+					$this->errors['photo_file'] = __('UPLOAD_ERR_EXTENSION');
+					break;
+			}
+			return false;
+		}
+
+		// photo_user_filename
+
+		$temp_file = $file['tmp_name'];
+
+		$fi = new finfo(FILEINFO_MIME);
+		$ftype = explode(';', $fi->file($temp_file));
+		$ftype = $ftype[0];
+
+		if (!in_array($ftype, self::$photo_valid_filetypes)) {
+			_log('Photo file is not a valid format: [' . $ftype . ']');
+			$this->errors['photo_file'] = __('Photo file is not a valid format: ', self::PLUGIN) . esc_html($ftype);
+			return false;
+		}
+
+		$photoFolderPath = path_join(WP_CONTENT_DIR, $this->getOption('photoFolder'));
+		if (!is_writable($photoFolderPath)) {
+			_log('photoFolderPath does not exists or is not writable: [' . $photoFolderPath . ']');
+			$this->errors['photo_file'] = __('Photos path does not exists or is not writable: ', self::PLUGIN) . esc_html($photoFolderPath);
+			return false;
+		}
+
+		$ext = explode('/', $ftype);
+		$ext = $ext[1];
+
+		$dest_file = path_join($photoFolderPath, $this->photo['id'] . '.' . $ext);
+
+		if (!@move_uploaded_file($temp_file, $dest_file)) {
+			_log('Upload error, the file could not be moved to: [' . $photoFolderPath . ']');
+			$this->errors['photo_file'] = __('Upload error, the file could not be moved to: ', self::PLUGIN) . esc_html($dest_file);
+			return false;
+		}
+
+		$this->notices[] = __('Photo upload at path: ') . esc_html($dest_file);
+
+		$this->photo['photo_user_filename'] = $file['name'];
+		$this->photo['photo_mime_type'] = $ftype;
+
+		return true;
 	}
 
 	public function wp_dashboard_setup() {

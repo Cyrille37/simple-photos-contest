@@ -13,7 +13,7 @@
 
 	<?php if( isset($this->photo) ) { ?>
 	
-	<form name="configuration" method="post" action="<?php echo $_SERVER['REQUEST_URI']; ?>">
+	<form name="configuration" method="post" action="<?php echo $_SERVER['REQUEST_URI']; ?>" enctype="multipart/form-data">
 		<?php wp_nonce_field(AefPhotosContestAdmin::PAGE_PHOTO_EDIT.$this->photo['id'], AefPhotosContestAdmin::PAGE_PHOTO_EDIT.'_nonce') ?>
 
 		<input type="hidden" name="id" value="<?php echo $this->photo['id']; ?>"/>
@@ -45,12 +45,14 @@
 			</label>
 			<span class="description"><?php _e('Here you can write any comment, it only be visible in admin page'); ?></span>
 		</p>
+		<?php if( !empty( $this->photo['id']) ) { ?>
 		<p>
 			<label><?php _e('Photo'); ?><br/>
 				<input type="file" name="photo_file" size="35" class="imagefile"/>
 			</label>
 			<span class="description"><?php _e('This is the original photo'); ?></span>
 		</p>
+		<?php } ?>
 	</div>
 	
 	<?php submit_button(); ?>
