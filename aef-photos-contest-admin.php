@@ -151,6 +151,12 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 					$this->page_photo_edit_init();
 					break;
 
+				case self::PAGE_PHOTOS:
+					wp_enqueue_style('thickbox');
+					wp_enqueue_script('jquery');
+					wp_enqueue_script('thickbox');
+					break;
+
 				case self::PAGE_OVERVIEW:
 				default :
 					break;
@@ -245,8 +251,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 
 			case self::PAGE_CONFIGURATION:
 
-				if( isset($_GET['action']) && $_GET['action'] == 'rebuildthumbs' )
-				{
+				if (isset($_GET['action']) && $_GET['action'] == 'rebuildthumbs') {
 					$this->photos_build_thumbs();
 				}
 
@@ -256,7 +261,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 			case self::PAGE_PHOTOS:
 
 				require_once(__DIR__ . '/photos-list-table.php');
-				$photosListTable = new Photod_List_Table();
+				$photosListTable = new Photos_List_Table();
 				$photosListTable->prepare_items();
 				include( self::$templates_folder . '/admin-photos-page.php' );
 				break;
@@ -662,19 +667,16 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 
 	public function photo_build_thumbs($image_file, $dest_file_without_ext, $dest_file_ext) {
 
-		_log('#### #### #### #### #### #### #### #### ####');
-		_log( 'building thumbs for: '.$image_file );
-		_log( 'dest_file_without_ext: '.$dest_file_without_ext );
-		_log( 'dest_file_ext: '.$dest_file_ext );
-
-		$image_thumbs = wp_get_image_editor($image_file); // WP_Image_Editor
+		/**
+		 * @var WP_Image_Editor
+		 */
+		$image_thumbs = wp_get_image_editor($image_file);
 		if (!is_wp_error($image_thumbs)) {
 
 			$size = $image_thumbs->get_size();
 			$w0 = $size['width'];
 			$h0 = $size['height'];
-			_log('### thumb size: '. $w0.' x '.$h0 );
-
+			// force height to configuration, compute homothety width
 			$w = round($w0 * ( $this->getOption('thumbW') / $h0));
 			$h = $this->getOption('thumbH');
 
@@ -682,6 +684,9 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 			$image_thumbs->save($dest_file_without_ext . '-thumb.' . $dest_file_ext);
 		}
 
+		/**
+		 * @var WP_Image_Editor
+		 */
 		$image_view = wp_get_image_editor($image_file); // WP_Image_Editor
 		if (!is_wp_error($image_view)) {
 			_log('### view');
@@ -704,7 +709,6 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 			$ext = explode('/', $row['photo_mime_type']);
 			$this->photo_build_thumbs($photo_path_prefix . '.' . $ext[1], $photo_path_prefix, $ext[1]);
 		}
-
 	}
 
 	public function wp_dashboard_setup() {

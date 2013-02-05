@@ -1,14 +1,23 @@
 <?php
+/**
+ * Class Photos_List_Table to manage the photos list in admin "photos" page.
+ */
 
 if (!class_exists('WP_List_Table')) {
 	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 }
 
 /**
+ * Subclass of WP_List_Table
+ * 
+ * Doc:
  * http://codex.wordpress.org/Class_Reference/WP_List_Table
  * http://wp.smashingmagazine.com/2011/11/03/native-admin-tables-wordpress/
+ * 
+ * Styling:
+ * http://wpengineer.com/2426/wp_list_table-a-step-by-step-guide/
  */
-class Photod_List_Table extends WP_List_Table {
+class Photos_List_Table extends WP_List_Table {
 
 	const DEFAULT_ORDERBY = 'id'; // 'photo_name';
 	const DEFAULT_ORDER = 'asc';
@@ -39,6 +48,7 @@ class Photod_List_Table extends WP_List_Table {
 		foreach ($this->columns as $k => $v) {
 			$columns[$k] = $v['label'];
 		}
+		array_splice($columns, 1, 0, array('thumb'=>'photo'));
 		return $columns;
 	}
 
@@ -51,6 +61,15 @@ class Photod_List_Table extends WP_List_Table {
 		return $sortable_columns;
 	}
 
+	function column_cb($item){
+	
+		global $aefPC;
+		return
+		'<a class="thickbox" href="'.$aefPC->getPhotoUrl($item, 'view').'">'
+		.'<img src="'.$aefPC->getPhotoUrl($item, 'thumb').'" />'
+		.'</a>';
+	}
+
 	function column_default($item, $column_name) {
 
 		if ($column_name == 'id') {
@@ -61,6 +80,11 @@ class Photod_List_Table extends WP_List_Table {
 			;
 		}
 
+		if( $column_name == 'photo_name')
+		{
+			$item['photo_name'] .= '<br/><span class="span-photo_user_filename">'.$item['photo_user_filename'].'</span>';
+		}
+	
 		$cType = self::DEFAULT_COLUMN_TYPE;
 		if (isset($this->columns[$column_name]['type'])) {
 			$cType = $this->columns[$column_name]['type'];
@@ -99,7 +123,8 @@ class Photod_List_Table extends WP_List_Table {
 		$dataCount = $wpdb->get_var('SELECT COUNT(*) FROM ' . AefPhotosContest::$dbtable_photos);
 
 		$data = $wpdb->get_results(
-			'SELECT ' . implode(',', array_keys($this->columns)) . ' FROM ' . AefPhotosContest::$dbtable_photos
+			//'SELECT ' . implode(',', array_keys($this->columns)) . ' FROM ' . AefPhotosContest::$dbtable_photos
+			'SELECT * FROM ' . AefPhotosContest::$dbtable_photos
 			. ' ORDER BY ' . (!empty($_REQUEST['orderby']) ? $_REQUEST['orderby'] : self::DEFAULT_ORDERBY)
 			. ' ' . (!empty($_REQUEST['order']) && ( $_REQUEST['order'] == 'asc' || $_REQUEST['order'] == 'desc') ? $_REQUEST['order'] : self::DEFAULT_ORDER)
 			. ' LIMIT ' . $per_page . ' OFFSET ' . (($current_page - 1) * $per_page)

@@ -1,9 +1,21 @@
 <?php
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * admin-configuration-page
+ * 
+ * Changes plugin's options
+ * Rebuild thumbs
  */
 ?>
+<style type="text/css">
+</style>
+<script type="text/javascript">
+jQuery(document).ready(
+	function() {
+		jQuery('#rebuildThumbsSpin').hide();
+    
+	}
+);
+</script>
 <div class="wrap">
 	<div id="icon-options-general" class="icon32">
 		<br>
@@ -73,7 +85,8 @@
 					&nbsp;
 				</th>
 				<td>
-					<input type="button" onclick="window.location='admin.php?page=<?php echo AefPhotosContestAdmin::PAGE_CONFIGURATION;?>&action=rebuildthumbs'" value="<?php _e('Rebuild thumbs') ?>"/>
+					<input type="button" onclick="jQuery('#rebuildThumbsSpin').show(); window.location='admin.php?page=<?php echo AefPhotosContestAdmin::PAGE_CONFIGURATION;?>&action=rebuildthumbs'" value="<?php _e('Rebuild thumbs') ?>"/>
+					<img id="rebuildThumbsSpin" src="<?php echo plugins_url(AefPhotosContest::PLUGIN);?>/images/wpspin-2x.gif" style="vertical-align: middle"/>
 				</td>
 			</tr>
 		</table>
