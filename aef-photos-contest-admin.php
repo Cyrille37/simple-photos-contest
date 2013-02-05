@@ -134,7 +134,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 
 	public function wp_admin_init() {
 
-		global $pagenow, $wpdb;
+		global $pagenow;
 
 		// Add a dashboard widget
 		if ($pagenow == 'index.php') {
@@ -148,50 +148,69 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 					break;
 
 				case self::PAGE_PHOTO_EDIT :
-
-					if (isset($_GET['id'])) {
-						// Load the photo
-						$this->photo = $wpdb->get_row($wpdb->prepare('SELECT * FROM ' . self::$dbtable_photos . ' WHERE id = %d',
-								$_GET['id']), ARRAY_A);
-						if (empty($this->photo))
-							$this->errors[] = __('Requested photo not found');
-					}
-					else {
-						// Init empty photo
-						$this->photo = array();
-						foreach ($wpdb->get_col('DESC ' . self::$dbtable_photos, 0) as $column_name) {
-							$this->photo[$column_name] = null;
-						}
-					}
-
-					if (!empty($_POST)) {
-						// Data sent
-
-						if (!isset($_POST[self::PAGE_PHOTO_EDIT . '_nonce']))
-							return;
-						check_admin_referer(self::PAGE_PHOTO_EDIT . (isset($_GET['id']) ? $_GET['id'] : ''),
-							self::PAGE_PHOTO_EDIT . '_nonce');
-
-						if (isset($_GET['id'])) {
-							if (!isset($_POST['id']) || $_POST['id'] != $_GET['id']) {
-								$this->errors[] = __('Requested photo not found');
-							}
-						}
-
-						// Copy sent photo's fields into photo
-						foreach ($wpdb->get_col('DESC ' . self::$dbtable_photos, 0) as $column_name) {
-							if (isset($_POST[$column_name]))
-								$this->photo[$column_name] = $_POST[$column_name];
-						}
-
-						$this->photo_save();
-					}
+					$this->page_photo_edit_init();
 					break;
 
 				case self::PAGE_OVERVIEW:
 				default :
 					break;
 			}
+		}
+	}
+
+	protected function page_photo_edit_init() {
+
+		global $wpdb;
+
+		if (empty($_POST)) {
+
+			if (isset($_GET['id'])) {
+				// Load the photo
+				$this->photo = $wpdb->get_row($wpdb->prepare('SELECT * FROM ' . self::$dbtable_photos . ' WHERE id = %d',
+						$_GET['id']), ARRAY_A);
+				if (empty($this->photo))
+					$this->errors[] = __('Requested photo not found');
+			}
+			else {
+				// Init empty photo
+				$this->photo = array();
+				foreach ($wpdb->get_col('DESC ' . self::$dbtable_photos, 0) as $column_name) {
+					$this->photo[$column_name] = null;
+				}
+			}
+		}
+		else {
+			// Data sent
+
+			if (!isset($_POST[self::PAGE_PHOTO_EDIT . '_nonce']))
+				return;
+
+			$photo_id = null;
+
+			if (isset($_GET['id'])) {
+				if (!isset($_POST['id']) || $_POST['id'] != $_GET['id']) {
+					$this->errors[] = __('Requested photo not found');
+					return;
+				}
+				$photo_id = $_GET['id'];
+			}
+			else if (!isset($_POST['id'])) {
+				$this->errors[] = __('Requested photo not found');
+				return;
+			}
+			else {
+				$photo_id = $_POST['id'];
+			}
+
+			check_admin_referer(self::PAGE_PHOTO_EDIT . $photo_id, self::PAGE_PHOTO_EDIT . '_nonce');
+
+			// Copy sent photo's fields into photo
+			foreach ($wpdb->get_col('DESC ' . self::$dbtable_photos, 0) as $column_name) {
+				if (isset($_POST[$column_name]))
+					$this->photo[$column_name] = $_POST[$column_name];
+			}
+
+			$this->photo_save();
 		}
 	}
 
@@ -225,6 +244,12 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 		switch ($_GET['page']) {
 
 			case self::PAGE_CONFIGURATION:
+
+				if( isset($_GET['action']) && $_GET['action'] == 'rebuildthumbs' )
+				{
+					$this->photos_build_thumbs();
+				}
+
 				include( self::$templates_folder . '/admin-configuration-page.php' );
 				break;
 
@@ -538,6 +563,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 					. '(' . implode(',', array_keys($this->photo)) . ')'
 					. 'VALUES (' . implode(',', array_fill(0, count($this->photo), '%s')) . ')', array_values($this->photo)
 				));
+			$this->photo['id'] = $wpdb->insert_id;
 			if ($res) {
 				$this->notices[] = __('Photo saved');
 			}
@@ -605,7 +631,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 			return false;
 		}
 
-		$photoFolderPath = path_join(WP_CONTENT_DIR, $this->getOption('photoFolder'));
+		$photoFolderPath = $this->getPhotoFolderPath();
 		if (!is_writable($photoFolderPath)) {
 			_log('photoFolderPath does not exists or is not writable: [' . $photoFolderPath . ']');
 			$this->errors['photo_file'] = __('Photos path does not exists or is not writable: ', self::PLUGIN) . esc_html($photoFolderPath);
@@ -629,18 +655,56 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 		$this->photo['photo_user_filename'] = $file['name'];
 		$this->photo['photo_mime_type'] = $ftype;
 
-		$image_thumbs = wp_get_image_editor($dest_file); // WP_Image_Editor
+		$this->photo_build_thumbs($dest_file, $dest_file_without_ext, $dest_file_ext);
+
+		return true;
+	}
+
+	public function photo_build_thumbs($image_file, $dest_file_without_ext, $dest_file_ext) {
+
+		_log('#### #### #### #### #### #### #### #### ####');
+		_log( 'building thumbs for: '.$image_file );
+		_log( 'dest_file_without_ext: '.$dest_file_without_ext );
+		_log( 'dest_file_ext: '.$dest_file_ext );
+
+		$image_thumbs = wp_get_image_editor($image_file); // WP_Image_Editor
 		if (!is_wp_error($image_thumbs)) {
-			$image_thumbs->resize($this->getOption('thumbW'), $this->getOption('thumbH'), false);
+
+			$size = $image_thumbs->get_size();
+			$w0 = $size['width'];
+			$h0 = $size['height'];
+			_log('### thumb size: '. $w0.' x '.$h0 );
+
+			$w = round($w0 * ( $this->getOption('thumbW') / $h0));
+			$h = $this->getOption('thumbH');
+
+			$image_thumbs->resize($w, $h, false);
 			$image_thumbs->save($dest_file_without_ext . '-thumb.' . $dest_file_ext);
 		}
 
-		$image_view = wp_get_image_editor($dest_file); // WP_Image_Editor
+		$image_view = wp_get_image_editor($image_file); // WP_Image_Editor
 		if (!is_wp_error($image_view)) {
+			_log('### view');
 			$image_view->resize($this->getOption('viewW'), $this->getOption('viewH'), false);
 			$image_view->save($dest_file_without_ext . '-view.' . $dest_file_ext);
 		}
-		return true;
+	}
+
+	public function photos_build_thumbs() {
+
+		global $wpdb;
+
+		$photos_folder_path = $this->getPhotoFolderPath();
+		$sql = 'SELECT * FROM ' . AefPhotosContest::$dbtable_photos;
+		$rows = $wpdb->get_results($sql, ARRAY_A);
+
+		foreach ($rows as $row) {
+
+			$photo_path_prefix = $photos_folder_path . '/' . $row['id'];
+			$ext = explode('/', $row['photo_mime_type']);
+			$this->photo_build_thumbs($photo_path_prefix . '.' . $ext[1], $photo_path_prefix, $ext[1]);
+		}
+
 	}
 
 	public function wp_dashboard_setup() {

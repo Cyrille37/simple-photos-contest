@@ -52,11 +52,12 @@ if (!class_exists('AefPhotosContest')) {
 		public static $options_name;
 		public static $dbtable_photos;
 		public static $dbtable_votes;
+
 		/**
 		 * @var array Plugin Options
 		 */
 		protected $options;
-		protected $notices= array();
+		protected $notices = array();
 		protected $errors = array();
 
 		/**
@@ -89,10 +90,10 @@ if (!class_exists('AefPhotosContest')) {
 		protected static $options_default = array(
 			'photoFolder' => self::PLUGIN,
 			'dateFormat' => 1,
-			'thumbW' => 150 ,
-			'thumbH' => 150 ,
-			'viewW' => 1920 ,
-			'viewH' => 1440 
+			'thumbW' => 150,
+			'thumbH' => 150,
+			'viewW' => 1920,
+			'viewH' => 1440
 		);
 
 		public function __construct() {
@@ -164,6 +165,30 @@ if (!class_exists('AefPhotosContest')) {
 				return true;
 			}
 			return false;
+		}
+
+		public function getPhotoFolderUrl() {
+
+			return WP_CONTENT_URL.'/' . $this->getOption('photoFolder');
+		}
+
+		public function getPhotoUrl(array $photo_row, $type) {
+
+			$ext = explode('/', $photo_row['photo_mime_type']);
+			$photo_url = $this->getPhotoFolderUrl() . '/' . $photo_row['id'] . '-' . $type . '.' . $ext[1];
+			return $photo_url ;
+		}
+
+		public function getPhotoFolderPath() {
+
+			return path_join(WP_CONTENT_DIR, $this->getOption('photoFolder'));
+		}
+
+		public function getPhotoPath(array $photo_row, $type) {
+
+			$ext = explode('/', $photo_row['photo_mime_type']);
+			$photo_url =  $this->getPhotoFolderPath() . '/' . $photo_row['id'] . '-' . $type . '.' . $ext[1];
+			return $photo_url ;
 		}
 
 		public function getVoteOpenDate() {

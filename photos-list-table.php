@@ -12,7 +12,7 @@ class Photod_List_Table extends WP_List_Table {
 
 	const DEFAULT_ORDERBY = 'id'; // 'photo_name';
 	const DEFAULT_ORDER = 'asc';
-	const DEFAULT_ITEMS_PER_PAGE = 5;
+	const DEFAULT_ITEMS_PER_PAGE = 10;
 	const DEFAULT_COLUMN_TYPE = 'str';
 
 	protected $columns;

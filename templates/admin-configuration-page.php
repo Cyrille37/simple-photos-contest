@@ -68,6 +68,14 @@
 					</span>
 				</td>
 			</tr>
+			<tr valign="top">
+				<th>
+					&nbsp;
+				</th>
+				<td>
+					<input type="button" onclick="window.location='admin.php?page=<?php echo AefPhotosContestAdmin::PAGE_CONFIGURATION;?>&action=rebuildthumbs'" value="<?php _e('Rebuild thumbs') ?>"/>
+				</td>
+			</tr>
 		</table>
 
 

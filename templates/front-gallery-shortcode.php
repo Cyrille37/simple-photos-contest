@@ -13,27 +13,30 @@ jQuery(document).ready(
 	}
 );
 </script>
-  <style type="text/css">
-  #gallery {
-    padding: 30px;
-    background: #e1eef5;
-  }
-  #descriptions {
-    position: relative;
-    height: 50px;
-    background: #EEE;
-    margin-top: 10px;
-    width: 640px;
-    padding: 10px;
-    overflow: hidden;
-  }
-    #descriptions .ad-image-description {
-      position: absolute;
-    }
-      #descriptions .ad-image-description .ad-description-title {
-        display: block;
-      }
-  </style>
+<style type="text/css">
+#gallery {
+	padding: 30px;
+	background: #e1eef5;
+}
+#descriptions {
+	position: relative;
+	height: 50px;
+	background: #EEE;
+	margin-top: 10px;
+	width: 640px;
+	padding: 10px;
+	overflow: hidden;
+}
+#descriptions .ad-image-description {
+	position: absolute;
+}
+#descriptions .ad-image-description .ad-description-title {
+	display: block;
+}
+.ad-gallery .ad-nav .ad-thumbs {
+	height: 150px;
+}
+</style>
 
 <div id="gallery" class="ad-gallery">
 	<div class="ad-image-wrapper">
