@@ -144,6 +144,10 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 			switch ($_GET['page']) {
 
 				case self::PAGE_CONFIGURATION :
+
+					if (isset($_GET['action']) && $_GET['action'] == 'rebuildthumbs') {
+						$this->photos_build_thumbs();
+					}
 					$this->configuration_save();
 					break;
 
@@ -152,9 +156,6 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 					break;
 
 				case self::PAGE_PHOTOS:
-					wp_enqueue_style('thickbox');
-					wp_enqueue_script('jquery');
-					wp_enqueue_script('thickbox');
 					break;
 
 				case self::PAGE_OVERVIEW:
@@ -251,10 +252,6 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 
 			case self::PAGE_CONFIGURATION:
 
-				if (isset($_GET['action']) && $_GET['action'] == 'rebuildthumbs') {
-					$this->photos_build_thumbs();
-				}
-
 				include( self::$templates_folder . '/admin-configuration-page.php' );
 				break;
 
@@ -279,26 +276,41 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 
 	public function wp_admin_enqueue_scripts_and_styles() {
 
-		//_log(__METHOD__);
-
 		wp_enqueue_script('jquery');
 		// using jquery-ui
 		wp_enqueue_script('jquery-ui-core');
-		// using the jquery-ui datepicker
-		wp_enqueue_script('jquery-ui-datepicker');
 
-		// localizing the jquery-ui datepicker
-		$language = get_bloginfo('language'); // ex: fr-FR
-		$lang = substr($language, 0, 2); // ex: fr
-		wp_enqueue_script('jquery.ui.datepicker-lang',
-			'https://raw.github.com/jquery/jquery-ui/master/ui/i18n/jquery.ui.datepicker-' . $lang . '.js');
-		wp_enqueue_script('jquery.ui.datepicker-language',
-			'https://raw.github.com/jquery/jquery-ui/master/ui/i18n/jquery.ui.datepicker-' . $language . '.js');
+		if ($_GET['page'] == self::PAGE_CONFIGURATION) {
+			// using the jquery-ui datepicker
+			wp_enqueue_script('jquery-ui-datepicker');
 
-		// stilizing the jquery-ui datepicker
-		// http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/smoothness/jquery-ui.css
-		//wp_enqueue_style('jquery-ui', plugins_url(dirname(self::plugin_file)) . '/css/jquery-ui-1.10.0.custom.min.css');
-		wp_enqueue_style('jquery-ui', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/smoothness/jquery-ui.css');
+			// stilizing the jquery-ui 
+			//wp_enqueue_style('jquery-ui', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/smoothness/jquery-ui.css');
+			wp_enqueue_style('jquery-ui', self::$styles_url . 'jquery-ui.css');
+
+			// localizing the jquery-ui datepicker
+			$language = get_bloginfo('language'); // ex: fr-FR
+			$lang = substr($language, 0, 2); // ex: fr
+			if ($lang == 'en') {
+				// Native jquery.ui.datepicker language
+			}
+			else if ($lang == 'fr') {
+				// Got it
+				wp_enqueue_script('jquery.ui.datepicker-lang', self::$javascript_url . 'jquery.ui.datepicker-fr.js');
+			}
+			else {
+				wp_enqueue_script('jquery.ui.datepicker-lang',
+					'https://raw.github.com/jquery/jquery-ui/master/ui/i18n/jquery.ui.datepicker-' . $lang . '.js');
+				wp_enqueue_script('jquery.ui.datepicker-language',
+					'https://raw.github.com/jquery/jquery-ui/master/ui/i18n/jquery.ui.datepicker-' . $language . '.js');
+			}
+		}
+		else if ($_GET['page'] == self::PAGE_PHOTOS) {
+			
+			wp_enqueue_style('thickbox');
+			wp_enqueue_script('jquery');
+			wp_enqueue_script('thickbox');
+		}
 	}
 
 	/**

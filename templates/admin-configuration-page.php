@@ -9,12 +9,24 @@
 <style type="text/css">
 </style>
 <script type="text/javascript">
-jQuery(document).ready(
-	function() {
+jQuery(document).ready( function() {
 		jQuery('#rebuildThumbsSpin').hide();
     
-	}
-);
+	});
+function rebuildThumbs()
+{
+	var o = jQuery('#rebuildThumbsSpin');
+	//var s = o.attr("src");
+	//o.css('display', ''); 
+	//o.attr("src", s+"?"+new Date().getTime());
+	o.show();
+	setTimeout(rebuildThumbs_callback, 4);
+
+}
+function rebuildThumbs_callback()
+{
+	window.location='admin.php?page=<?php echo AefPhotosContestAdmin::PAGE_CONFIGURATION;?>&action=rebuildthumbs';	
+}
 </script>
 <div class="wrap">
 	<div id="icon-options-general" class="icon32">
@@ -85,7 +97,7 @@ jQuery(document).ready(
 					&nbsp;
 				</th>
 				<td>
-					<input type="button" onclick="jQuery('#rebuildThumbsSpin').show(); window.location='admin.php?page=<?php echo AefPhotosContestAdmin::PAGE_CONFIGURATION;?>&action=rebuildthumbs'" value="<?php _e('Rebuild thumbs') ?>"/>
+					<input type="button" onclick="rebuildThumbs();" value="<?php _e('Rebuild thumbs') ?>"/>
 					<img id="rebuildThumbsSpin" src="<?php echo plugins_url(AefPhotosContest::PLUGIN);?>/images/wpspin-2x.gif" style="vertical-align: middle"/>
 				</td>
 			</tr>

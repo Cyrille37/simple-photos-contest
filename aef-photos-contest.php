@@ -46,8 +46,10 @@ if (!class_exists('AefPhotosContest')) {
 		public static $plugin;
 		public static $plugin_file;
 		public static $templates_folder;
+		public static $plugin_url ;
 		public static $images_url;
 		public static $styles_url;
+		public static $javascript_url ;
 		public static $adminConfigPageName;
 		public static $options_name;
 		public static $dbtable_photos;
@@ -102,11 +104,13 @@ if (!class_exists('AefPhotosContest')) {
 
 			self::$plugin_name = __('Concours Photos', self::PLUGIN);
 			self::$plugin_file = basename(dirname(__FILE__)) . '/' . basename(__FILE__);
+			self::$plugin_url = plugins_url(self::PLUGIN);
+			self::$images_url = self::$plugin_url . '/images/';
+			self::$styles_url = self::$plugin_url . '/css/';
+			self::$javascript_url = self::$plugin_url . '/js/';
 
 			self::$adminConfigPageName = self::PLUGIN . '-configuration';
 			self::$templates_folder = dirname(__FILE__) . '/templates/';
-			self::$images_url = plugins_url(self::PLUGIN) . '/images/';
-			self::$styles_url = plugins_url(self::PLUGIN) . '/css/';
 
 			self::$dbtable_photos = $wpdb->prefix . self::DBTABLE_PREFIX . '_photos';
 			self::$dbtable_votes = $wpdb->prefix . self::DBTABLE_PREFIX . '_votes';

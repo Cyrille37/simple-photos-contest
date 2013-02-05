@@ -25,10 +25,12 @@ class AefPhotosContestFront extends AefPhotosContest {
 		//_log(__METHOD__);
 
 		wp_enqueue_script('jquery');
-		//wp_enqueue_style('jquery-ui', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/smoothness/jquery-ui.css');
+		// using jquery-ui
+		//wp_enqueue_script('jquery-ui-core');
 	
-		wp_enqueue_style('ad-gallery-css',plugins_url( self::PLUGIN).'/js/AD_Gallery-1.2.7/jquery.ad-gallery.css');
-		wp_enqueue_script('ad-gallery', plugins_url( self::PLUGIN).'/js/AD_Gallery-1.2.7/jquery.ad-gallery.min.js');
+		// using AD Gallery
+		wp_enqueue_style('ad-gallery-css', self::$javascript_url .'/AD_Gallery-1.2.7/jquery.ad-gallery.css');
+		wp_enqueue_script('ad-gallery', self::$javascript_url.'/AD_Gallery-1.2.7/jquery.ad-gallery.min.js');
 	}
 
 	/**
