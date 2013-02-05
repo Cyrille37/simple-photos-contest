@@ -8,8 +8,8 @@
 
 jQuery(document).ready(
 	function() {
-		var gallery = jQuery('.ad-gallery').adGallery();
-    
+		var gallery = jQuery('.ad-gallery').adGallery(
+		{loader_image: '<?php echo AefPhotosContest::$javascript_url;?>AD_Gallery-1.2.7/loader.gif'} );
 	}
 );
 </script>
@@ -36,6 +36,9 @@ jQuery(document).ready(
 .ad-gallery .ad-nav .ad-thumbs {
 	height: 150px;
 }
+.entry-content li {
+	margin: 0px;
+}
 </style>
 
 <div id="gallery" class="ad-gallery">
@@ -48,25 +51,23 @@ jQuery(document).ready(
 			<ul class="ad-thumb-list">
 				<?php
 				global $wpdb;
-				$photos_folder_url = '/wp-content/'. $this->getOption('photoFolder');
-				$sql = 'SELECT * FROM ' . AefPhotosContest::$dbtable_photos;
+				$sql = 'SELECT * FROM ' . AefPhotosContest::$dbtable_photos.' order by id asc ';
 				$rows = $wpdb->get_results($sql, ARRAY_A);
-				
 				$gallery_idx = 0 ;
 				foreach ($rows as $row) {
-					$photo_url_prefix = $photos_folder_url.'/'.$row['id'] ;
-					$ext=explode('/', $row['photo_mime_type']) ;
-					$ext = $ext[1];
+					_log('photo '.$row['id']);
 					?>
 					<li>
-						<a href="<?php  echo $photo_url_prefix,'-view.',$ext; ?>">
-							<img src="<?php echo $photo_url_prefix,'-thumb.',$ext; ?>" class="image<?php echo $gallery_idx ++;?>">
+						<a href="<?php echo $this->getPhotoUrl($row, 'view'); ?>" >
+							<img src="<?php echo $this->getPhotoUrl($row, 'thumb'); ?>"
+									 class="image<?php echo $gallery_idx ++;?>"
+									 alt="<?php echo htmlspecialchars($row['photographer_name']);?>"
+									 title="<?php echo htmlspecialchars($row['photo_name']) ;?>">
 						</a>
 					</li>
 					<?php
 				}
 				?>
-				</li>
 			</ul>
 		</div>
 	</div>
