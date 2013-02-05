@@ -632,7 +632,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 		$image_thumbs = wp_get_image_editor($dest_file); // WP_Image_Editor
 		if (!is_wp_error($image_thumbs)) {
 			$image_thumbs->resize($this->getOption('thumbW'), $this->getOption('thumbH'), false);
-			$image_thumbs->save($dest_file_without_ext . '-thumbs.' . $dest_file_ext);
+			$image_thumbs->save($dest_file_without_ext . '-thumb.' . $dest_file_ext);
 		}
 
 		$image_view = wp_get_image_editor($dest_file); // WP_Image_Editor
