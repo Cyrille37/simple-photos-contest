@@ -176,14 +176,16 @@ if (!class_exists('AefPhotosContest')) {
 			return WP_CONTENT_URL . '/' . $this->getOption('photoFolder');
 		}
 
-		public function getPhotoUrl(array $photo_row, $type) {
+		public function getPhotoUrl(array $photo_row, $type = null) {
 
 			if (!isset($photo_row['photo_mime_type']) || empty($photo_row['photo_mime_type'])) {
 				return '';
 			}
 
 			$ext = explode('/', $photo_row['photo_mime_type']);
-			$photo_url = $this->getPhotoFolderUrl() . '/' . $photo_row['id'] . '-' . $type . '.' . $ext[1];
+
+			$photo_url = $this->getPhotoFolderUrl() . '/' . $photo_row['id']
+				. (!empty($type) ? '-' . $type : '' ) . '.' . $ext[1];
 			return $photo_url;
 		}
 
@@ -192,14 +194,15 @@ if (!class_exists('AefPhotosContest')) {
 			return path_join(WP_CONTENT_DIR, $this->getOption('photoFolder'));
 		}
 
-		public function getPhotoPath(array $photo_row, $type) {
+		public function getPhotoPath(array $photo_row, $type = null) {
 
 			if (!isset($photo_row['photo_mime_type']) || empty($photo_row['photo_mime_type'])) {
 				return '';
 			}
 
 			$ext = explode('/', $photo_row['photo_mime_type']);
-			$photo_url = $this->getPhotoFolderPath() . '/' . $photo_row['id'] . '-' . $type . '.' . $ext[1];
+			$photo_url = $this->getPhotoFolderPath() . '/' . $photo_row['id']
+				. (!empty($type) ? '-' . $type : '' ) . '.' . $ext[1];
 			return $photo_url;
 		}
 

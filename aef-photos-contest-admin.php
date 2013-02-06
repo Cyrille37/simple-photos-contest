@@ -778,19 +778,28 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 
 		global $wpdb;
 
+		$row = $wpdb->get_row($wpdb->prepare('SELECT * FROM ' . self::$dbtable_photos
+				. ' WHERE id=%d', $photo_id
+			), ARRAY_A);
+		if (empty($row)) {
+			$this->errors['action'] = __('Photo not found.') . ' (id=' . $photo_id . ')';
+			return;
+		}
+
 		$ok = $wpdb->query($wpdb->prepare('DELETE FROM ' . self::$dbtable_photos
 				. ' WHERE id=%d', $photo_id
 			));
-		
-		if( !$ok )
-		{
-			$this->errors['action'] = __('Failed to delete photo id: '). $photo_id ;
-			return ;
-		}
-		else{
-			$this->notices[] = __('Photo deleted.'). ' (id='.$photo_id .')';
+
+		if (!$ok) {
+			$this->errors['action'] = __('Failed to delete photo.') . ' (id=' . $photo_id . ')';
+			return;
 		}
 
+		unlink($this->getPhotoPath($row, 'view'));
+		unlink($this->getPhotoPath($row, 'thumb'));
+		unlink($this->getPhotoPath($row));
+
+		$this->notices[] = __('Photo deleted.') . ' (id=' . $photo_id . ')';
 	}
 
 }
