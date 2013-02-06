@@ -145,9 +145,17 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 
 				case self::PAGE_CONFIGURATION :
 
-					if (isset($_GET['action']) && $_GET['action'] == 'rebuildthumbs') {
-						$this->photos_build_thumbs();
+					if (isset($_GET['action'])) {
+						switch ($_GET['action']) {
+							case 'rebuildthumbs':
+								$this->photos_build_thumbs();
+								break;
+							default;
+								$this->errors['action'] = __('Unknow action');
+								break;
+						}
 					}
+
 					$this->configuration_save();
 					break;
 
@@ -156,6 +164,17 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 					break;
 
 				case self::PAGE_PHOTOS:
+
+					if (isset($_GET['action'])) {
+						switch ($_GET['action']) {
+							case 'delete':
+								$this->photo_delete(intval($_GET['id']));
+								break;
+							default;
+								$this->errors['action'] = __('Unknow action');
+								break;
+						}
+					}
 					break;
 
 				case self::PAGE_OVERVIEW:
@@ -257,9 +276,6 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 
 			case self::PAGE_PHOTOS:
 
-				require_once(__DIR__ . '/photos-list-table.php');
-				$photosListTable = new Photos_List_Table();
-				$photosListTable->prepare_items();
 				include( self::$templates_folder . '/admin-photos-page.php' );
 				break;
 
@@ -306,7 +322,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 			}
 		}
 		else if ($_GET['page'] == self::PAGE_PHOTOS) {
-			
+
 			wp_enqueue_style('thickbox');
 			wp_enqueue_script('jquery');
 			wp_enqueue_script('thickbox');
@@ -756,6 +772,25 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 			$msg.= __('Vote is not configured');
 		}
 		echo '<span class="', $class, '" >', $msg, '</span>';
+	}
+
+	public function photo_delete($photo_id) {
+
+		global $wpdb;
+
+		$ok = $wpdb->query($wpdb->prepare('DELETE FROM ' . self::$dbtable_photos
+				. ' WHERE id=%d', $photo_id
+			));
+		
+		if( !$ok )
+		{
+			$this->errors['action'] = __('Failed to delete photo id: '). $photo_id ;
+			return ;
+		}
+		else{
+			$this->notices[] = __('Photo deleted.'). ' (id='.$photo_id .')';
+		}
+
 	}
 
 }
