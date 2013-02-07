@@ -30,6 +30,8 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 
 		parent::__construct();
 
+		_log(__METHOD__ . ' session_id():' . (session_id() ? session_id() : 'null'));
+
 		register_activation_hook(self::$plugin_file, array($this, 'wp_activate'));
 		register_deactivation_hook(self::$plugin_file, array($this, 'wp_deactivate'));
 		// Init de base de l'admin
