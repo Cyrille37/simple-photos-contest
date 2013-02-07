@@ -34,7 +34,7 @@ if (!defined('ABSPATH')) {
 
 if (!class_exists('AefPhotosContest')) {
 
-	abstract class AefPhotosContest {
+	class AefPhotosContest {
 
 		const PLUGIN = 'aef-photos-contest';
 		const DBTABLE_PREFIX = 'aef_spc';
@@ -118,16 +118,6 @@ if (!class_exists('AefPhotosContest')) {
 			self::$options_name = self::PLUGIN;
 			$this->loadOptions();
 
-			add_action('init', array($this, 'wp_init'));
-
-			/* if (is_admin()) {
-			  require_once( __DIR__ . '/aef-photos-contest-admin.php');
-			  $o = new AefPhotosContestAdmin();
-			  }
-			  else {
-			  require_once( __DIR__ . '/aef-photos-contest-front.php');
-			  $o = new AefPhotosContestFront();
-			  } */
 		}
 
 		/**
@@ -151,10 +141,6 @@ if (!class_exists('AefPhotosContest')) {
 				return $this->options[$key];
 			}
 			return $defaultValue;
-		}
-
-		public function wp_init() {
-			
 		}
 
 		/**

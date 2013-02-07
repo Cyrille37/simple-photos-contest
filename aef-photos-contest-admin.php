@@ -448,6 +448,12 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 			$this->errors['view_h'] = _('View height must be set');
 		}
 
+		if (isset($_POST['facebook_client_id'])) {
+			$this->options['facebookClientId'] = $_POST['facebook_client_id'];
+		}
+		if (isset($_POST['facebook_secret_key'])) {
+			$this->options['facebookSecretKey'] = $_POST['facebook_secret_key'];
+		}
 
 		// dateFormat
 

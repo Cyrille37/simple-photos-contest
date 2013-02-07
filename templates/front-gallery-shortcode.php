@@ -8,23 +8,18 @@
 
 // AD Gallery
 // http://adgallery.codeplex.com/documentation
+jQuery.noConflict();
 
 jQuery(document).ready( function() {
-	
+
 	jQuery( "#aef-vote-dialog" ).dialog({
 		 dialogClass : 'wp-dialog',
 		 modal: true, autoOpen: false, draggable: false ,
 		 position: { my: "center", at: "center", of: window },
 		 closeOnEscape : true,
-		 show: {
-			 effect: "bounce", duration: 500
-		 },
-		 hide: {
-			 effect: "blind", duration: 500
-		 },
 		 buttons: [
 			 { text: "Fermer", click: function() { jQuery( this ).dialog( "close" ); } },
-			 { text: "testVote", click: function() { testVote(); } }
+			 { text: "testVote", click: function() { initVote(); } }
 		 ]
 	 });
 
@@ -128,9 +123,29 @@ jQuery(document).ready( function() {
 		</div>
 	</div>
 </div>
+
 <div id="aef-vote-button">
 	<button id="aef-vote-opener">vote</button>
 </div>
+
 <div id="aef-vote-dialog" title="Votre vote">
-  <p>This is an animated dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the 'x' icon.</p>
+	<div id="aef-vote-loader">
+		<img src="<?php echo AefPhotosContest::$images_url.'wpspin-2x.gif' ?>" />
+	</div>
+	<div id="social-auth-form">
+		<form title="Social Authentification">
+			<div style="margin-bottom: 3px;"><label><?php _e('For voting you have to identify your self. You can use your preferred social network', AefPhotosContest::PLUGIN); ?>:</label></div>
+			<a href="javascript:void(0);" title="Facebook" class="social_auth_facebook"><img alt="Facebook" src="<?php echo AefPhotosContest::$images_url . 'facebook_32.png' ?>" /></a>
+			<a href="javascript:void(0);" title="Google" class="social_auth_google"><img alt="Google" src="<?php echo AefPhotosContest::$images_url . 'google_32.png' ?>" /></a>
+			<a href="javascript:void(0);" title="Yahoo" class="social_auth_yahoo"><img alt="Yahoo" src="<?php echo AefPhotosContest::$images_url . 'yahoo_32.png' ?>" /></a>
+			<input type="hidden" class="social_auth_facebook_client_id" name="client_id" value="<?php echo $aefPC->getOption('facebookClientId'); ?>" />
+			<input type="hidden" class="social_auth_facebook" name="redirect_uri" value="<?php echo urlencode( AefPhotosContest::$plugin_url . '/auth/facebook/callback.php'); ?>" />
+			<input type="hidden" class="social_auth_google" name="redirect_uri" value="<?php echo( AefPhotosContest::$plugin_url . '/auth/google/connect.php' ); ?>" />
+			<input type="hidden" class="social_auth_yahoo" name="redirect_uri" value="<?php echo( AefPhotosContest::$plugin_url . '/auth/yahoo/connect.php' ); ?>" />
+		</form>
+	</div>
+	<div id="vote-form">
+		You can vote
+	</div>
+
 </div>

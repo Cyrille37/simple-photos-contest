@@ -103,6 +103,31 @@ function rebuildThumbs_callback()
 			</tr>
 		</table>
 
+		<h3><?php _e('Social authentification',AefPhotosContest::PLUGIN); ?></h3>
+		<table class="form-table">
+			<tr valign="top">
+				<th align="left">
+					<?php _e('Facebook client id', AefPhotosContest::PLUGIN); ?>
+				</th>
+				<td>
+					<input type="text" size="20" name="facebook_client_id" value="<?php echo $aefPC->getOption('facebookClientId'); ?>" />
+					<span class="setting-description">
+						<?php _e('This is the Facebook client id', AefPhotosContest::PLUGIN);?>
+					</span>
+				</td>
+			</tr>
+			<tr valign="top">
+				<th align="left">
+					<?php _e('Facebook secret key', AefPhotosContest::PLUGIN); ?>
+				</th>
+				<td>
+					<input type="text" size="20" name="facebook_secret_key" value="<?php echo $aefPC->getOption('facebookSecretKey'); ?>" />
+					<span class="setting-description">
+						<?php _e('This is the Facebook secret key', AefPhotosContest::PLUGIN);?>
+					</span>
+				</td>
+			</tr>
+		</table>
 
 		<h3><?php _e('Advanced options',AefPhotosContest::PLUGIN); ?></h3>
 		<table class="form-table">
@@ -111,7 +136,7 @@ function rebuildThumbs_callback()
 					<?php _e('Photos folder', AefPhotosContest::PLUGIN); ?>
 				</th>
 				<td>
-					<input type="text" size="35" name="photoFolder" value="<?php echo $aefPC->getOption('photoFolder', 'wp-content/' . AefPhotosContest::PLUGIN); ?>" />
+					<input type="text" size="35" name="photoFolder" value="<?php echo $aefPC->getOption('photoFolder'); ?>" />
 					<span class="setting-description"><?php _e('This is the folder path for all contest photos, relative to the wordpress content folder (wp-content).', AefPhotosContest::PLUGIN); ?></span>
 				</td>
 			</tr>

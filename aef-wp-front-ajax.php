@@ -23,14 +23,16 @@ send_origin_headers();
 if (empty($_REQUEST['action']))
 	die('0');
 
-@header( 'Content-Type: text/html; charset=' . get_option( 'blog_charset' ) );
+//@header( 'Content-Type: text/html; charset=' . get_option( 'blog_charset' ) );
 @header( 'X-Robots-Tag: noindex' );
 
 send_nosniff_header();
 nocache_headers();
 
 require_once( __DIR__ . '/aef-photos-contest-front.php');
-//$aefPC = new AefPhotosContestFront();
 
 do_action( 'init' );
+do_action( 'init_ajax_nopriv_' . $_REQUEST['action'] );
 do_action( 'wp_ajax_nopriv_' . $_REQUEST['action'] ); // Non-admin actions
+
+wp_die();
