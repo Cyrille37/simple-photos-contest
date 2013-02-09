@@ -35,7 +35,7 @@ function rebuildThumbs_callback()
 
 	<h2><?php _e('Photos contest configuration', AefPhotosContest::PLUGIN); ?></h2>
 
-	<form name="configuration" method="post" action="<?php echo $_SERVER['REQUEST_URI']; ?>">
+	<form name="configuration" id="configuration" method="post" action="<?php echo $_SERVER['REQUEST_URI']; ?>">
 		<?php wp_nonce_field(AefPhotosContestAdmin::PAGE_CONFIGURATION, AefPhotosContestAdmin::PAGE_CONFIGURATION.'_nonce') ?>
 
 		<?php submit_button(); ?>
@@ -62,6 +62,54 @@ function rebuildThumbs_callback()
 					<span class="setting-description">
 						<?php _e('This is vote close date formated as ', AefPhotosContest::PLUGIN); echo AefPhotosContestAdmin::$dateFormats[$aefPC->getOption('dateFormat')]['label'], '.'; ?>
 					</span>
+				</td>
+			</tr>
+			<tr valign="top">
+				<th align="left">
+					<?php _e('Vote frequency', AefPhotosContest::PLUGIN); ?>
+				</th>
+				<td>
+					<label>
+						<input type="radio" name="voteFrequency" onchange="enableVoteFrequencyHours()"
+									 value="<?php echo AefPhotosContest::VOTE_FREQ_ONEPERCONTEST ?>"
+									 <?php checked( $aefPC->getOption('voteFrequency'), AefPhotosContest::VOTE_FREQ_ONEPERCONTEST ); ?>
+									 />
+						<span class="setting-description">
+							<?php _e('only one vote by contest.', AefPhotosContest::PLUGIN) ?>
+						</span>
+					</label>
+					<br/>
+					<label>
+						<input type="radio" name="voteFrequency" onchange="enableVoteFrequencyHours()"
+									 value="<?php echo AefPhotosContest::VOTE_FREQ_ONEPERHOURS ?>"
+									<?php checked( $aefPC->getOption('voteFrequency'), AefPhotosContest::VOTE_FREQ_ONEPERHOURS ); ?>
+									 />
+						<span class="setting-description">
+							<?php _e('only one vote by a given time.', AefPhotosContest::PLUGIN) ?>
+						</span>
+					</label>
+					<br/>
+					<label id="setting-voteFrequencyHours">
+						<input type="text" size="3" value="<?php echo $aefPC->getOption('voteFrequencyHours'); ?>" name="voteFrequencyHours" />
+						<span class="setting-description">
+							<?php _e('How many hours between votes, when vote frequency is limited by hours.', AefPhotosContest::PLUGIN) ?>
+						</span>
+					</label>
+					<script>
+						function enableVoteFrequencyHours()
+						{
+							var val = jQuery('input[name=voteFrequency]:checked', '#configuration').val() ;
+							if( val=='<?php echo AefPhotosContest::VOTE_FREQ_ONEPERHOURS ?>' )
+							{
+								jQuery('#setting-voteFrequencyHours input', '#configuration').removeAttr('disabled');
+							}
+							else
+							{
+								jQuery('#setting-voteFrequencyHours input', '#configuration').attr('disabled', 'disabled');								
+							}
+						}
+						enableVoteFrequencyHours();
+					</script>
 				</td>
 			</tr>
 		</table>
@@ -103,7 +151,7 @@ function rebuildThumbs_callback()
 			</tr>
 		</table>
 
-		<h3><?php _e('Social authentification',AefPhotosContest::PLUGIN); ?></h3>
+		<h3><?php _e('Advanced options',AefPhotosContest::PLUGIN); ?></h3>
 		<table class="form-table">
 			<tr valign="top">
 				<th align="left">
@@ -127,10 +175,6 @@ function rebuildThumbs_callback()
 					</span>
 				</td>
 			</tr>
-		</table>
-
-		<h3><?php _e('Advanced options',AefPhotosContest::PLUGIN); ?></h3>
-		<table class="form-table">
 			<tr valign="top">
 				<th align="left">
 					<?php _e('Photos folder', AefPhotosContest::PLUGIN); ?>

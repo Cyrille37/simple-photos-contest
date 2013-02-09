@@ -518,6 +518,26 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 			}
 		}
 
+		if (isset($_POST['voteFrequency'])) {
+			switch($_POST['voteFrequency'])
+			{
+				case self::VOTE_FREQ_ONEPERCONTEST:
+					$this->options['voteFrequency'] = self::VOTE_FREQ_ONEPERCONTEST;
+					break;
+				case self::VOTE_FREQ_ONEPERHOURS:
+					if( ! isset($_POST['voteFrequencyHours']) || !is_numeric($_POST['voteFrequencyHours']))
+					{
+						$this->errors['voteFrequency'] = __('Vote frequency error, number of hours must be set') ;
+					}
+					else
+					{
+						$this->options['voteFrequency'] = self::VOTE_FREQ_ONEPERHOURS;
+						$this->options['voteFrequencyHours'] = intval( $_POST['voteFrequencyHours']);
+					}
+					break;
+			}
+		}
+		
 		update_option(self::$options_name, $this->options);
 
 		//wp_redirect(admin_url('admin.php?page=' . $plugin_page));
