@@ -48,13 +48,13 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 
 	public static function check_requirements() {
 
-		global $wp_version ;
+		global $wp_version;
 
 		if (version_compare(PHP_VERSION, '5.1.2', '<')) {
-			wp_die('Need Php > '.self::REQUIRE_VERSION_PHP);
+			wp_die('Need Php > ' . self::REQUIRE_VERSION_PHP);
 		}
 		if (version_compare($wp_version, self::REQUIRE_VERSION_WP, '<')) {
-			wp_die('Need Wordpress > '.self::REQUIRE_VERSION_WP);
+			wp_die('Need Wordpress > ' . self::REQUIRE_VERSION_WP);
 		}
 
 		if (!function_exists('curl_version')) {
@@ -190,8 +190,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 
 			if (isset($_GET['id'])) {
 				// Load the photo
-				$this->photo = $wpdb->get_row($wpdb->prepare('SELECT * FROM ' . self::$dbtable_photos . ' WHERE id = %d',
-						$_GET['id']), ARRAY_A);
+				$this->photo = $this->getDaoPhotos()->getById($_GET['id']);
 				if (empty($this->photo))
 					$this->errors[] = __('Requested photo not found');
 			}
@@ -602,10 +601,9 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 			// Create
 
 			$this->photo['created_at'] = date("Y-m-d H:i:s");
-			$res = $wpdb->query($wpdb->prepare('INSERT INTO ' . self::$dbtable_photos
-					. '(' . implode(',', array_keys($this->photo)) . ')'
-					. 'VALUES (' . implode(',', array_fill(0, count($this->photo), '%s')) . ')', array_values($this->photo)
-				));
+
+			$res = $this->daoPhotos->insert($this->photo);
+
 			$this->photo['id'] = $wpdb->insert_id;
 			if ($res) {
 				$this->notices[] = __('Photo saved');
@@ -729,8 +727,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 		global $wpdb;
 
 		$photos_folder_path = $this->getPhotoFolderPath();
-		$sql = 'SELECT * FROM ' . AefPhotosContest::$dbtable_photos;
-		$rows = $wpdb->get_results($sql, ARRAY_A);
+		$rows = $this->daoPhotos->find();
 
 		foreach ($rows as $row) {
 
@@ -738,6 +735,8 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 			$ext = explode('/', $row['photo_mime_type']);
 			$this->photo_build_thumbs($photo_path_prefix . '.' . $ext[1], $photo_path_prefix, $ext[1]);
 		}
+
+		$this->notices[] = __('All photos thumbs were rebuilt');
 	}
 
 	public function wp_dashboard_setup() {
@@ -779,17 +778,13 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 
 		global $wpdb;
 
-		$row = $wpdb->get_row($wpdb->prepare('SELECT * FROM ' . self::$dbtable_photos
-				. ' WHERE id=%d', $photo_id
-			), ARRAY_A);
+		$row = $this->daoPhotos->getById($photo_id);
 		if (empty($row)) {
 			$this->errors['action'] = __('Photo not found.') . ' (id=' . $photo_id . ')';
 			return;
 		}
 
-		$ok = $wpdb->query($wpdb->prepare('DELETE FROM ' . self::$dbtable_photos
-				. ' WHERE id=%d', $photo_id
-			));
+		$ok = $this->daoPhotos->deleteById($photo_id);
 
 		if (!$ok) {
 			$this->errors['action'] = __('Failed to delete photo.') . ' (id=' . $photo_id . ')';

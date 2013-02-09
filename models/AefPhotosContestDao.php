@@ -65,23 +65,22 @@ abstract class AefPhotosContestModelDao {
 	 * @return int
 	 */
 	public function count() {
+
 		$count = $this->wpdb->get_var('SELECT COUNT(*) FROM ' . $this->getTableName());
 		return $count;
 	}
 
 	/**
-	 * 
 	 * @param int $id
 	 * @return array
 	 */
 	public function getById($id) {
 
-		$row = $this->wpdb->get_row($this->wpdb->prepare('SELECT * FROM ' . $this->getTableName() . ' WHERE id = %d', $id),
-			ARRAY_A);
+		$row = $this->wpdb->get_row('SELECT * FROM ' . $this->getTableName() . ' WHERE id = ' . intval($id), ARRAY_A);
 		return $row;
 	}
 
-	protected function applyQueryOptions(&$sql, AefQueryOptions $queryOptions) {
+	protected function applyQueryOptions(&$sql, AefQueryOptions $queryOptions = null) {
 
 		if ($queryOptions == null)
 			return;
@@ -151,6 +150,17 @@ abstract class AefPhotosContestModelDao {
 			. ' VALUES (' . implode(',', $placeholders) . ')';
 
 		$res = $this->wpdb->query($this->wpdb->prepare($sql, $values));
+		return $res;
+	}
+
+	/**
+	 * 
+	 * @param int $id
+	 * @return type
+	 */
+	public function deleteById($id) {
+
+		$res = $this->wpdb->query('DELETE FROM ' . $this->getTableName() . ' WHERE id = ' . intval($id));
 		return $res;
 	}
 
