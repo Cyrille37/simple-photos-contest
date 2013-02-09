@@ -117,7 +117,6 @@ if (!class_exists('AefPhotosContest')) {
 
 			self::$options_name = self::PLUGIN;
 			$this->loadOptions();
-
 		}
 
 		/**
@@ -154,6 +153,29 @@ if (!class_exists('AefPhotosContest')) {
 			if ($plugin_page == $pageName) {
 				return true;
 			}
+			return false;
+		}
+		
+		/**
+		 * Check the current post for the existence of a short code.
+		 * @param string $shortcode the shortcode
+		 * @return boolean return true if shortcode found
+		 */
+		public static function has_shortcode($shortcode) {
+
+			if (!get_the_ID())
+				return false;
+
+			$post_to_check = get_post(get_the_ID());
+			if (!$post_to_check)
+				return false;
+
+			// check the post content for the short code  
+			if (stripos($post_to_check->post_content, '[' . $shortcode) !== false) {
+				// we have found the short code  
+				return true;
+			}
+			// not found
 			return false;
 		}
 

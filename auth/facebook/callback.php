@@ -38,8 +38,6 @@ if(isset($_GET['code'])) {
 	<?php
 
 } else {
-		_log('NO CODE');
-error_log('NO CODE2');
   $redirect_uri = urlencode(AefPhotosContest::$plugin_url . '/auth/facebook/callback.php');
   wp_redirect('https://graph.facebook.com/oauth/authorize?client_id=' . $client_id . '&redirect_uri=' . $redirect_uri . '&scope=email');
 }

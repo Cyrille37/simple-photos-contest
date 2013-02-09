@@ -3,8 +3,6 @@
  * and open the template in the editor.
  */
 
-console.log('ajaxurl: '+AefPC.ajaxurl);
-
 jQuery(document).ready( function() {
 
 	jQuery('a.social_auth_facebook').click(function() {
@@ -70,35 +68,40 @@ window.aef_social_auth = function(auth_callback_result) {
 
 };
 
-function initVote()
+/**
+ * Function to call on vote dialog open event.
+ * It calls the server to find the voter's status (ajax action vote_init).
+ */
+var aef_vote_dialog_onOpen = function ()
 {
+
 	jQuery.post(
 		//
 		AefPC.ajaxurl,
 		{
-			action : 'vote',
-			// other parameters can be added along with "action"
-			toto : "coucou"
+			action : 'vote_init'
 		},
-
 		function( jsonString ) {
 			console.dir( jsonString );
 			var res = JSON.parse(jsonString);
 
 			jQuery('#aef-vote-loader').hide();
 
-			if( res.command == 'show_auth_buttons' )
+			switch(res.command)
 			{
-				jQuery('#social-auth-form').show();
-			}
-			else if( res.command == 'vote' )
-			{
-				jQuery('#vote-form').show();		
-			}
-			else{
-				alert('unknow result');					
+				case 'show_auth_buttons':
+					jQuery('#social-auth-form').show();
+					break;
+				case 'show_vote':
+					jQuery('#vote-form .aef-vote-voter-email').text(res.voter_email);
+					gallery.current_index
+					jQuery('#vote-form').show();
+					break;
+				default:
+					alert('unknow error');
+					break;
 			}
 		}
 
-	);
+		);
 }
