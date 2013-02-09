@@ -21,9 +21,7 @@
 			},
 			callbacks: {
 				init: function() {
-					console.log('>>> callback init().');
-
-					jQuery('#gallery .ad-controls').append(jQuery("#aef-vote-button"));
+					jQuery('.ad-controls', '#gallery').append(jQuery("#aef-vote-button"));
 				}
 			}
 		});
@@ -31,7 +29,6 @@
 		jQuery('.ad-gallery').on("click", ".ad-image", function() {
 
 			var href = jQuery(this).find("img").attr("src");
-			//console.dir( jQuery(this) );
 			jQuery.fancybox({
 				href : href,
 				showCloseButton: true,
@@ -40,8 +37,8 @@
 				titleShow: true,
 				titlePosition  : 'inside',
 				titleFormat		: function (title, currentArray, currentIndex, currentOpts) {
-					var title = jQuery('#gallery .image'+gallery[0].current_index).attr('title') ;
-					var alt = jQuery('#gallery .image'+gallery[0].current_index).attr('alt') ;
+					var title = jQuery('.image'+gallery[0].current_index, '#gallery').attr('title') ;
+					var alt = jQuery('.image'+gallery[0].current_index , '#gallery').attr('alt') ;
 					return '<div id="fancybox-title" class="fancybox-title-over" style="display: block; margin-left: 10px; width: 100%; bottom: 10px;"><div id="fancybox-title-over">'
 						+'' + (title && title.length ?  title  : '' )  
 						+' ' + (alt && alt.length ?  alt : '' ) 
@@ -120,7 +117,8 @@
 					?>
 					<li>
 						<a href="<?php echo $this->getPhotoUrl($row, 'view'); ?>" >
-							<img src="<?php echo $this->getPhotoUrl($row, 'thumb'); ?>"
+							<img src="<?php echo $this->getPhotoUrl($row,
+					'thumb'); ?>"
 									 class="image<?php echo $gallery_idx++; ?>"
 									 alt="<?php echo htmlspecialchars($row['photographer_name']); ?>"
 									 title="<?php echo htmlspecialchars($row['photo_name']); ?>"
