@@ -48,24 +48,44 @@
 				}
 			}
 		});
-	
+		
 		jQuery('.ad-gallery').on("click", ".ad-image", function() {
+
+			var href = jQuery(this).find("img").attr("src");
+			//console.dir( jQuery(this) );
 			jQuery.fancybox({
-				href : jQuery(this).find("img").attr("src"),
-				closeBtn: false,
-				closeClick : true,
+				href : href,
+				showCloseButton: true,
+				hideOnContentClick: true,
+				openEffect : 'none',
+				titleShow: true,
+				titlePosition  : 'inside',
+				titleFormat		: function (title, currentArray, currentIndex, currentOpts) {
+					var title = jQuery('.image'+gallery[0].current_index).attr('title') ;
+					var alt = jQuery('.image'+gallery[0].current_index).attr('alt') ;
+					return '<div id="fancybox-title" class="fancybox-title-over" style="display: block; margin-left: 10px; width: 100%; bottom: 10px;"><div id="fancybox-title-over">'
+							+'' + (title && title.length ?  title  : '' )  
+							+' ' + (alt && alt.length ?  alt : '' ) 
+							+'</div></div>';
+				},
 				//openEffect : 'elastic',
 				//openSpeed  : 150,
+				closeEffect : 'none',
 				//closeEffect : 'elastic',
 				//closeSpeed  : 150,
 				helpers : {
 					overlay : null
+				},
+				afterLoad : function() {
+					this.inner.prepend( '<h1>1. My custom title</h1>' );
+					this.content = '<h1>2. My custom title</h1>' + this.content.html();
 				}
 			});
 		});
 
 
 	});
+
 
 
 </script>
@@ -121,8 +141,8 @@
 					?>
 					<li>
 						<a href="<?php echo $this->getPhotoUrl($row, 'view'); ?>" >
-							<img src="<?php echo $this->getPhotoUrl($row,
-					'thumb');
+							<img src="<?php
+				echo $this->getPhotoUrl($row, 'thumb');
 					?>"
 									 class="image<?php echo $gallery_idx++; ?>"
 									 alt="<?php echo htmlspecialchars($row['photographer_name']); ?>"
@@ -147,8 +167,8 @@
 	</div>
 	<div id="social-auth-form">
 		<form title="Social Authentification">
-			<div style="margin-bottom: 3px;"><label><?php _e('For voting you have to identify your self. You can use your preferred social network',
-					AefPhotosContest::PLUGIN);
+			<div style="margin-bottom: 3px;"><label><?php
+				_e('For voting you have to identify your self. You can use your preferred social network', AefPhotosContest::PLUGIN);
 				?>:</label></div>
 			<a href="javascript:void(0);" title="Facebook" class="social_auth_facebook"><img alt="Facebook" src="<?php echo AefPhotosContest::$images_url . 'facebook_32.png' ?>" /></a>
 			<a href="javascript:void(0);" title="Google" class="social_auth_google"><img alt="Google" src="<?php echo AefPhotosContest::$images_url . 'google_32.png' ?>" /></a>

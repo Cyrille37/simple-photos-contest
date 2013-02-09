@@ -65,7 +65,7 @@ class AefPhotosContestFront extends AefPhotosContest {
 			wp_enqueue_script('ad-gallery', self::$javascript_url . '/AD_Gallery-1.2.7/jquery.ad-gallery.min.js');
 			// Fancybox
 			wp_enqueue_style('fancybox-css', self::$javascript_url . '/fancybox-1.3.4/jquery.fancybox-1.3.4.css');
-			wp_enqueue_script('fancybox', self::$javascript_url . '/fancybox-1.3.4/jquery.fancybox-1.3.4.js');
+			wp_enqueue_script('fancybox', self::$javascript_url . '/fancybox-1.3.4/jquery.fancybox-1.3.4.pack.js');
 
 			//wp_enqueue_style('thickbox');
 			//wp_enqueue_script('thickbox');
