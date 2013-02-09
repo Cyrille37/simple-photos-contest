@@ -30,7 +30,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 
 		parent::__construct();
 
-		_log(__METHOD__ . ' session_id():' . (session_id() ? session_id() : 'null'));
+		self::check_requirements();
 
 		register_activation_hook(self::$plugin_file, array($this, 'wp_activate'));
 		register_deactivation_hook(self::$plugin_file, array($this, 'wp_deactivate'));
@@ -46,30 +46,26 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 		}
 	}
 
-	function is_wp_required_version() {
+	public static function check_requirements() {
 
-		global $wp_version;
+		global $wp_version ;
 
-		// Check for WP version installation
-		$wp_ok = version_compare($wp_version, self::WP_MINIMAL_REQUIRED_VERSION, '>=');
-
-		if (($wp_ok == FALSE)) {
-			add_action(
-				'admin_notices',
-				create_function(
-					'',
-					'printf (\'<div id="message" class="error"><p><strong>\' . __(\'Sorry, ' . self::$plugin_name . ' version ' . self::VERSION . ' works only under WordPress %s or higher\', "nggallery" ) . \'</strong></p></div>\', "' . self::WP_MINIMAL_REQUIRED_VERSION . '" );'
-				)
-			);
-			return false;
+		if (version_compare(PHP_VERSION, '5.1.2', '<')) {
+			wp_die('Need Php > '.self::REQUIRE_VERSION_PHP);
+		}
+		if (version_compare($wp_version, self::REQUIRE_VERSION_WP, '<')) {
+			wp_die('Need Wordpress > '.self::REQUIRE_VERSION_WP);
 		}
 
-		return true;
+		if (!function_exists('curl_version')) {
+			wp_die('Need curl library');
+		}
+		if (!function_exists('hash')) {
+			wp_die('Need hash() function');
+		}
 	}
 
 	public function wp_activate() {
-
-		_log(__METHOD__);
 
 		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
@@ -109,7 +105,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 	 * TODO: implements something for plugin deactivate.
 	 */
 	public function wp_deactivate() {
-		_log(__METHOD__);
+		//_log(__METHOD__);
 	}
 
 	/**
@@ -336,7 +332,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 	 */
 	public function wp_admin_notices() {
 
-		_log(__METHOD__);
+		//_log(__METHOD__);
 
 		if (count($this->errors) > 0) {
 			echo '<div class="error">';
@@ -388,17 +384,12 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 	 */
 	protected function configuration_save() {
 
-		//global $plugin_page;
-
-		_log(__METHOD__);
+		//_log(__METHOD__);
 
 		if (!isset($_POST[self::PAGE_CONFIGURATION . '_nonce']))
 			return;
-		check_admin_referer(self::PAGE_CONFIGURATION, self::PAGE_CONFIGURATION . '_nonce');
 
-		/* foreach ($_POST as $k => $v) {
-		  _log('config [' . $k . '] = [' . $v . ']');
-		  } */
+		check_admin_referer(self::PAGE_CONFIGURATION, self::PAGE_CONFIGURATION . '_nonce');
 
 		// photoFolder
 
@@ -475,8 +466,6 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 
 			if (!empty($date)) {
 				//_log('date: [' . $date . ']');
-				//$releaseDate = ereg_replace("([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})", "\\3-\\2-\\1",$date);
-				//$date2 = preg_replace("#([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})#", "\\3-\\2-\\1",$date);
 				if (!preg_match(self::$dateFormats[$this->options['dateFormat']]['pattern_in'], $date)) {
 					_log('voteOpenDate is not a valid date: [' . $date . ']');
 					$this->errors['voteOpenDate'] = __('Vote open date is not a valid date');
@@ -484,12 +473,10 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 				else {
 					$date = preg_replace(self::$dateFormats[$this->options['dateFormat']]['pattern_in'],
 						self::$dateFormats[$this->options['dateFormat']]['pattern_out'], $date);
-					//_log('date2: [' . $date . ']');
 				}
 			}
 
 			if (!isset($this->errors['voteOpenDate'])) {
-				//_log('date3: [' . $date . ']');
 				$this->options['voteOpenDate'] = $date;
 			}
 		}
@@ -500,7 +487,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 			$date = trim($_POST['voteCloseDate']);
 
 			if (!empty($date)) {
-				//_log('date: [' . $date . ']');
+
 				if (!preg_match(self::$dateFormats[$this->options['dateFormat']]['pattern_in'], $date)) {
 					_log('voteCloseDate is not a valid date: [' . $date . ']');
 					$this->errors['voteCloseDate'] = __('Vote close date is not a valid date');
@@ -508,36 +495,31 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 				else {
 					$date = preg_replace(self::$dateFormats[$this->options['dateFormat']]['pattern_in'],
 						self::$dateFormats[$this->options['dateFormat']]['pattern_out'], $date);
-					//_log('date2: [' . $date . ']');
 				}
 			}
 
 			if (!isset($this->errors['voteCloseDate'])) {
-				//_log('date3: [' . $date . ']');
 				$this->options['voteCloseDate'] = $date;
 			}
 		}
 
 		if (isset($_POST['voteFrequency'])) {
-			switch($_POST['voteFrequency'])
-			{
+			switch ($_POST['voteFrequency']) {
 				case self::VOTE_FREQ_ONEPERCONTEST:
 					$this->options['voteFrequency'] = self::VOTE_FREQ_ONEPERCONTEST;
 					break;
 				case self::VOTE_FREQ_ONEPERHOURS:
-					if( ! isset($_POST['voteFrequencyHours']) || !is_numeric($_POST['voteFrequencyHours']))
-					{
-						$this->errors['voteFrequency'] = __('Vote frequency error, number of hours must be set') ;
+					if (!isset($_POST['voteFrequencyHours']) || !is_numeric($_POST['voteFrequencyHours'])) {
+						$this->errors['voteFrequency'] = __('Vote frequency error, number of hours must be set');
 					}
-					else
-					{
+					else {
 						$this->options['voteFrequency'] = self::VOTE_FREQ_ONEPERHOURS;
-						$this->options['voteFrequencyHours'] = intval( $_POST['voteFrequencyHours']);
+						$this->options['voteFrequencyHours'] = intval($_POST['voteFrequencyHours']);
 					}
 					break;
 			}
 		}
-		
+
 		update_option(self::$options_name, $this->options);
 
 		//wp_redirect(admin_url('admin.php?page=' . $plugin_page));
@@ -548,7 +530,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 
 		global $wpdb;
 
-		_log(__METHOD__);
+		//_log(__METHOD__);
 
 		$errors = array();
 
@@ -638,15 +620,6 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 
 		if (!isset($_FILES['photo_file']))
 			return false;
-
-		/*
-		 * [name] => baum_80.jpg
-		 * [type] => image/jpeg
-		 * [tmp_name] => /tmp/phpdDMXfy
-		 * [error] => 0
-		 * [size] => 3216
-		 */
-		//_log('photo_file: ' . print_r($_FILES['photo_file'], true));
 
 		$file = & $_FILES['photo_file'];
 
@@ -745,7 +718,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 		 */
 		$image_view = wp_get_image_editor($image_file); // WP_Image_Editor
 		if (!is_wp_error($image_view)) {
-			_log('### view');
+
 			$image_view->resize($this->getOption('viewW'), $this->getOption('viewH'), false);
 			$image_view->save($dest_file_without_ext . '-view.' . $dest_file_ext);
 		}

@@ -18,13 +18,12 @@ class AefQueryOptions {
 
 	/**
 	 * @param string $fieldName
-	 * @return \AefQueryOptions
+	 * @return \AefQueryOptions fluent interface
 	 */
 	public function orderBy($fieldName, $order = self::ORDER_ASC) {
 		$this->orderBy[] = $fieldName;
 		$order = strtoupper($order);
 		$this->order[] = $order == self::ORDER_ASC ? $order : $order == self::ORDER_DESC ? $order : self::ORDER_ASC ;
-
 		return $this;
 	}
 
@@ -75,7 +74,6 @@ abstract class AefPhotosContestModelDao {
 
 	public function insert(array $data) {
 
-		_log(__METHOD__);
 		$fields = array();
 		$placeholders = array();
 		$values = array();

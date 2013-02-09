@@ -40,7 +40,8 @@ if (!class_exists('AefPhotosContest')) {
 
 		const PLUGIN = 'aef-photos-contest';
 		const DBTABLE_PREFIX = 'aef_spc';
-		const WP_MINIMAL_REQUIRED_VERSION = '3.5';
+		const REQUIRE_VERSION_WP = '3.5';
+		const REQUIRE_VERSION_PHP = '5.1.2' ;
 		const VERSION = '1.0';
 		const DBVERSION = '1.0';
 

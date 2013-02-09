@@ -17,7 +17,7 @@ class AefPhotosContestFront extends AefPhotosContest {
 
 		parent::__construct();
 
-		_log(__METHOD__);
+		//_log(__METHOD__);
 
 		add_action('wp_enqueue_scripts', array($this, 'wp_enqueue_scripts'));
 
@@ -53,7 +53,7 @@ class AefPhotosContestFront extends AefPhotosContest {
 
 	public function wp_enqueue_scripts() {
 
-		_log(__METHOD__);
+		//_log(__METHOD__);
 
 		if ($this->has_shortcode(self::SHORT_CODE_PHOTOS_CONTEST)) {
 
@@ -82,25 +82,35 @@ class AefPhotosContestFront extends AefPhotosContest {
 
 		global $aefPC;
 
-		_log(__METHOD__);
+		//_log(__METHOD__);
 
 		include self::$templates_folder . '/front-gallery-shortcode.php';
 	}
 
+	/**
+	 * Retreive voter's email from the cookie self::COOKIE_VOTER
+	 * @return string|null
+	 */
 	public function getVoterEmail() {
 
 		if (!isset($_COOKIE[self::COOKIE_VOTER]))
 			return null;
 		$c = explode('#', $_COOKIE[self::COOKIE_VOTER]);
-		_log('c: ' . print_r($c, true));
+
 		if (!isset($c[1]) || empty($c[1]))
 			return null;
+
 		$h2 = hash_hmac('SHA256', $c[0], AUTH_KEY);
 		if ($h2 == $c[1])
 			return $c[0];
+
 		return null;
 	}
 
+	/**
+	 * Store the voter's email in the cookie self::COOKIE_VOTER
+	 * @param string $email
+	 */
 	public function setVoterEmail($email) {
 		$cookie_voter = $email . '#' . hash_hmac('SHA256', $email, AUTH_KEY);
 		setcookie(self::COOKIE_VOTER, $cookie_voter, 0, '/');
@@ -110,7 +120,7 @@ class AefPhotosContestFront extends AefPhotosContest {
 
 		global $wpdb, $aefPC;
 
-		_log(__METHOD__);
+		//_log(__METHOD__);
 
 		$voterEmail = $this->getVoterEMail();
 		$voterStatus = $this->getVoterStatusByEmail($voterEmail);
@@ -131,7 +141,7 @@ class AefPhotosContestFront extends AefPhotosContest {
 
 	public function wp_ajax_vote() {
 
-		_log(__METHOD__);
+		//_log(__METHOD__);
 
 		$voterEmail = $this->getVoterEMail();
 		$voterStatus = $this->getVoterStatusByEmail($voterEmail);
@@ -165,13 +175,13 @@ class AefPhotosContestFront extends AefPhotosContest {
 	 */
 	public function init_ajax_vote_auth() {
 
-		_log(__METHOD__);
+		//_log(__METHOD__);
 
 		require_once(__DIR__ . '/auth/auth.php' );
 
-		foreach ($_REQUEST as $k => $v) {
-			_log($k . '=' . print_r($v, true));
-		}
+		//foreach ($_REQUEST as $k => $v) {
+		//	_log($k . '=' . print_r($v, true));
+		//}
 
 		$social_auth_provider = $_REQUEST['social_auth_provider'];
 		$social_auth_signature = $_REQUEST['social_auth_signature'];
@@ -229,7 +239,7 @@ class AefPhotosContestFront extends AefPhotosContest {
 
 	public function wp_ajax_vote_auth() {
 
-		_log(__METHOD__);
+		//_log(__METHOD__);
 
 		echo json_encode($this->ajax_ouput_data);
 	}

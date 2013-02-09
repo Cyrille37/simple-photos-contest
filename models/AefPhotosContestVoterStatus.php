@@ -1,5 +1,4 @@
 <?php
-
 /*
  * 
  */
@@ -31,7 +30,7 @@ class AefPhotosContestVoterStatus {
 		$queryOptions = new AefQueryOptions();
 		$queryOptions->orderBy('vote_date', AefQueryOptions::ORDER_DESC);
 		$votes = $votesDao->findByEmail($email, $queryOptions);
-_log('$votes[0][vote_date]: '.$votes[0]['vote_date']);
+
 		if (count($votes) == 0) {
 			$voteStatus->canVote = true;
 			return $voteStatus;
