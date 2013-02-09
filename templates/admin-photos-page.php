@@ -72,16 +72,14 @@ class Photos_List_Table extends WP_List_Table {
 			. '</a>';
 	}
 
-	function column_id($item)
-	{
-			$actions = array(
+	function column_id($item) {
+		$actions = array(
 			'edit' => sprintf('<a href="?page=%s&id=%s">Edit</a>', AefPhotosContestAdmin::PAGE_PHOTO_EDIT, $item['id']),
 			'delete' => sprintf('<a href="?page=%s&action=%s&id=%s">Delete</a>', $_REQUEST['page'], 'delete', $item['id']),
 		);
 		return sprintf('%1$s %2$s', $item['id'], $this->row_actions($actions));
-	
 	}
-	
+
 	function column_default($item, $column_name) {
 
 		if ($column_name == 'id') {
@@ -120,7 +118,7 @@ class Photos_List_Table extends WP_List_Table {
 
 	function prepare_items() {
 
-		global $wpdb;
+		global $wpdb, $aefPC;
 
 		$per_page = self::DEFAULT_ITEMS_PER_PAGE;
 
@@ -131,15 +129,16 @@ class Photos_List_Table extends WP_List_Table {
 
 		$current_page = $this->get_pagenum();
 
-		$dataCount = $wpdb->get_var('SELECT COUNT(*) FROM ' . AefPhotosContest::$dbtable_photos);
 
-		$data = $wpdb->get_results(
-			//'SELECT ' . implode(',', array_keys($this->columns)) . ' FROM ' . AefPhotosContest::$dbtable_photos
-			'SELECT * FROM ' . AefPhotosContest::$dbtable_photos
-			. ' ORDER BY ' . (!empty($_REQUEST['orderby']) ? $_REQUEST['orderby'] : self::DEFAULT_ORDERBY)
-			. ' ' . (!empty($_REQUEST['order']) && ( $_REQUEST['order'] == 'asc' || $_REQUEST['order'] == 'desc') ? $_REQUEST['order'] : self::DEFAULT_ORDER)
-			. ' LIMIT ' . $per_page . ' OFFSET ' . (($current_page - 1) * $per_page)
-			, ARRAY_A);
+		$dataCount = $aefPC->getDaoPhotos()->count();
+
+		$queryOptions = new AefQueryOptions();
+		$queryOptions
+			->orderBy((!empty($_REQUEST['orderby']) ? $_REQUEST['orderby'] : self::DEFAULT_ORDERBY),
+				(!empty($_REQUEST['order']) && ( $_REQUEST['order'] == 'asc' || $_REQUEST['order'] == 'desc') ? $_REQUEST['order'] : self::DEFAULT_ORDER))
+			->limit($per_page, (($current_page - 1) * $per_page));
+
+		$data = $aefPC->getDaoPhotos()->find($queryOptions);
 
 		$this->items = $data;
 		$total_items = $dataCount;
@@ -174,8 +173,9 @@ $photosListTable->prepare_items();
 		<br>
 	</div>
 
-	<h2><?php _e('Photos',
-	AefPhotosContest::PLUGIN); ?></h2>
+	<h2><?php
+_e('Photos', AefPhotosContest::PLUGIN);
+?></h2>
 
 	<form id="photos-filter" method="get">
 		<input type="hidden" name="page" value="<?php echo $_REQUEST['page'] ?>" />

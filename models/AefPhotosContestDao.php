@@ -15,6 +15,8 @@ class AefQueryOptions {
 
 	public $orderBy = array();
 	public $order = array();
+	public $limit;
+	public $limit_offset;
 
 	/**
 	 * @param string $fieldName
@@ -24,6 +26,18 @@ class AefQueryOptions {
 		$this->orderBy[] = $fieldName;
 		$order = strtoupper($order);
 		$this->order[] = $order == self::ORDER_ASC ? $order : $order == self::ORDER_DESC ? $order : self::ORDER_ASC ;
+		return $this;
+	}
+
+	/**
+	 * 
+	 * @param int $limit
+	 * @param int $offset
+	 * @return \AefQueryOptions fluent interface
+	 */
+	public function limit($limit, $offset = 0) {
+		$this->limit = intval($limit);
+		$this->limit_offset = intval($offset);
 		return $this;
 	}
 
@@ -48,6 +62,60 @@ abstract class AefPhotosContestModelDao {
 	}
 
 	/**
+	 * @return int
+	 */
+	public function count() {
+		$count = $this->wpdb->get_var('SELECT COUNT(*) FROM ' . $this->getTableName());
+		return $count;
+	}
+
+	/**
+	 * 
+	 * @param int $id
+	 * @return array
+	 */
+	public function getById($id) {
+
+		$row = $this->wpdb->get_row($this->wpdb->prepare('SELECT * FROM ' . $this->getTableName() . ' WHERE id = %d', $id),
+			ARRAY_A);
+		return $row;
+	}
+
+	protected function applyQueryOptions(&$sql, AefQueryOptions $queryOptions) {
+
+		if ($queryOptions == null)
+			return;
+
+		if (($orderCount = count($queryOptions->order)) > 0) {
+			$sql .= ' ORDER BY';
+			for ($i = 0; $i < $orderCount; $i++) {
+				$sql .= ' ' . $this->wpdb->escape($queryOptions->orderBy[$i]) . ' ' . $queryOptions->order[$i];
+			}
+		}
+
+		if (!empty($queryOptions->limit)) {
+			$sql.=' LIMIT ' . intval($queryOptions->limit);
+			if (!empty($queryOptions->limit_offset)) {
+				$sql.=' OFFSET ' . intval($queryOptions->limit_offset);
+			}
+		}
+	}
+
+	/**
+	 * @param AefQueryOptions $queryOptions
+	 * @return array
+	 */
+	public function find(AefQueryOptions $queryOptions = null) {
+
+		$sql = 'SELECT * FROM ' . $this->getTableName();
+
+		$this->applyQueryOptions($sql, $queryOptions);
+
+		$rows = $this->wpdb->get_results($sql, ARRAY_A);
+		return $rows;
+	}
+
+	/**
 	 * 
 	 * @param string $fieldName
 	 * @param mixed $value
@@ -62,12 +130,8 @@ abstract class AefPhotosContestModelDao {
 
 		$sql = 'SELECT * FROM ' . $this->getTableName() . ' WHERE ' . $fieldName . '=%s';
 
-		if ($queryOptions != null && ($orderCount = count($queryOptions->order)) > 0) {
-			$sql .= ' ORDER BY';
-			for ($i = 0; $i < $orderCount; $i++) {
-				$sql .= ' ' . $this->wpdb->escape($queryOptions->orderBy[$i]) . ' ' . $queryOptions->order[$i];
-			}
-		}
+		$this->applyQueryOptions($sql, $queryOptions);
+
 		$rows = $this->wpdb->get_results($this->wpdb->prepare($sql, $values), ARRAY_A);
 		return $rows;
 	}

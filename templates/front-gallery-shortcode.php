@@ -109,11 +109,8 @@
 		<div class="ad-thumbs">
 			<ul class="ad-thumb-list">
 				<?php
-				global $wpdb;
-				$sql = 'SELECT * FROM ' . AefPhotosContest::$dbtable_photos . ' order by id asc ';
-				$rows = $wpdb->get_results($sql, ARRAY_A);
 				$gallery_idx = 0;
-				foreach ($rows as $row) {
+				foreach ($photos as $row) {
 					?>
 					<li>
 						<a href="<?php echo $this->getPhotoUrl($row, 'view'); ?>" >

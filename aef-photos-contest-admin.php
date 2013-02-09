@@ -73,7 +73,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 		// dbDelta génère des erreurs et ne fait pas le boulot de DIFF quand il y a des changements ...
 		// Du coup j'ajoute "IF NOT EXISTS" ...
 
-		$sql = 'CREATE TABLE IF NOT EXISTS `' . self::$dbtable_photos . '` (
+		$sql = 'CREATE TABLE IF NOT EXISTS `' . AefPhotosContestPhotos::getTableName() . '` (
 				`id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
 				`photo_name` VARCHAR(255) NOT NULL,
 				`photo_mime_type` VARCHAR(50) NOT NULL,
@@ -90,7 +90,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 
 		dbDelta($sql);
 
-		$sql = 'CREATE TABLE IF NOT EXISTS `' . self::$dbtable_votes . '` (
+		$sql = 'CREATE TABLE IF NOT EXISTS `' . AefPhotosContestVotes::getTableName() . '` (
 				`id` int(11) NOT NULL AUTO_INCREMENT,
 				`voter_name` varchar(255) NOT NULL,
 				`voter_email` varchar(255) NOT NULL,

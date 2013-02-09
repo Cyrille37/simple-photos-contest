@@ -80,9 +80,13 @@ class AefPhotosContestFront extends AefPhotosContest {
 	 */
 	public function wp_shortcode_aefPhotosContest($attrs) {
 
-		global $aefPC;
+		global $aefPC, $wpdb;
 
 		//_log(__METHOD__);
+
+		$qOptions = new AefQueryOptions();
+		$qOptions->orderBy('id', 'ASC');
+		$photos = $this->daoPhotos->find($qOptions);
 
 		include self::$templates_folder . '/front-gallery-shortcode.php';
 	}
@@ -118,7 +122,7 @@ class AefPhotosContestFront extends AefPhotosContest {
 
 	public function wp_ajax_vote_init() {
 
-		global $wpdb, $aefPC;
+		global $aefPC;
 
 		//_log(__METHOD__);
 
@@ -127,13 +131,13 @@ class AefPhotosContestFront extends AefPhotosContest {
 
 		if (!$voterStatus->canVote && !empty($voterStatus->lastVotedPhotoId)) {
 			$photo_id = $voterStatus->lastVotedPhotoId;
-			$photo = $wpdb->get_row($wpdb->prepare('SELECT * FROM ' . self::$dbtable_photos . ' WHERE id = %d', $photo_id),
-				ARRAY_A);
 		}
 		else if (isset($_REQUEST['photo_id'])) {
 			$photo_id = $_REQUEST['photo_id'];
-			$photo = $wpdb->get_row($wpdb->prepare('SELECT * FROM ' . self::$dbtable_photos . ' WHERE id = %d', $photo_id),
-				ARRAY_A);
+		}
+
+		if (!empty($photo_id)) {
+			$photo = $this->daoPhotos->getById($photo_id);
 		}
 
 		include( self::$templates_folder . 'front-vote-popup.php');

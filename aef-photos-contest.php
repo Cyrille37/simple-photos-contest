@@ -35,6 +35,7 @@ if (!defined('ABSPATH')) {
 if (!class_exists('AefPhotosContest')) {
 
 	require_once( __DIR__ . '/models/AefPhotosContestVotes.php');
+	require_once( __DIR__ . '/models/AefPhotosContestPhotos.php');
 
 	class AefPhotosContest {
 
@@ -57,7 +58,6 @@ if (!class_exists('AefPhotosContest')) {
 		public static $adminConfigPageName;
 		public static $options_name;
 		public static $dbtable_photos;
-		public static $dbtable_votes;
 
 		/**
 		 * @var array Plugin Options
@@ -70,6 +70,11 @@ if (!class_exists('AefPhotosContest')) {
 		 * @var AefPhotosContestVotes
 		 */
 		protected $daoVotes;
+		/**
+		 *
+		 * @var AefPhotosContestPhotos
+		 */
+		protected $daoPhotos;
 
 		/**
 		 * Several date formats
@@ -132,12 +137,12 @@ if (!class_exists('AefPhotosContest')) {
 			self::$templates_folder = dirname(__FILE__) . '/templates/';
 
 			self::$dbtable_photos = $wpdb->prefix . self::DBTABLE_PREFIX . '_photos';
-			self::$dbtable_votes = $wpdb->prefix . self::DBTABLE_PREFIX . '_votes';
 
 			self::$options_name = self::PLUGIN;
 			$this->loadOptions();
 
 			$this->daoVotes = new AefPhotosContestVotes($wpdb);
+			$this->daoPhotos = new AefPhotosContestPhotos($wpdb);
 		}
 
 		/**
@@ -297,6 +302,14 @@ if (!class_exists('AefPhotosContest')) {
 		public function getDaoVotes()
 		{
 			return $this->daoVotes ;
+		}
+		
+		/**
+		 * @return AefPhotosContestPhotos
+		 */
+		public function getDaoPhotos()
+		{
+			return $this->daoPhotos ;
 		}
 
 		public function getVoterStatusByEmail($email )
