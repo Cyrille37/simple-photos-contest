@@ -183,14 +183,16 @@ class AefPhotosContestFront extends AefPhotosContest {
 		$this->ajax_ouput_data = array();
 
 		switch ($social_auth_provider) {
+
 			case 'facebook':
-				if (!social_auth_verify_signature($_REQUEST['social_auth_access_token'], $social_auth_signature)) {
+
+				if (!aef_auth_verify_signature($_REQUEST['social_auth_access_token'], $social_auth_signature)) {
 
 					$this->ajax_ouput_data['command'] = 'error';
 					$this->ajax_ouput_data['message'] = 'Failed signature verification';
 				}
 				else {
-					$fb_json = json_decode(sc_curl_get_contents("https://graph.facebook.com/me?access_token=" . $_REQUEST['social_auth_access_token']));
+					$fb_json = json_decode(aef_curl_get_contents("https://graph.facebook.com/me?access_token=" . $_REQUEST['social_auth_access_token']));
 
 					//_log('fb: ' . print_r($fb_json, true));
 					// stdClass Object(

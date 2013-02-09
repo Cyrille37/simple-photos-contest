@@ -14,11 +14,11 @@ if(isset($_GET['code'])) {
 		// $access_token is set by parse_str()
 		$access_token = null ;
 		parse_str(
-			sc_curl_get_contents("https://graph.facebook.com/oauth/access_token?" .
+			aef_curl_get_contents("https://graph.facebook.com/oauth/access_token?" .
 			'client_id=' . $client_id . '&redirect_uri=' . urlencode(AefPhotosContest::$plugin_url . '/auth/facebook/callback.php') .
 			'&client_secret=' .  $secret_key .
 			'&code=' . urlencode($code)));
-		$signature = social_connect_generate_signature($access_token);  
+		$signature = aef_auth_generate_signature($access_token);  
 	?>
 	<html>
 	<head>
