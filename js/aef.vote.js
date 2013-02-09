@@ -30,8 +30,6 @@ window.aef_vote_auth_callback = function(auth_callback_result) {
 		AefPC.ajaxurl,
 		params,
 		function( jsonString ) {
-
-			console.dir( jsonString );
 			var res = JSON.parse(jsonString);
 			if( res.command == 'auth_ok' )
 			{

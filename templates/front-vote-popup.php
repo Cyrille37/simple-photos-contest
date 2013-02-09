@@ -91,7 +91,6 @@
 					AefPC.ajaxurl,
 					params,
 					function( jsonString ) {
-						console.dir( jsonString );
 						var res = JSON.parse(jsonString);
 						if( res.command == 'vote_ok' )
 						{
