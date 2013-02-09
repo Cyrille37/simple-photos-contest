@@ -70,9 +70,9 @@ function rebuildThumbs_callback()
 				</th>
 				<td>
 					<label>
-						<input type="radio" name="voteFrequency" onchange="enableVoteFrequencyHours()"
+						<input type="radio" name="<?php echo AefPhotosContest::OPTION_VOTEFREQUENCY ?>" onchange="enableVoteFrequencyHours()"
 									 value="<?php echo AefPhotosContest::VOTE_FREQ_ONEPERCONTEST ?>"
-									 <?php checked( $aefPC->getOption('voteFrequency'), AefPhotosContest::VOTE_FREQ_ONEPERCONTEST ); ?>
+									 <?php checked( $aefPC->getOption(AefPhotosContest::OPTION_VOTEFREQUENCY), AefPhotosContest::VOTE_FREQ_ONEPERCONTEST ); ?>
 									 />
 						<span class="setting-description">
 							<?php _e('only one vote by contest.', AefPhotosContest::PLUGIN) ?>
@@ -80,9 +80,9 @@ function rebuildThumbs_callback()
 					</label>
 					<br/>
 					<label>
-						<input type="radio" name="voteFrequency" onchange="enableVoteFrequencyHours()"
+						<input type="radio" name="<?php echo AefPhotosContest::OPTION_VOTEFREQUENCY ?>" onchange="enableVoteFrequencyHours()"
 									 value="<?php echo AefPhotosContest::VOTE_FREQ_ONEPERHOURS ?>"
-									<?php checked( $aefPC->getOption('voteFrequency'), AefPhotosContest::VOTE_FREQ_ONEPERHOURS ); ?>
+									<?php checked( $aefPC->getOption(AefPhotosContest::OPTION_VOTEFREQUENCY), AefPhotosContest::VOTE_FREQ_ONEPERHOURS ); ?>
 									 />
 						<span class="setting-description">
 							<?php _e('only one vote by a given time.', AefPhotosContest::PLUGIN) ?>
@@ -90,7 +90,7 @@ function rebuildThumbs_callback()
 					</label>
 					<br/>
 					<label id="setting-voteFrequencyHours">
-						<input type="text" size="3" value="<?php echo $aefPC->getOption('voteFrequencyHours'); ?>" name="voteFrequencyHours" />
+						<input type="text" size="3" name="<?php echo AefPhotosContest::OPTION_VOTEFREQUENCYHOURS ?>" value="<?php echo $aefPC->getOption(AefPhotosContest::OPTION_VOTEFREQUENCYHOURS); ?>" />
 						<span class="setting-description">
 							<?php _e('How many hours between votes, when vote frequency is limited by hours.', AefPhotosContest::PLUGIN) ?>
 						</span>
