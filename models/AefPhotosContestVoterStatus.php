@@ -18,19 +18,24 @@ class AefPhotosContestVoterStatus {
 	 */
 	public static function getVoterStatus(AefPhotosContest $aefPC, $email) {
 
-		$votesDao = $aefPC->getDaoVotes();
 		$voteStatus = new AefPhotosContestVoterStatus();
+
+		if( empty($email) )
+		{
+			$voteStatus->canVote = true;
+			return $voteStatus ;
+		}
+
+		$votesDao = $aefPC->getDaoVotes();
 
 		$queryOptions = new AefQueryOptions();
 		$queryOptions->orderBy('vote_date', AefQueryOptions::ORDER_DESC);
-
 		$votes = $votesDao->findByEmail($email, $queryOptions);
-
+_log('$votes[0][vote_date]: '.$votes[0]['vote_date']);
 		if (count($votes) == 0) {
 			$voteStatus->canVote = true;
 			return $voteStatus;
 		}
-
 
 		switch ($aefPC->getOption(AefPhotosContest::OPTION_VOTEFREQUENCY)) {
 

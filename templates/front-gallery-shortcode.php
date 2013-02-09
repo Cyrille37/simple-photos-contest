@@ -13,22 +13,6 @@
 
 	jQuery(document).ready( function() {
 
-		jQuery( "#aef-vote-dialog" ).dialog({
-			dialogClass : 'wp-dialog',
-			modal: true, autoOpen: false, draggable: false ,
-			position: { my: "center", at: "center", of: window },
-			closeOnEscape : true,
-			open: aef_vote_dialog_onOpen,
-			buttons: [
-				{ text: "Fermer", click: function() { jQuery( this ).dialog( "close" ); } },
-				{ text: "testVote", click: function() { initVote(); } }
-			]
-		});
-
-		jQuery( "#aef-vote-opener" ).click(function() {
-			jQuery( "#aef-vote-dialog" ).dialog('open');
-		});
-
 		gallery = jQuery('.ad-gallery').adGallery(
 		{
 			loader_image: '<?php echo AefPhotosContest::$javascript_url; ?>AD_Gallery-1.2.7/loader.gif',
@@ -40,15 +24,10 @@
 					console.log('>>> callback init().');
 
 					jQuery('#gallery .ad-controls').append(jQuery("#aef-vote-button"));
-				},
-				afterImageVisible: function() {
-					console.log('>>> callback afterImageVisible(). this.current_index='+this.current_index);
-					console.dir( this );
-
 				}
 			}
 		});
-		
+
 		jQuery('.ad-gallery').on("click", ".ad-image", function() {
 
 			var href = jQuery(this).find("img").attr("src");
@@ -61,12 +40,12 @@
 				titleShow: true,
 				titlePosition  : 'inside',
 				titleFormat		: function (title, currentArray, currentIndex, currentOpts) {
-					var title = jQuery('.image'+gallery[0].current_index).attr('title') ;
-					var alt = jQuery('.image'+gallery[0].current_index).attr('alt') ;
+					var title = jQuery('#gallery .image'+gallery[0].current_index).attr('title') ;
+					var alt = jQuery('#gallery .image'+gallery[0].current_index).attr('alt') ;
 					return '<div id="fancybox-title" class="fancybox-title-over" style="display: block; margin-left: 10px; width: 100%; bottom: 10px;"><div id="fancybox-title-over">'
-							+'' + (title && title.length ?  title  : '' )  
-							+' ' + (alt && alt.length ?  alt : '' ) 
-							+'</div></div>';
+						+'' + (title && title.length ?  title  : '' )  
+						+' ' + (alt && alt.length ?  alt : '' ) 
+						+'</div></div>';
 				},
 				//openEffect : 'elastic',
 				//openSpeed  : 150,
@@ -75,18 +54,18 @@
 				//closeSpeed  : 150,
 				helpers : {
 					overlay : null
-				},
-				afterLoad : function() {
-					this.inner.prepend( '<h1>1. My custom title</h1>' );
-					this.content = '<h1>2. My custom title</h1>' + this.content.html();
 				}
 			});
 		});
 
+		jQuery("#aef-vote-opener").click(openVoteBox);
 
 	});
-
-
+	
+	function getCurrentPhotoId()
+	{
+		return jQuery( '#gallery .image'+gallery[0].current_index).attr('data-photo_id');
+	}
 
 </script>
 <style type="text/css">
@@ -141,12 +120,12 @@
 					?>
 					<li>
 						<a href="<?php echo $this->getPhotoUrl($row, 'view'); ?>" >
-							<img src="<?php
-				echo $this->getPhotoUrl($row, 'thumb');
-					?>"
+							<img src="<?php echo $this->getPhotoUrl($row, 'thumb'); ?>"
 									 class="image<?php echo $gallery_idx++; ?>"
 									 alt="<?php echo htmlspecialchars($row['photographer_name']); ?>"
-									 title="<?php echo htmlspecialchars($row['photo_name']); ?>">
+									 title="<?php echo htmlspecialchars($row['photo_name']); ?>"
+									 data-photo_id="<?php echo htmlspecialchars($row['id']); ?>"
+									 />
 						</a>
 					</li>
 					<?php
@@ -158,31 +137,5 @@
 </div>
 
 <div id="aef-vote-button">
-	<button id="aef-vote-opener">vote</button>
-</div>
-
-<div id="aef-vote-dialog" title="Votre vote">
-	<div id="aef-vote-loader">
-		<img src="<?php echo AefPhotosContest::$images_url . 'wpspin-2x.gif' ?>" />
-	</div>
-	<div id="social-auth-form">
-		<form title="Social Authentification">
-			<div style="margin-bottom: 3px;"><label><?php
-				_e('For voting you have to identify your self. You can use your preferred social network', AefPhotosContest::PLUGIN);
-				?>:</label></div>
-			<a href="javascript:void(0);" title="Facebook" class="social_auth_facebook"><img alt="Facebook" src="<?php echo AefPhotosContest::$images_url . 'facebook_32.png' ?>" /></a>
-			<a href="javascript:void(0);" title="Google" class="social_auth_google"><img alt="Google" src="<?php echo AefPhotosContest::$images_url . 'google_32.png' ?>" /></a>
-			<a href="javascript:void(0);" title="Yahoo" class="social_auth_yahoo"><img alt="Yahoo" src="<?php echo AefPhotosContest::$images_url . 'yahoo_32.png' ?>" /></a>
-			<input type="hidden" class="social_auth_facebook_client_id" name="client_id" value="<?php echo $aefPC->getOption('facebookClientId'); ?>" />
-			<input type="hidden" class="social_auth_facebook" name="redirect_uri" value="<?php echo urlencode(AefPhotosContest::$plugin_url . '/auth/facebook/callback.php'); ?>" />
-			<input type="hidden" class="social_auth_google" name="redirect_uri" value="<?php echo( AefPhotosContest::$plugin_url . '/auth/google/connect.php' ); ?>" />
-			<input type="hidden" class="social_auth_yahoo" name="redirect_uri" value="<?php echo( AefPhotosContest::$plugin_url . '/auth/yahoo/connect.php' ); ?>" />
-		</form>
-	</div>
-	<div id="vote-form">
-		<p><?php _e('You are identified as ') ?><span class="aef-vote-voter-email"></span></p>
-		<p><?php _e('You can vote for this picture') ?>
-		</p>
-	</div>
-
+	<span id="aef-vote-opener" >voter</span>
 </div>

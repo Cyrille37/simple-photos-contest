@@ -13,9 +13,11 @@ class AefPhotosContestFront extends AefPhotosContest {
 
 	public function __construct() {
 
+		global $wpdb;
+
 		parent::__construct();
 
-		_log(__METHOD__ . ' session_id():' . (session_id() ? session_id() : 'null'));
+		_log(__METHOD__);
 
 		add_action('wp_enqueue_scripts', array($this, 'wp_enqueue_scripts'));
 
@@ -35,6 +37,7 @@ class AefPhotosContestFront extends AefPhotosContest {
 			add_action('send_headers', 'wp_send_headers_ajax');
 
 			add_action('wp_ajax_nopriv_vote_init', array($this, 'wp_ajax_vote_init'));
+			add_action('wp_ajax_nopriv_vote', array($this, 'wp_ajax_vote'));
 
 			add_action('init_ajax_nopriv_vote_auth', array($this, 'init_ajax_vote_auth'));
 			add_action('wp_ajax_nopriv_vote_auth', array($this, 'wp_ajax_vote_auth'));
@@ -55,11 +58,6 @@ class AefPhotosContestFront extends AefPhotosContest {
 		if ($this->has_shortcode(self::SHORT_CODE_PHOTOS_CONTEST)) {
 
 			wp_enqueue_script('jquery');
-			// using jquery-ui
-			wp_enqueue_style('wp-jquery-ui-dialog');
-			//wp_enqueue_script('jquery-ui-core');
-			//wp_enqueue_script('jquery-ui-position');
-			wp_enqueue_script('jquery-ui-dialog');
 			// using AD Gallery
 			wp_enqueue_style('ad-gallery-css', self::$javascript_url . '/AD_Gallery-1.2.7/jquery.ad-gallery.css');
 			wp_enqueue_script('ad-gallery', self::$javascript_url . '/AD_Gallery-1.2.7/jquery.ad-gallery.min.js');
@@ -67,13 +65,11 @@ class AefPhotosContestFront extends AefPhotosContest {
 			wp_enqueue_style('fancybox-css', self::$javascript_url . '/fancybox-1.3.4/jquery.fancybox-1.3.4.css');
 			wp_enqueue_script('fancybox', self::$javascript_url . '/fancybox-1.3.4/jquery.fancybox-1.3.4.pack.js');
 
-			//wp_enqueue_style('thickbox');
-			//wp_enqueue_script('thickbox');
 			// embed the javascript file that makes the AJAX request
 			wp_enqueue_script('aef-ajax-vote', self::$javascript_url . '/aef.vote.js', array('jquery'));
 			// declare the URL to the file that handles the AJAX request (wp-admin/admin-ajax.php)
 			//wp_localize_script('my-ajax-request', 'AefPC', array('ajaxurl' => admin_url('admin-ajax.php')));
-			wp_localize_script('aef-ajax-vote', 'AefPC', array('ajaxurl' => self::$plugin_url . '/aef-wp-front-ajax.php'));
+			wp_localize_script('aef-ajax-vote', 'AefPC', array('ajaxurl' => self::$plugin_ajax_url));
 		}
 	}
 
@@ -89,7 +85,6 @@ class AefPhotosContestFront extends AefPhotosContest {
 		_log(__METHOD__);
 
 		include self::$templates_folder . '/front-gallery-shortcode.php';
-		//return ;
 	}
 
 	public function getVoterEmail() {
@@ -112,27 +107,64 @@ class AefPhotosContestFront extends AefPhotosContest {
 	}
 
 	public function wp_ajax_vote_init() {
+
+		global $wpdb, $aefPC;
+
 		_log(__METHOD__);
 
-		$out = array();
+		$voterEmail = $this->getVoterEMail();
+		$voterStatus = $this->getVoterStatusByEmail($voterEmail);
+
+		if (!$voterStatus->canVote && !empty($voterStatus->lastVotedPhotoId)) {
+			$photo_id = $voterStatus->lastVotedPhotoId;
+			$photo = $wpdb->get_row($wpdb->prepare('SELECT * FROM ' . self::$dbtable_photos . ' WHERE id = %d', $photo_id),
+				ARRAY_A);
+		}
+		else if (isset($_REQUEST['photo_id'])) {
+			$photo_id = $_REQUEST['photo_id'];
+			$photo = $wpdb->get_row($wpdb->prepare('SELECT * FROM ' . self::$dbtable_photos . ' WHERE id = %d', $photo_id),
+				ARRAY_A);
+		}
+
+		include( self::$templates_folder . 'front-vote-popup.php');
+	}
+
+	public function wp_ajax_vote() {
+
+		_log(__METHOD__);
 
 		$voterEmail = $this->getVoterEMail();
-		if (empty($voterEmail)) {
-			$out['command'] = 'show_auth_buttons';
+		$voterStatus = $this->getVoterStatusByEmail($voterEmail);
+
+		$this->ajax_ouput_data = array();
+
+		if ($voterStatus->canVote) {
+			if (isset($_REQUEST['photo_id']) && ($photoId = intval($_REQUEST['photo_id'])) > 0) {
+
+				$votes = $this->getDaoVotes();
+				$votes->addVote($voterEmail, $photoId);
+				$this->ajax_ouput_data['command'] = 'vote_ok';
+			}
+			else {
+				$this->ajax_ouput_data['command'] = 'error';
+				$this->ajax_ouput_data['message'] = 'bad vote request';
+			}
 		}
 		else {
-
-			$out = array(
-				'command' => 'show_vote',
-				'voter_email' => $voterEmail,
-			);
+			$this->ajax_ouput_data['command'] = 'error';
+			$this->ajax_ouput_data['message'] = 'you are not allowed to vote';
 		}
-		echo json_encode($out);
+
+		echo json_encode($this->ajax_ouput_data);
 	}
 
 	protected $ajax_ouput_data;
 
+	/**
+	 * Must be at INIT time because it set a COOKIE.
+	 */
 	public function init_ajax_vote_auth() {
+
 		_log(__METHOD__);
 
 		require_once(__DIR__ . '/auth/auth.php' );
@@ -194,7 +226,9 @@ class AefPhotosContestFront extends AefPhotosContest {
 	}
 
 	public function wp_ajax_vote_auth() {
+
 		_log(__METHOD__);
+
 		echo json_encode($this->ajax_ouput_data);
 	}
 

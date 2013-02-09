@@ -1,7 +1,7 @@
 <?php
 require_once(__DIR__ . '/../auth.php' );
 require_once( __DIR__ . '/../../aef-photos-contest.php' );
-require_once( __DIR__ . '/facebook.php' );
+//require_once( __DIR__ . '/facebook.php' );
 
 $aefPC = new AefPhotosContest();
 
@@ -24,7 +24,7 @@ if(isset($_GET['code'])) {
 	<head>
 	<script>
 	function init() {
-		window.opener.aef_social_auth({
+		window.opener.aef_vote_auth_callback({
 			'social_auth_provider' : 'facebook',
 			'social_auth_signature' : '<?php echo $signature ?>',
 			'social_auth_access_token' : '<?php echo $access_token ?>'});

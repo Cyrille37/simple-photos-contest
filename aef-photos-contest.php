@@ -34,6 +34,8 @@ if (!defined('ABSPATH')) {
 
 if (!class_exists('AefPhotosContest')) {
 
+	require_once( __DIR__ . '/models/AefPhotosContestVotes.php');
+
 	class AefPhotosContest {
 
 		const PLUGIN = 'aef-photos-contest';
@@ -47,6 +49,7 @@ if (!class_exists('AefPhotosContest')) {
 		public static $plugin_file;
 		public static $templates_folder;
 		public static $plugin_url;
+		public static $plugin_ajax_url;
 		public static $images_url;
 		public static $styles_url;
 		public static $javascript_url;
@@ -61,6 +64,11 @@ if (!class_exists('AefPhotosContest')) {
 		protected $options;
 		protected $notices = array();
 		protected $errors = array();
+
+		/**
+		 * @var AefPhotosContestVotes
+		 */
+		protected $daoVotes;
 
 		/**
 		 * Several date formats
@@ -89,13 +97,22 @@ if (!class_exists('AefPhotosContest')) {
 				'pattern_display' => '\\1-\\2-\\3'
 			),
 		);
+		
+		const VOTE_FREQ_ONEPERCONTEST = 'onePerContest' ;
+		const VOTE_FREQ_ONEPERHOURS = 'onePerHours' ;
+
+		const OPTION_VOTEFREQUENCY = 'voteFrequency' ;
+		const OPTION_VOTEFREQUENCYHOURS = 'voteFrequencyHours' ;
+
 		protected static $options_default = array(
 			'photoFolder' => self::PLUGIN,
 			'dateFormat' => 1,
 			'thumbW' => 150,
 			'thumbH' => 150,
 			'viewW' => 1920,
-			'viewH' => 1440
+			'viewH' => 1440,
+			self::OPTION_VOTEFREQUENCY => self::VOTE_FREQ_ONEPERCONTEST,
+			self::OPTION_VOTEFREQUENCYHOURS => 24
 		);
 
 		public function __construct() {
@@ -104,7 +121,8 @@ if (!class_exists('AefPhotosContest')) {
 
 			self::$plugin_name = __('Concours Photos', self::PLUGIN);
 			self::$plugin_file = basename(dirname(__FILE__)) . '/' . basename(__FILE__);
-			self::$plugin_url = plugins_url(self::PLUGIN);
+			self::$plugin_url = plugins_url(self::PLUGIN) . '/';
+			self::$plugin_ajax_url = self::$plugin_url . 'aef-wp-front-ajax.php';
 			self::$images_url = self::$plugin_url . '/images/';
 			self::$styles_url = self::$plugin_url . '/css/';
 			self::$javascript_url = self::$plugin_url . '/js/';
@@ -117,6 +135,8 @@ if (!class_exists('AefPhotosContest')) {
 
 			self::$options_name = self::PLUGIN;
 			$this->loadOptions();
+
+			$this->daoVotes = new AefPhotosContestVotes($wpdb);
 		}
 
 		/**
@@ -155,7 +175,7 @@ if (!class_exists('AefPhotosContest')) {
 			}
 			return false;
 		}
-		
+
 		/**
 		 * Check the current post for the existence of a short code.
 		 * @param string $shortcode the shortcode
@@ -247,7 +267,7 @@ if (!class_exists('AefPhotosContest')) {
 			if ($vcd == '')
 				return false;
 
-			$now = date('Y-m-d');
+			$now = date("Y-m-d");
 			if (strcmp($now, $vcd) > 0) {
 				return true;
 			}
@@ -263,11 +283,25 @@ if (!class_exists('AefPhotosContest')) {
 			if ($vcd == '')
 				return false;
 
-			$now = date('Y-m-d');
+			$now = date("Y-m-d");
 			if (strcmp($now, $vod) >= 0 && strcmp($now, $vcd) <= 0) {
 				return true;
 			}
 			return false;
+		}
+
+		/**
+		 * @return AefPhotosContestVotes
+		 */
+		public function getDaoVotes()
+		{
+			return $this->daoVotes ;
+		}
+
+		public function getVoterStatusByEmail($email )
+		{
+			require_once(__DIR__.'/models/AefPhotosContestVoterStatus.php');
+			return AefPhotosContestVoterStatus::getVoterStatus($this, $email);
 		}
 
 		public function formatDate($date) {
