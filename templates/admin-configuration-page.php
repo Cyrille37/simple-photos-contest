@@ -9,24 +9,30 @@
 <style type="text/css">
 </style>
 <script type="text/javascript">
-jQuery(document).ready( function() {
+
+	jQuery(document).ready( function() {
 		jQuery('#rebuildThumbsSpin').hide();
     
 	});
-function rebuildThumbs()
-{
-	var o = jQuery('#rebuildThumbsSpin');
-	//var s = o.attr("src");
-	//o.css('display', ''); 
-	//o.attr("src", s+"?"+new Date().getTime());
-	o.show();
-	setTimeout(rebuildThumbs_callback, 4);
 
-}
-function rebuildThumbs_callback()
-{
-	window.location='admin.php?page=<?php echo AefPhotosContestAdmin::PAGE_CONFIGURATION;?>&action=rebuildthumbs';	
-}
+	function rebuildThumbs()
+	{
+		jQuery('#rebuildThumbsSpin').show();
+		setTimeout(function () {
+			window.location='admin.php?page=<?php echo AefPhotosContestAdmin::PAGE_CONFIGURATION; ?>&action=rebuildthumbs';	
+		}, 2);
+		
+	}
+
+	function buildFakePhotos()
+	{
+		jQuery('#rebuildThumbsSpin').show();
+		setTimeout(function () {
+			window.location='admin.php?page=<?php echo AefPhotosContestAdmin::PAGE_CONFIGURATION; ?>&action=buildFakePhotos';	
+		}, 2);
+		
+	}
+
 </script>
 <div class="wrap">
 	<div id="icon-options-general" class="icon32">
@@ -95,7 +101,7 @@ function rebuildThumbs_callback()
 							<?php _e('How many hours between votes, when vote frequency is limited by hours.', AefPhotosContest::PLUGIN) ?>
 						</span>
 					</label>
-					<script>
+					<script type="text/javascript">
 						function enableVoteFrequencyHours()
 						{
 							var val = jQuery('input[name=voteFrequency]:checked', '#configuration').val() ;
@@ -147,6 +153,9 @@ function rebuildThumbs_callback()
 				<td>
 					<input type="button" onclick="rebuildThumbs();" value="<?php _e('Rebuild thumbs') ?>"/>
 					<img id="rebuildThumbsSpin" src="<?php echo plugins_url(AefPhotosContest::PLUGIN);?>/images/wpspin-2x.gif" style="vertical-align: middle"/>
+
+					<br/>
+					<input type="button" onclick="buildFakePhotos();" value="<?php _e('Build fake photos') ?>"/>
 				</td>
 			</tr>
 		</table>

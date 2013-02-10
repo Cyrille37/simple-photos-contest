@@ -144,9 +144,14 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 				case self::PAGE_CONFIGURATION :
 
 					if (isset($_GET['action'])) {
+
 						switch ($_GET['action']) {
+
 							case 'rebuildthumbs':
 								$this->photos_build_thumbs();
+								break;
+							case 'buildFakePhotos':
+								$this->photos_build_fake();
 								break;
 							default;
 								$this->errors['action'] = __('Unknow action');
@@ -739,6 +744,77 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 		$this->notices[] = __('All photos thumbs were rebuilt');
 	}
 
+	public function photos_build_fake() {
+		_log(__METHOD__);
+
+		$nbPhotos = 20;
+		$nowDate = date("Y-m-d H:i:s");
+
+		$originalFiles = array(
+			$this->getPhotoFolderPath() . '/000_fake01.jpg',
+			$this->getPhotoFolderPath() . '/000_fake02.jpg',
+			$this->getPhotoFolderPath() . '/000_fake03.jpg',
+			$this->getPhotoFolderPath() . '/000_fake04.jpg',
+			$this->getPhotoFolderPath() . '/000_fake05.jpg'
+		);
+
+		$cptPhotos = 0;
+		for ($i = 0; $i < $nbPhotos; $i++) {
+
+			$originalFile = $originalFiles[($i % count($originalFiles))];
+
+			list($w, $h, $type, $attr) = getimagesize($originalFile);
+			if (!isset($w)) {
+				$this->errors['photos_build_fake'] = 'Failed to getimagesize';
+				return;
+			}
+
+			$photo = array(
+				'photo_name' => 'generated_' . $nowDate . '_' . $i,
+				'photographer_name' => 'photographer_' . $i,
+				'photographer_email' => 'photographer_' . $i . '@internet.com',
+				'photo_mime_type' => 'image/jpeg',
+				'photo_user_filename' => 'generated_' . $nowDate . '_' . $i,
+				'created_at' => $nowDate
+			);
+
+			$this->daoPhotos->insert($photo);
+			$photoId = $this->daoPhotos->getLastInsertId();
+			$photo['id'] = $photoId;
+
+			$imFilename = $this->getPhotoPath($photo);
+
+			$im = imagecreatefromjpeg($originalFile);
+			if ($im === false) {
+				$this->errors['photos_build_fake'] = 'Failed to create image';
+				return;
+			}
+			$white = imagecolorallocate($im, 255, 255, 255);
+			$grey = imagecolorallocate($im, 100, 100, 100);
+			$black = imagecolorallocate($im, 0, 0, 0);
+
+			$y = 0;
+			$x = 0;
+			do {
+				imagestring($im, 5, $x, $y, 'photoId ' . $photoId, $white);
+				$y+=20;
+				$x+=20;
+			}
+			while ($y < $h && $x < $w);
+
+			imagejpeg($im, $imFilename);
+			imagedestroy($im);
+
+			$photo_path_prefix = $this->getPhotoFolderPath() . '/' . $photo['id'];
+			$ext = explode('/', $photo['photo_mime_type']);
+			$this->photo_build_thumbs($photo_path_prefix . '.' . $ext[1], $photo_path_prefix, $ext[1]);
+
+			$cptPhotos++;
+		}
+
+		$this->notices[] = 'Generated ' . $cptPhotos . ' over ' . $nbPhotos;
+	}
+
 	public function wp_dashboard_setup() {
 
 		wp_enqueue_style('dashboard_widget_vote_style', self::$styles_url . 'dashboard_widget_vote.css');
@@ -751,6 +827,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 
 		$msg = '';
 
+		echo '<p>';
 		if ($this->isVoteOpen()) {
 			$class = 'approved';
 			$msg.= __('Vote is open since')
@@ -772,6 +849,12 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 			$msg.= __('Vote is not configured');
 		}
 		echo '<span class="', $class, '" >', $msg, '</span>';
+		echo '</p>';
+		echo '<p>';
+		$votesCount = $this->daoVotes->count();
+		$votersCount = $this->daoVotes->getVotersCount();
+		echo ''.__('There is ').$votesCount.' '.__('votes').' for '.$votersCount.' '.__('voters').'' ;
+		echo '</p>';
 	}
 
 	public function photo_delete($photo_id) {

@@ -21,6 +21,13 @@ class AefPhotosContestVotes extends AefPhotosContestModelDao {
 		return $this->findBy('voter_email', $email, $queryOptions);
 	}
 
+	public function getVotersCount()
+	{
+		$queryOptions = new AefQueryOptions();
+		$queryOptions->groupBy('voter_email');
+		return $this->count($queryOptions);
+	}
+
 	/**
 	 * 
 	 * @param string $email

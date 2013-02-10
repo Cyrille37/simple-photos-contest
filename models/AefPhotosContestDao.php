@@ -17,6 +17,7 @@ class AefQueryOptions {
 	public $order = array();
 	public $limit;
 	public $limit_offset;
+	public $groupBy;
 
 	/**
 	 * @param string $fieldName
@@ -30,7 +31,6 @@ class AefQueryOptions {
 	}
 
 	/**
-	 * 
 	 * @param int $limit
 	 * @param int $offset
 	 * @return \AefQueryOptions fluent interface
@@ -38,6 +38,15 @@ class AefQueryOptions {
 	public function limit($limit, $offset = 0) {
 		$this->limit = intval($limit);
 		$this->limit_offset = intval($offset);
+		return $this;
+	}
+
+	/**
+	 * @param string $fieldName
+	 * @return \AefQueryOptions fluent interface
+	 */
+	public function groupBy($fieldName) {
+		$this->groupBy = $fieldName;
 		return $this;
 	}
 
@@ -55,6 +64,11 @@ abstract class AefPhotosContestModelDao {
 	 */
 	protected $wpdb;
 
+	/**
+	 * @var int
+	 */
+	protected $lastInsertId;
+
 	public abstract static function getTableName();
 
 	public function __construct(wpdb $wpdb) {
@@ -64,9 +78,13 @@ abstract class AefPhotosContestModelDao {
 	/**
 	 * @return int
 	 */
-	public function count() {
+	public function count(AefQueryOptions $queryOptions = null) {
 
-		$count = $this->wpdb->get_var('SELECT COUNT(*) FROM ' . $this->getTableName());
+		$sql = 'SELECT COUNT(*) FROM ' . $this->getTableName() ;
+
+		$this->applyQueryOptions($sql, $queryOptions);
+
+		$count = $this->wpdb->get_var($sql);
 		return $count;
 	}
 
@@ -84,6 +102,10 @@ abstract class AefPhotosContestModelDao {
 
 		if ($queryOptions == null)
 			return;
+
+		if (isset($queryOptions->groupBy)) {
+			$sql.=' GROUP BY ' . $this->wpdb->escape($queryOptions->groupBy);
+		}
 
 		if (($orderCount = count($queryOptions->order)) > 0) {
 			$sql .= ' ORDER BY';
@@ -135,6 +157,10 @@ abstract class AefPhotosContestModelDao {
 		return $rows;
 	}
 
+	public function getLastInsertId() {
+		return $this->lastInsertId;
+	}
+
 	public function insert(array $data) {
 
 		$fields = array();
@@ -150,6 +176,9 @@ abstract class AefPhotosContestModelDao {
 			. ' VALUES (' . implode(',', $placeholders) . ')';
 
 		$res = $this->wpdb->query($this->wpdb->prepare($sql, $values));
+		if ($res !== false) {
+			$this->lastInsertId = $this->wpdb->insert_id;
+		}
 		return $res;
 	}
 
