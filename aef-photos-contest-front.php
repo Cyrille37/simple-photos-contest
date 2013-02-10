@@ -52,7 +52,7 @@ class AefPhotosContestFront extends AefPhotosContest {
 			// using AD Gallery
 			//wp_enqueue_style('ad-gallery-css', self::$javascript_url . 'AD_Gallery-1.2.7/jquery.ad-gallery.css');
 			wp_enqueue_style('ad-gallery-css', self::$styles_url . 'ad-gallery/ad-gallery.css');
-			wp_enqueue_script('ad-gallery', self::$javascript_url . 'AD_Gallery-1.2.7/jquery.ad-gallery.js');
+			wp_enqueue_script('ad-gallery', self::$javascript_url . 'AD_Gallery-1.2.7/jquery.ad-gallery.min.js');
 			// Fancybox
 			wp_enqueue_style('fancybox-css', self::$javascript_url . 'fancybox-1.3.4/jquery.fancybox-1.3.4.css');
 			wp_enqueue_script('fancybox', self::$javascript_url . 'fancybox-1.3.4/jquery.fancybox-1.3.4.pack.js');
@@ -173,7 +173,7 @@ class AefPhotosContestFront extends AefPhotosContest {
 	 */
 	public function init_ajax_vote_auth() {
 
-		//_log(__METHOD__);
+		_log(__METHOD__);
 
 		require_once(__DIR__ . '/auth/auth.php' );
 
@@ -195,7 +195,6 @@ class AefPhotosContestFront extends AefPhotosContest {
 			case 'facebook':
 
 				if (!aef_auth_verify_signature($_REQUEST['social_auth_access_token'], $social_auth_signature)) {
-
 					$this->ajax_ouput_data['command'] = 'error';
 					$this->ajax_ouput_data['message'] = 'Failed signature verification';
 				}
@@ -228,6 +227,29 @@ class AefPhotosContestFront extends AefPhotosContest {
 					$this->ajax_ouput_data['last_name'] = $last_name;
 				}
 				break;
+
+			case 'google':
+
+				$sc_provider_identity = $_REQUEST['social_auth_openid_identity'];
+				if (!aef_auth_verify_signature($sc_provider_identity, $social_auth_signature)) {
+					$this->ajax_ouput_data['command'] = 'error';
+					$this->ajax_ouput_data['message'] = 'Failed signature verification';
+				}
+				else {
+
+					$email = $_REQUEST['social_auth_email'];
+					$first_name = $_REQUEST['social_auth_first_name'];
+					$last_name = $_REQUEST['social_auth_last_name'];
+
+					$this->ajax_ouput_data['command'] = 'auth_ok';
+					$this->ajax_ouput_data['email'] = $email;
+					$this->ajax_ouput_data['first_name'] = $first_name;
+					$this->ajax_ouput_data['last_name'] = $last_name;
+				}
+				break;
+
+			default:
+				wp_die('Unknow provider ' . (isset($social_auth_provider) ? $social_auth_provider : 'null'));
 		}
 
 		if (isset($email)) {
