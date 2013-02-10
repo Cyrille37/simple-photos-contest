@@ -853,7 +853,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 		echo '<p>';
 		$votesCount = $this->daoVotes->count();
 		$votersCount = $this->daoVotes->getVotersCount();
-		echo ''.__('There is ').$votesCount.' '.__('votes').' for '.$votersCount.' '.__('voters').'' ;
+		echo ''.__('There is ').$votesCount.' '.__('votes').' for '.$votersCount.' '.__('voters').'.' ;
 		echo '</p>';
 	}
 
