@@ -4,13 +4,13 @@ require_once(__DIR__ . '/../auth.php' );
 
 try {
 	if (!isset($_GET['openid_mode']) || $_GET['openid_mode'] == 'cancel') {
-		$openid = new LightOpenID;
+		$openid = new LightOpenID();
 		$openid->identity = urldecode($_GET['openid_url']);
 		$openid->required = array('namePerson/first', 'namePerson/last', 'contact/email');
 		header('Location: ' . $openid->authUrl());
 	}
 	else {
-		$openid = new LightOpenID;
+		$openid = new LightOpenID();
 		if ($openid->validate()) {
 			$open_id = $openid->identity;
 			$attributes = $openid->getAttributes();
