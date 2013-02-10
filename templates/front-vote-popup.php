@@ -42,18 +42,18 @@
 						alert('Error, the Facebook provider is not configured.')
 					} else {
 						window.open('https://graph.facebook.com/oauth/authorize?client_id=' + client_id + '&redirect_uri=' + redirect_uri + '&scope=email',
-							'','scrollbars=no,menubar=no,height=400,width=800,resizable=yes,toolbar=no,status=no');
+							'','scrollbars=yes,menubar=no,height=460,width=800,resizable=yes,toolbar=no,status=no');
 					}
 				});
 
 				jQuery('a.aef-auth-google', form).click(function() {
 					var redirect_uri = jQuery('input.aef-auth-google', form).val();
-					window.open(redirect_uri,'','scrollbars=no,menubar=no,height=400,width=800,resizable=yes,toolbar=no,status=no');
+					window.open(redirect_uri,'','scrollbars=yes,menubar=no,height=460,width=800,resizable=yes,toolbar=no,status=no');
 				});
 
 				jQuery('a.aef-auth-yahoo', form).click( function() {
 					var redirect_uri = jQuery('input.aef-auth-yahoo', form).val();
-					window.open(redirect_uri,'','scrollbars=no,menubar=no,height=400,width=800,resizable=yes,toolbar=no,status=no');
+					window.open(redirect_uri,'','scrollbars=yes,menubar=no,height=460,width=800,resizable=yes,toolbar=no,status=no');
 				});
 
 			});
