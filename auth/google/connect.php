@@ -4,7 +4,7 @@ require_once(__DIR__ . '/../auth.php' );
 
 try {
 	if (!isset($_GET['openid_mode']) || $_GET['openid_mode'] == 'cancel') {
-		$openid = new LightOpenID;
+		$openid = new LightOpenID();
 		$openid->identity = 'https://www.google.com/accounts/o8/id';
 		//$openid->required = array('namePerson/first', 'namePerson/last', 'contact/email');
 		$openid->required = array('contact/email');
