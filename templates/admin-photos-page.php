@@ -75,7 +75,12 @@ class Photos_List_Table extends WP_List_Table {
 	function column_id($item) {
 		$actions = array(
 			'edit' => sprintf('<a href="?page=%s&id=%s">Edit</a>', AefPhotosContestAdmin::PAGE_PHOTO_EDIT, $item['id']),
-			'delete' => sprintf('<a href="?page=%s&action=%s&id=%s">Delete</a>', $_REQUEST['page'], 'delete', $item['id']),
+			'delete' => sprintf('<a href="?page=%s&paged=%s&action=%s&id=%s" onclick="return confirm(\'%s\')">Delete</a>',
+				$_REQUEST['page'],
+				$_REQUEST['paged'],
+				'delete',
+				$item['id'],
+				__('Confirm deletion of photo id ').$item['id']),
 		);
 		return sprintf('%1$s %2$s', $item['id'], $this->row_actions($actions));
 	}

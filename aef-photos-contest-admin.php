@@ -132,13 +132,14 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 
 	public function wp_admin_init() {
 
-		global $pagenow;
+		global $pagenow, $plugin_page;
 
 		// Add a dashboard widget
 		if ($pagenow == 'index.php') {
 			add_action('wp_dashboard_setup', array($this, 'wp_dashboard_setup'));
 		}
 		else if ($pagenow == 'admin.php') {
+			
 			switch ($_GET['page']) {
 
 				case self::PAGE_CONFIGURATION :
@@ -169,9 +170,17 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 				case self::PAGE_PHOTOS:
 
 					if (isset($_GET['action'])) {
+
 						switch ($_GET['action']) {
+
 							case 'delete':
 								$this->photo_delete(intval($_GET['id']));
+								$current_url = set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
+								$current_url = remove_query_arg( array( 'action', 'id' ), $current_url );
+								//wp_redirect(admin_url('admin.php?page=' . $plugin_page));
+								wp_redirect( $current_url );
+								exit();
+
 								break;
 							default;
 								$this->errors['action'] = __('Unknow action');
