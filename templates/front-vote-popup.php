@@ -24,9 +24,9 @@
 				<a href="javascript:void(0);" title="Google" class="aef-auth-google"><img alt="Google" src="<?php echo AefPhotosContest::$images_url . 'google_32.png' ?>" /></a>
 				<a href="javascript:void(0);" title="Yahoo" class="aef-auth-yahoo"><img alt="Yahoo" src="<?php echo AefPhotosContest::$images_url . 'yahoo_32.png' ?>" /></a>
 				<input type="hidden" class="aef-auth-facebook_client_id" name="client_id" value="<?php echo $aefPC->getOption('facebookClientId'); ?>" />
-				<input type="hidden" class="aef-auth-facebook" name="redirect_uri" value="<?php echo urlencode(AefPhotosContest::$plugin_url . '/auth/facebook/callback.php'); ?>" />
-				<input type="hidden" class="aef-auth-google" name="redirect_uri" value="<?php echo( AefPhotosContest::$plugin_url . '/auth/google/connect.php' ); ?>" />
-				<input type="hidden" class="aef-auth-yahoo" name="redirect_uri" value="<?php echo( AefPhotosContest::$plugin_url . '/auth/yahoo/connect.php' ); ?>" />
+				<input type="hidden" class="aef-auth-facebook" name="redirect_uri" value="<?php echo urlencode(AefPhotosContest::$plugin_url . 'auth/facebook/callback.php'); ?>" />
+				<input type="hidden" class="aef-auth-google" name="redirect_uri" value="<?php echo( AefPhotosContest::$plugin_url . 'auth/google/connect.php' ); ?>" />
+				<input type="hidden" class="aef-auth-yahoo" name="redirect_uri" value="<?php echo( AefPhotosContest::$plugin_url . 'auth/yahoo/connect.php' ); ?>" />
 			</form>
 		</div>
 

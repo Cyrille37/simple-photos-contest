@@ -129,9 +129,9 @@ if (!class_exists('AefPhotosContest')) {
 			self::$plugin_file = basename(dirname(__FILE__)) . '/' . basename(__FILE__);
 			self::$plugin_url = plugins_url(self::PLUGIN) . '/';
 			self::$plugin_ajax_url = self::$plugin_url . 'aef-wp-front-ajax.php';
-			self::$images_url = self::$plugin_url . '/images/';
-			self::$styles_url = self::$plugin_url . '/css/';
-			self::$javascript_url = self::$plugin_url . '/js/';
+			self::$images_url = self::$plugin_url . 'images/';
+			self::$styles_url = self::$plugin_url . 'css/';
+			self::$javascript_url = self::$plugin_url . 'js/';
 
 			self::$adminConfigPageName = self::PLUGIN . '-configuration';
 			self::$templates_folder = dirname(__FILE__) . '/templates/';

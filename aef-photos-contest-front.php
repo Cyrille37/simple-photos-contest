@@ -23,15 +23,6 @@ class AefPhotosContestFront extends AefPhotosContest {
 
 		add_shortcode(self::SHORT_CODE_PHOTOS_CONTEST, array($this, 'wp_shortcode_aefPhotosContest'));
 
-		/*
-		  if (!isset($_COOKIE[self::COOKIE_VOTER])) {
-		  setcookie(self::COOKIE_VOTER, 1, 0);
-		  }
-		  else{
-		  //setcookie(self::COOKIE_VOTER, null, -1);
-		  }
-		 */
-
 		if (defined('DOING_AJAX') && DOING_AJAX) {
 
 			add_action('send_headers', 'wp_send_headers_ajax');
@@ -59,14 +50,15 @@ class AefPhotosContestFront extends AefPhotosContest {
 
 			wp_enqueue_script('jquery');
 			// using AD Gallery
-			wp_enqueue_style('ad-gallery-css', self::$javascript_url . '/AD_Gallery-1.2.7/jquery.ad-gallery.css');
-			wp_enqueue_script('ad-gallery', self::$javascript_url . '/AD_Gallery-1.2.7/jquery.ad-gallery.min.js');
+			//wp_enqueue_style('ad-gallery-css', self::$javascript_url . 'AD_Gallery-1.2.7/jquery.ad-gallery.css');
+			wp_enqueue_style('ad-gallery-css', self::$styles_url . 'ad-gallery/ad-gallery.css');
+			wp_enqueue_script('ad-gallery', self::$javascript_url . 'AD_Gallery-1.2.7/jquery.ad-gallery.js');
 			// Fancybox
-			wp_enqueue_style('fancybox-css', self::$javascript_url . '/fancybox-1.3.4/jquery.fancybox-1.3.4.css');
-			wp_enqueue_script('fancybox', self::$javascript_url . '/fancybox-1.3.4/jquery.fancybox-1.3.4.pack.js');
+			wp_enqueue_style('fancybox-css', self::$javascript_url . 'fancybox-1.3.4/jquery.fancybox-1.3.4.css');
+			wp_enqueue_script('fancybox', self::$javascript_url . 'fancybox-1.3.4/jquery.fancybox-1.3.4.pack.js');
 
 			// embed the javascript file that makes the AJAX request
-			wp_enqueue_script('aef-ajax-vote', self::$javascript_url . '/aef.vote.js', array('jquery'));
+			wp_enqueue_script('aef-ajax-vote', self::$javascript_url . 'aef.vote.js', array('jquery'));
 			// declare the URL to the file that handles the AJAX request (wp-admin/admin-ajax.php)
 			//wp_localize_script('my-ajax-request', 'AefPC', array('ajaxurl' => admin_url('admin-ajax.php')));
 			wp_localize_script('aef-ajax-vote', 'AefPC', array('ajaxurl' => self::$plugin_ajax_url));
@@ -88,7 +80,9 @@ class AefPhotosContestFront extends AefPhotosContest {
 		$qOptions->orderBy('id', 'ASC');
 		$photos = $this->daoPhotos->find($qOptions);
 
+		ob_start();
 		include self::$templates_folder . '/front-gallery-shortcode.php';
+		return ob_get_clean();
 	}
 
 	/**

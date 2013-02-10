@@ -66,10 +66,7 @@
 
 </script>
 <style type="text/css">
-	#gallery {
-		padding: 30px;
-		background: #e1eef5;
-	}
+	/*
 	#descriptions {
 		position: relative;
 		height: 50px;
@@ -85,12 +82,26 @@
 	#descriptions .ad-image-description .ad-description-title {
 		display: block;
 	}
-	.ad-gallery .ad-nav .ad-thumbs {
-		height: 150px;
-	}
+*/
+/*
 	.entry-content li {
 		margin: 0px;
+		padding: 0px;
 	}
+	.ad-thumbs {
+		margin: 0px;
+		padding: 0px;		
+	}
+	.ad-thumbs-list {
+		margin: 0px;
+		padding: 0px;		
+	}
+	.ad-thumbs-list li {
+		margin: 0px;
+		padding: 0px;		
+	}
+*/
+
 	/* if fancybox used, make the image seem clickable */
 	.ad-image {
 		cursor: pointer;
@@ -98,6 +109,7 @@
 	#aef-vote-button {
 		float: right ;
 	}
+
 </style>
 
 <div id="gallery" class="ad-gallery">
