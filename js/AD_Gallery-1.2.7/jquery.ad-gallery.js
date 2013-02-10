@@ -383,12 +383,17 @@
     },
     getIndexFromHash: function() {
       if(window.location.hash && window.location.hash.indexOf('#ad-image-') === 0) {
-        var id = window.location.hash.replace(/^#ad-image-/g, '');
+        var id = window.location.hash.replace(/^#ad-image-/g, '') - 1 ;
         var thumb = this.thumbs_wrapper.find("#"+ id);
         if(thumb.length) {
           return this.thumbs_wrapper.find("a").index(thumb);
         } else if(!isNaN(parseInt(id, 10))) {
-          return parseInt(id, 10);
+					if( id < 0 )
+						id = 0 ;
+					var iCount = this.thumbs_wrapper.find('.ad-thumb-list li').length ;
+					if( id >= iCount )
+						id = iCount-1 ;
+         return parseInt(id, 10);
         };
       };
       return undefined;
@@ -574,9 +579,9 @@
       if(this.settings.update_window_hash) {
         var thumb_link = this.images[this.current_index].thumb_link;
         if (thumb_link.attr("id")) {
-          window.location.hash = "#ad-image-"+ thumb_link.attr("id");
+          window.location.hash = "#ad-image-"+ (thumb_link.attr("id")+1);
         } else {
-          window.location.hash = "#ad-image-"+ this.current_index;
+          window.location.hash = "#ad-image-"+ (this.current_index+1);
         };
       };
       this.fireCallback(this.settings.callbacks.afterImageVisible);
