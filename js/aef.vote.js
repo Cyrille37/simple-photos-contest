@@ -6,6 +6,8 @@ var openVoteBox = function()
 {
 	jQuery.fancybox({
 		href: AefPC.ajaxurl,
+		width: 500 ,
+		height: 340,
 		ajax : {
 			type: 'POST',
 			data: 'action=vote_init'
@@ -48,3 +50,12 @@ window.aef_vote_auth_callback = function(auth_callback_result) {
 		);
 
 };
+
+function isValidEmail(email) {
+	var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+	if( !emailReg.test( email ) ) {
+		return false;
+	} else {
+		return true;
+	}
+}

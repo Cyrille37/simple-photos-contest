@@ -10,6 +10,7 @@ class AefPhotosContestFront extends AefPhotosContest {
 
 	const SHORT_CODE_PHOTOS_CONTEST = 'aefPhotosContest';
 	const COOKIE_VOTER = 'aefPC_Voter';
+	const COOKIE_PINCODE = 'aefPC_PinCode';
 
 	public function __construct() {
 
@@ -245,6 +246,20 @@ class AefPhotosContestFront extends AefPhotosContest {
 					$this->ajax_ouput_data['email'] = $email;
 					$this->ajax_ouput_data['first_name'] = $first_name;
 					$this->ajax_ouput_data['last_name'] = $last_name;
+				}
+				break;
+
+			case 'mail' :
+
+				$data = $_REQUEST['social_auth_email'] . $_REQUEST['social_auth_access_token'];
+				if (!aef_auth_verify_signature($data, $social_auth_signature)) {
+					$this->ajax_ouput_data['command'] = 'error';
+					$this->ajax_ouput_data['message'] = 'Failed signature verification';
+				}
+				else {
+					$email = $_REQUEST['social_auth_email'];
+					$this->ajax_ouput_data['command'] = 'auth_ok';
+					$this->ajax_ouput_data['email'] = $email;
 				}
 				break;
 

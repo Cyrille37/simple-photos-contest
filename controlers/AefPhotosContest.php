@@ -287,7 +287,7 @@ if (!defined('ABSPATH')) {
 
 		public function getVoterStatusByEmail($email )
 		{
-			require_once(__DIR__.'/models/AefPhotosContestVoterStatus.php');
+			require_once(__DIR__.'/../models/AefPhotosContestVoterStatus.php');
 			return AefPhotosContestVoterStatus::getVoterStatus($this, $email);
 		}
 

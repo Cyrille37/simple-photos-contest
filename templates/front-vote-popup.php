@@ -3,8 +3,25 @@
  * vote popup
  */
 ?>
+<style type="text/css">
+	#aef-vote-dialog{
+		width:440px;
+		border-left: #000 solid thin;
+		padding-left: 8px;
+	}
+	#aef-vote-dialog td {
+		vertical-align: middle;
+	}
+	#aef-vote-dialog .hlist {
+	}
+	#aef-vote-dialog .hlist li  {
+		padding-left: 12px;
+		display: inline;  
+    list-style: none; /* nécessaire pour IE7 */  
+	}
+</style>
 
-<div id="aef-vote-dialog" title="Vote">
+<div id="aef-vote-dialog" title="Vote"  style="">
 	<?php
 	if (empty($voterEmail)) {
 		// $voterEmail not set : need to authentify
@@ -13,26 +30,53 @@
 		<div id="vote-auth-form">
 			<form title="Social Authentification">
 				<div style="margin-bottom: 3px;">
-					<label>
-						<?php
-						_e('To vote you have to identify yourselves. You can use your preferred social network',
-							AefPhotosContest::PLUGIN);
-						?>:
-					</label>
+					<p >
+						Pour l'équité des votes, merci de vous identifier avec votre compte de réseau social ou avec un code envoyé par email.<br/>
+						Cliquez sur le service de votre votre choix:
+					</p>
 				</div>
-				<a href="javascript:void(0);" title="Facebook" class="aef-auth-facebook"><img alt="Facebook" src="<?php echo AefPhotosContest::$images_url . 'facebook_32.png' ?>" /></a>
-				<a href="javascript:void(0);" title="Google" class="aef-auth-google"><img alt="Google" src="<?php echo AefPhotosContest::$images_url . 'google_32.png' ?>" /></a>
-				<a href="javascript:void(0);" title="Yahoo" class="aef-auth-yahoo"><img alt="Yahoo" src="<?php echo AefPhotosContest::$images_url . 'yahoo_32.png' ?>" /></a>
+				<ul class="hlist">
+					<li><a href="javascript:void(0);" title="identifiez vous avec Facebook" class="aef-auth-facebook"><img alt="Facebook" src="<?php echo AefPhotosContest::$images_url . 'facebook_32.png' ?>" /></a></li>
+					<li><a href="javascript:void(0);" title="identifiez vous avec Google+" class="aef-auth-google"><img alt="Google" src="<?php echo AefPhotosContest::$images_url . 'google_32.png' ?>" /></a></li>
+					<li><a href="javascript:void(0);" title="identifiez vous avec Yahoo" class="aef-auth-yahoo"><img alt="Yahoo" src="<?php echo AefPhotosContest::$images_url . 'yahoo_32.png' ?>" /></a></li>
+					<li><a href="javascript:void(0);" onclick="return auth_email();" title="identifiez vous avec un code envoyez par email" class="aef-auth-email"><img alt="eMail" src="<?php echo AefPhotosContest::$images_url . 'email_32.jpg' ?>" /></a></li>
+				</ul>
+				<br/>
 				<input type="hidden" class="aef-auth-facebook_client_id" name="client_id" value="<?php echo $aefPC->getOption('facebookClientId'); ?>" />
 				<input type="hidden" class="aef-auth-facebook" name="redirect_uri" value="<?php echo urlencode(AefPhotosContest::$plugin_url . 'auth/facebook/callback.php'); ?>" />
 				<input type="hidden" class="aef-auth-google" name="redirect_uri" value="<?php echo( AefPhotosContest::$plugin_url . 'auth/google/connect.php' ); ?>" />
 				<input type="hidden" class="aef-auth-yahoo" name="redirect_uri" value="<?php echo( AefPhotosContest::$plugin_url . 'auth/yahoo/connect.php' ); ?>" />
+				<input type="hidden" class="aef-auth-email" name="redirect_uri" value="<?php echo( AefPhotosContest::$plugin_url . 'auth/email/connect.php' ); ?>" />
+				<input type="hidden" class="aef-auth-email-sign" name="auth_sign" value="" />
+			</form>
+		</div>
+		<div id="vote-auth-email">
+			<form title="Social Authentification">
+				<p>Merci d'indiquer votre adresse email à laquelle nous allons vous expédier un code qui vous permettra de voter:</p>
+				<p>
+					Votre adresse email: <input type="text" name="email" size="30" />
+					<input type="button" value="Envoyer le code" onclick="return auth_email('emailSend');" />
+					<input type="button" value="Annuler" onclick="return auth_email('emailSend_cancel');" />
+				</p>
+			</form>
+		</div>
+		<div id="vote-auth-email-code">
+			<form title="Social Authentification">
+				<p>Indiquer le code que vous avez reçu à l'adresse email <span id="auth-email"></span></p>
+				<p>
+					Le code: <input type="text" name="emailCode" size="10" />
+					<input type="button" value="Valider" onclick="return auth_email('codeConfirm');" />
+					<input type="button" value="Annuler" onclick="return auth_email('codeConfirm_cancel');" />
+				</p>
 			</form>
 		</div>
 
 		<script type="text/javascript">
 			jQuery(document).ready( function() {
-				
+
+				jQuery('#vote-auth-email').hide();
+				jQuery('#vote-auth-email-code').hide();
+
 				var form = jQuery('#vote-auth-form');
 				jQuery('a.aef-auth-facebook', form).click(function() {
 					var client_id = jQuery('input.aef-auth-facebook_client_id', form).val();
@@ -42,7 +86,7 @@
 						alert('Error, the Facebook provider is not configured.')
 					} else {
 						window.open('https://graph.facebook.com/oauth/authorize?client_id=' + client_id + '&redirect_uri=' + redirect_uri + '&scope=email',
-							'','scrollbars=yes,menubar=no,height=460,width=800,resizable=yes,toolbar=no,status=no');
+						'','scrollbars=yes,menubar=no,height=460,width=800,resizable=yes,toolbar=no,status=no');
 					}
 				});
 
@@ -58,6 +102,73 @@
 
 			});
 
+			function auth_email(step)
+			{
+				var root = jQuery('#aef-vote-dialog');
+				switch(step){
+
+					case undefined:
+										
+						jQuery('#vote-auth-form', root).hide();
+						jQuery('#vote-auth-email', root).show();
+						break;
+
+					case 'emailSend_cancel':
+							
+						jQuery('#vote-auth-email', root).hide();
+						jQuery('#vote-auth-form', root).show();
+						break;
+		
+					case 'emailSend':
+
+						var email = jQuery('input:text[name=email]', root).val(); 
+						if( ! isValidEmail(email) )
+						{
+							return ;
+						}
+						var redirect_uri = jQuery('input.aef-auth-email', root).val();
+						var params = {};
+						params.action = 'emailSend' ;
+						params.email = email ;
+						jQuery.post( redirect_uri, params,
+						function( jsonString ) {
+							var res = JSON.parse(jsonString);
+							if( res.command == 'mail_sent' )
+							{
+								jQuery('input.aef-auth-email-sign', root).val( res.social_auth_signature );
+								jQuery('#vote-auth-email').hide();
+								jQuery('#vote-auth-email-code').show();
+							}
+							else
+							{
+								if( res.command == 'error' ){
+									alert( res.message );
+								}else{
+									alert('unknow result');
+								}
+							}
+						});
+						break;
+
+					case 'codeConfirm_cancel' :
+						jQuery('#vote-auth-email-code').hide();
+						jQuery('#vote-auth-form', root).show();
+						break;
+		
+					case 'codeConfirm':
+
+						window.aef_vote_auth_callback({
+							'social_auth_provider' : 'mail',
+							'social_auth_email' : jQuery('input:text[name=email]', root).val(),
+							'social_auth_signature' : jQuery('input.aef-auth-email-sign', root).val(),
+							'social_auth_access_token' : jQuery('input:text[name=emailCode]', root).val()
+						});
+						break;
+
+				}
+				return false ;
+			}
+					
 		</script>
 
 		<?php
@@ -69,7 +180,9 @@
 			<p><?php _e('You are identified as ') ?><span class="aef-vote-voter-email"><?php echo $voterEmail ?></span></p>
 			<p><?php _e('You can vote for this picture') ?>
 				<img
-					src="<?php echo $this->getPhotoUrl($photo,'thumb') ?>"
+					src="<?php
+	echo $this->getPhotoUrl($photo, 'thumb')
+		?>"
 					alt="<?php echo htmlspecialchars($photo['photographer_name']); ?>"
 					title="<?php echo htmlspecialchars($photo['photo_name']); ?>"
 					/>
@@ -81,7 +194,7 @@
 			<script type="text/javascript">
 
 				jQuery('#vote-form .vote_pour').click(function() {
-					
+															
 					var params = {
 						action: 'vote',
 						photo_id: <?php echo $photo['id']; ?>
@@ -107,7 +220,7 @@
 					}
 				);
 				});
-								
+																		
 			</script>
 		</div>
 
@@ -119,16 +232,19 @@
 			<p><?php _e('You are identified as ') ?><span class="aef-vote-voter-email"><?php echo $voterEmail ?></span></p>
 			<p><?php _e('You have already voted for this photo') ?>
 				<img
-					src="<?php echo $this->getPhotoUrl($photo,
-			'thumb') ?>"
+					src="<?php
+	echo $this->getPhotoUrl($photo, 'thumb')
+		?>"
 					alt="<?php echo htmlspecialchars($photo['photographer_name']); ?>"
 					title="<?php echo htmlspecialchars($photo['photo_name']); ?>"
 					/>
 			</p>
 			<?php if (!empty($voterStatus->nextVoteDate)) { ?>
-				<p><?php _e('You will be able to vote one more time from ');
-		echo $aefPC->formatDate($voterStatus->nextVoteDate) ?></p>
-		<?php } ?>
+				<p><?php
+		_e('You will be able to vote one more time from ');
+		echo $aefPC->formatDate($voterStatus->nextVoteDate)
+				?></p>
+			<?php } ?>
 		</div>
 		<?php
 	}
