@@ -139,7 +139,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 			add_action('wp_dashboard_setup', array($this, 'wp_dashboard_setup'));
 		}
 		else if ($pagenow == 'admin.php') {
-			
+
 			switch ($_GET['page']) {
 
 				case self::PAGE_CONFIGURATION :
@@ -175,10 +175,10 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 
 							case 'delete':
 								$this->photo_delete(intval($_GET['id']));
-								$current_url = set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
-								$current_url = remove_query_arg( array( 'action', 'id' ), $current_url );
+								$current_url = set_url_scheme('http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+								$current_url = remove_query_arg(array('action', 'id'), $current_url);
 								//wp_redirect(admin_url('admin.php?page=' . $plugin_page));
-								wp_redirect( $current_url );
+								wp_redirect($current_url);
 								exit();
 
 								break;
@@ -828,7 +828,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 
 		wp_enqueue_style('dashboard_widget_vote_style', self::$styles_url . 'dashboard_widget_vote.css');
 
-		wp_add_dashboard_widget('custom_dashboard_widget_vote', __('Photos constest overview'),
+		wp_add_dashboard_widget('custom_dashboard_widget_vote', 'Concours photos',
 			array($this, 'dashboard_widget_vote'));
 	}
 
@@ -839,30 +839,28 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 		echo '<p>';
 		if ($this->isVoteOpen()) {
 			$class = 'approved';
-			$msg.= __('Vote is open since')
-				. ' ' . $this->formatDate($this->getVoteOpenDate())
-				. ' to ' . $this->formatDate($this->getVoteCloseDate());
+			$msg.= 'Le vote est ouvert depuis le '
+				. $this->formatDate($this->getVoteOpenDate())
+				. ' jusqu´au ' . $this->formatDate($this->getVoteCloseDate()).'.';
 		}
 		else if ($this->isVoteToCome()) {
 			$class = 'waiting';
-			$msg.= __('Vote will be open as from')
-				. ' ' . $this->formatDate($this->getVoteOpenDate());
+			$msg.= 'Le vote ouvrira le ' . $this->formatDate($this->getVoteOpenDate()).'.';
 		}
 		else if ($this->isVoteFinished()) {
 			$class = 'waiting';
-			$msg.= __('Vote completed since')
-				. ' ' . $this->formatDate($this->getVoteCloseDate());
+			$msg.= 'Le vote est fermé depuis le ' . $this->formatDate($this->getVoteCloseDate()).'.';
 		}
 		else {
 			$class = 'unconfigured';
-			$msg.= __('Vote is not configured');
+			$msg.= 'Le vote n´est pas configuré.';
 		}
 		echo '<span class="', $class, '" >', $msg, '</span>';
 		echo '</p>';
 		echo '<p>';
 		$votesCount = $this->daoVotes->count();
 		$votersCount = $this->daoVotes->getVotersCount();
-		echo ''.__('There is ').$votesCount.' '.__('votes').' for '.$votersCount.' '.__('voters').'.' ;
+		echo 'Il y a ' . $votesCount . ' votes pour ' . $votersCount . ' ' . ' votants.';
 		echo '</p>';
 	}
 
