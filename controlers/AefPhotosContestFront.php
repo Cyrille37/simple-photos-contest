@@ -79,7 +79,7 @@ class AefPhotosContestFront extends AefPhotosContest {
 
 		$qOptions = new AefQueryOptions();
 		$qOptions->orderBy('id', 'ASC');
-		$photos = $this->daoPhotos->find($qOptions);
+		$photos = $this->daoPhotos->getAll($qOptions);
 
 		ob_start();
 		include self::$templates_folder . '/front-gallery-shortcode.php';

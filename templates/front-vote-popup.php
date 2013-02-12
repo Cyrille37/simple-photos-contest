@@ -5,7 +5,7 @@
 ?>
 <style type="text/css">
 	#aef-vote-dialog{
-		width:440px;
+		width:480px;
 		border-left: #000 solid thin;
 		padding-left: 8px;
 	}
@@ -19,9 +19,25 @@
 		display: inline;  
     list-style: none; /* nécessaire pour IE7 */  
 	}
+	.vote_pour {
+		margin-right: 10% ;
+		margin-top: 10% ;
+	}
+	.vote_cancel {
+		margin-top: 10% ;		
+	}
+	.photo_name{
+		font-family: fantasy;
+		font-size: 0.9em;
+	}
+	.photographer_name{
+		font-family: fantasy;
+		font-size: 0.9em;		
+	}
 </style>
 
 <div id="aef-vote-dialog" title="Vote"  style="">
+	<h3>Vote du concours photo</h3>
 	<?php
 	if (empty($voterEmail)) {
 		// $voterEmail not set : need to authentify
@@ -31,8 +47,10 @@
 			<form title="Social Authentification">
 				<div style="margin-bottom: 3px;">
 					<p >
-						Pour l'équité des votes, merci de vous identifier avec votre compte de réseau social ou avec un code envoyé par email.<br/>
-						Cliquez sur le service de votre votre choix:
+						Pour l'équité des votes, merci de vous identifier avec votre compte de réseau social ou avec un code envoyé par email.
+					</p>
+					<p >
+						Cliquez sur le service de votre choix:
 					</p>
 				</div>
 				<ul class="hlist">
@@ -177,19 +195,22 @@
 		?>
 
 		<div id="vote-form">
-			<p><?php _e('You are identified as ') ?><span class="aef-vote-voter-email"><?php echo $voterEmail ?></span></p>
-			<p><?php _e('You can vote for this picture') ?>
+			<p>Vous êtes identifié comme <span class="aef-vote-voter-email"><?php echo $voterEmail ?></span></p>
+			<p>Vous votez pour cette photo:</p>
+			<p style="text-align: center">
 				<img
-					src="<?php
-	echo $this->getPhotoUrl($photo, 'thumb')
-		?>"
+					src="<?php echo $this->getPhotoUrl($photo, 'thumb')	?>"
 					alt="<?php echo htmlspecialchars($photo['photographer_name']); ?>"
 					title="<?php echo htmlspecialchars($photo['photo_name']); ?>"
 					/>
-			</p>
-			<p>
-				<span class="vote_pour">Pour</span>
-				<span class="vote_cancel">Fermer</span>
+					<br/>
+				<span class="photo_name"><?php echo $photo['photo_name'] ?></span>
+				<br/>
+				<span class="photographer_name"><?php echo $photo['photographer_name'] ?></span>
+		</p>
+			<p  style="text-align: center">
+				<input class="vote_pour" type="button" value="Je vote pour" />
+				<input class="vote_cancel" type="button" value="Annuler"/>
 			</p>
 			<script type="text/javascript">
 
@@ -229,21 +250,21 @@
 	else if (!$voterStatus->canVote && isset($photo)) {
 		?>
 		<div id="aef-popup-already-voted">
-			<p><?php _e('You are identified as ') ?><span class="aef-vote-voter-email"><?php echo $voterEmail ?></span></p>
-			<p><?php _e('You have already voted for this photo') ?>
+			<p>Vous êtes identifié comme <span class="aef-vote-voter-email"><?php echo $voterEmail ?></span></p>
+			<p>Vous avez déjà voté pour la photo suivante:</p>
+			<p style="text-align: center">
 				<img
-					src="<?php
-	echo $this->getPhotoUrl($photo, 'thumb')
-		?>"
-					alt="<?php echo htmlspecialchars($photo['photographer_name']); ?>"
-					title="<?php echo htmlspecialchars($photo['photo_name']); ?>"
+					src="<?php echo $this->getPhotoUrl($photo, 'thumb')?>"
+					alt="<?php echo htmlspecialchars($photo['photographer_name'])?>"
+					title="<?php echo htmlspecialchars($photo['photo_name'])?>"
 					/>
+				<br/>
+				<span class="photo_name"><?php echo $photo['photo_name'] ?></span>
+				<br/>
+				<span class="photographer_name"><?php echo $photo['photographer_name'] ?></span>
 			</p>
 			<?php if (!empty($voterStatus->nextVoteDate)) { ?>
-				<p><?php
-		_e('You will be able to vote one more time from ');
-		echo $aefPC->formatDate($voterStatus->nextVoteDate)
-				?></p>
+				<p>Vous pourrez de nouveau voter à partir du <?php echo $aefPC->formatDate($voterStatus->nextVoteDate)?></p>
 			<?php } ?>
 		</div>
 		<?php

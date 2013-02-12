@@ -741,7 +741,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 		global $wpdb;
 
 		$photos_folder_path = $this->getPhotoFolderPath();
-		$rows = $this->daoPhotos->find();
+		$rows = $this->daoPhotos->getAll();
 
 		foreach ($rows as $row) {
 

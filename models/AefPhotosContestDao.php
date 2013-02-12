@@ -89,6 +89,20 @@ abstract class AefPhotosContestModelDao {
 	}
 
 	/**
+	 * 
+	 * @param string $fieldName
+	 * @param mixed $value
+	 * @return array
+	 */
+	public function countBy($fieldName, $value) {
+
+		$sql = 'SELECT COUNT(*) FROM ' . $this->getTableName() . ' WHERE ' . $fieldName . '=%s';
+
+		$count = $this->wpdb->get_var($this->wpdb->prepare($sql, $value), ARRAY_A);
+		return $count;
+	}
+
+	/**
 	 * @param int $id
 	 * @return array
 	 */
@@ -126,7 +140,7 @@ abstract class AefPhotosContestModelDao {
 	 * @param AefQueryOptions $queryOptions
 	 * @return array
 	 */
-	public function find(AefQueryOptions $queryOptions = null) {
+	public function getAll(AefQueryOptions $queryOptions = null) {
 
 		$sql = 'SELECT * FROM ' . $this->getTableName();
 
