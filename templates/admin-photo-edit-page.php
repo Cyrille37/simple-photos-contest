@@ -22,36 +22,68 @@
 
 		<div class="width_full p_box">
 		<p>
-			<label class="<?php echo($aefPC->hasFieldError('photographer_name')?'error-message':'')?>"><?php _e('Photographer name'); ?><br/>
+			<label class="<?php echo($aefPC->hasFieldError('photographer_name')?'error-message':'')?>">Nom du photographe<br/>
 				<input type="text" name="photographer_name" class="regular-text" value="<?php echo $this->photo['photographer_name']; ?>">
 			</label>
-			<span class="description"><?php _e('This is the photographer lastname and firstname'); ?></span>
+			<span class="description">Le nom du photographe tel qu´affiché sur le concours.</span>
 		</p>
 		<p>
-			<label class="<?php echo($aefPC->hasFieldError('photographer_email')?'error-message':'')?>"><?php _e('Photographer email'); ?><br/>
+			<label class="<?php echo($aefPC->hasFieldError('photographer_email')?'error-message':'')?>">Email du photographe<br/>
 				<input type="text" name="photographer_email" class="regular-text" value="<?php echo $this->photo['photographer_email']; ?>">
 			</label>
-			<span class="description"><?php _e('This is the photographer email'); ?></span>
+			<span class="description">
+				L´adresse email du photographe.
+				<a href="mailto:<?php echo $this->photo['photographer_email']; ?>">Envoyer un mail</a>.
+			</span>
 		</p>
 		<p>
-			<label class="<?php echo($aefPC->hasFieldError('photo_name')?'error-message':'')?>"><?php _e('Photo name'); ?><br/>
+			<label class="<?php echo($aefPC->hasFieldError('photo_name')?'error-message':'')?>">Nom de la photo<br/>
 				<input type="text" name="photo_name" class="regular-text" value="<?php echo $this->photo['photo_name']; ?>">
 			</label>
-			<span class="description"><?php _e('This is the photo name'); ?></span>
+			<span class="description">Le nom de la photo telle qu´affichée sur le concours.</span>
 		</p>
 		<p>
-			<label class="<?php echo($aefPC->hasFieldError('notes')?'error-message':'')?>"><?php _e('Notes'); ?><br/>
+			<label class="<?php echo($aefPC->hasFieldError('notes')?'error-message':'')?>">Commentaires<br/>
 				<textarea name="notes" cols="40" rows="5" ><?php echo $this->photo['notes']; ?></textarea>
 			</label>
-			<span class="description"><?php _e('Here you can write any comment, it only be visible in admin page'); ?></span>
+			<span class="description">Commentaire seulement visible ici.</span>
 		</p>
 		<?php if( !empty( $this->photo['id']) ) { ?>
-		<p>
-			<label><?php _e('Photo'); ?><br/>
-				<input type="file" name="photo_file" size="35" class="imagefile"/>
-			</label>
-			<span class="description"><?php _e('This is the original photo'); ?></span>
-		</p>
+		
+			<?php if( !empty($this->photo['photo_user_filename']) ){ ?>
+				<p>
+					<label>Nom du fichier original<br/>
+						<span><?php echo $this->photo['photo_user_filename']; ?></span>
+					</label>
+					<span class="description">Le nom du fichier téléchargé</span>
+				</p>
+				<table>
+					<tr>
+						<td rowspan="4" >
+							<a href="<?php echo $aefPC->getPhotoUrl($this->photo, 'view')?>?t=<?php echo time() ?>">
+							<img style="float: left" src="<?php echo $aefPC->getPhotoUrl($this->photo, 'thumb')?>?t=<?php echo time() ?>" />
+							</a>
+						</td>
+					</tr>
+					<tr>
+						<td style="padding-left: 12px"><a href="<?php echo $aefPC->getPhotoUrl($this->photo, 'thumb')?>">fichier miniature</a></td>
+					</tr>
+					<tr>
+						<td style="padding-left: 12px"><a href="<?php echo $aefPC->getPhotoUrl($this->photo, 'view')?>">fichier grande vue</a></td>
+					</tr>
+					<tr>
+						<td style="padding-left: 12px"><a href="<?php echo $aefPC->getPhotoUrl($this->photo)?>">fichier originale</a></td>
+					</tr>
+				</table>
+				
+			<?php } ?>
+			<p>
+				<label>Téléverser une photo
+					<br/>
+					<input type="file" name="photo_file" size="35" class="imagefile"/>
+				</label>
+				<span class="description"><?php echo (empty($this->photo['photo_user_filename']) ? 'Fichier de la photo.': 'La nouvelle photo remplace l´actuelle.' ) ?></span>
+			</p>
 		<?php } ?>
 	</div>
 	
