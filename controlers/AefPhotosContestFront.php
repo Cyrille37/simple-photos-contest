@@ -201,31 +201,11 @@ class AefPhotosContestFront extends AefPhotosContest {
 				}
 				else {
 					$fb_json = json_decode(aef_curl_get_contents("https://graph.facebook.com/me?access_token=" . $_REQUEST['social_auth_access_token']));
-
-					//_log('fb: ' . print_r($fb_json, true));
-					// stdClass Object(
-					// [id] => 1423058397
-					// [name] => Cyrille Giquello
-					// [first_name] => Cyrille
-					// [last_name] => Giquello
-					// [link] => http://www.facebook.com/cyrille.giquello
-					// [username] => cyrille.giquello
-					// [gender] => male
-					// [email] => cyrille.facebook@giquello.fr
-					// [timezone] => 1
-					// [locale] => fr_FR
-					// [verified] => 1
-					// [updated_time] => 2013-02-07T18:58:00+0000
-					// )
-
 					$email = $fb_json->{'email'};
-					$first_name = $fb_json->{'first_name'};
-					$last_name = $fb_json->{'last_name'};
-
 					$this->ajax_ouput_data['command'] = 'auth_ok';
 					$this->ajax_ouput_data['email'] = $email;
-					$this->ajax_ouput_data['first_name'] = $first_name;
-					$this->ajax_ouput_data['last_name'] = $last_name;
+					$this->ajax_ouput_data['first_name'] = $fb_json->{'first_name'};
+					$this->ajax_ouput_data['last_name'] = $fb_json->{'last_name'};
 				}
 				break;
 
@@ -237,15 +217,11 @@ class AefPhotosContestFront extends AefPhotosContest {
 					$this->ajax_ouput_data['message'] = 'Failed signature verification';
 				}
 				else {
-
 					$email = $_REQUEST['social_auth_email'];
-					$first_name = $_REQUEST['social_auth_first_name'];
-					$last_name = $_REQUEST['social_auth_last_name'];
-
 					$this->ajax_ouput_data['command'] = 'auth_ok';
 					$this->ajax_ouput_data['email'] = $email;
-					$this->ajax_ouput_data['first_name'] = $first_name;
-					$this->ajax_ouput_data['last_name'] = $last_name;
+					$this->ajax_ouput_data['first_name'] = $_REQUEST['social_auth_first_name'];
+					$this->ajax_ouput_data['last_name'] = $_REQUEST['social_auth_last_name'];
 				}
 				break;
 
