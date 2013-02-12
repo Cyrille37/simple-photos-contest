@@ -20,6 +20,23 @@ var openVoteBox = function()
 	
 };
 
+function voteLogout()
+{
+	var params = {};  
+	params.action = 'vote_init' ;
+	params.logout = true ;
+
+	jQuery.post(
+		AefPC.ajaxurl,
+		params,
+		function( jsonString ) {
+			setTimeout( 'openVoteBox()', 1000 );
+			jQuery.fancybox.close();
+		}
+	);
+
+}
+
 window.aef_vote_auth_callback = function(auth_callback_result) {
 
 	var params = {};

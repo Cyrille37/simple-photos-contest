@@ -170,6 +170,7 @@
 
 					case 'codeConfirm_cancel' :
 						jQuery('#vote-auth-email-code').hide();
+						jQuery('input:text[name=emailCode]', root).val('');
 						jQuery('#vote-auth-form', root).show();
 						break;
 		
@@ -195,7 +196,6 @@
 		?>
 
 		<div id="vote-form">
-			<p>Vous êtes identifié comme <span class="aef-vote-voter-email"><?php echo $voterEmail ?></span></p>
 			<p>Vous votez pour cette photo:</p>
 			<p style="text-align: center">
 				<img
@@ -211,6 +211,10 @@
 			<p  style="text-align: center">
 				<input class="vote_pour" type="button" value="Je vote pour" />
 				<input class="vote_cancel" type="button" value="Annuler"/>
+			</p>
+			<p>
+				Vous êtes identifié comme <span class="aef-vote-voter-email"><?php echo $voterEmail ?></span>.
+				Si ce n'est pas vous, <a href="javascript:void(0);" onclick="voteLogout()">identifiez-vous</a>.
 			</p>
 			<script type="text/javascript">
 
@@ -250,7 +254,6 @@
 	else if (!$voterStatus->canVote && isset($photo)) {
 		?>
 		<div id="aef-popup-already-voted">
-			<p>Vous êtes identifié comme <span class="aef-vote-voter-email"><?php echo $voterEmail ?></span></p>
 			<p>Vous avez déjà voté pour la photo suivante:</p>
 			<p style="text-align: center">
 				<img
@@ -266,6 +269,10 @@
 			<?php if (!empty($voterStatus->nextVoteDate)) { ?>
 				<p>Vous pourrez de nouveau voter à partir du <?php echo $aefPC->formatDate($voterStatus->nextVoteDate)?></p>
 			<?php } ?>
+			<p>
+				Vous êtes identifié comme <span class="aef-vote-voter-email"><?php echo $voterEmail ?></span>.
+				Si ce n'est pas vous, <a href="javascript:void(0);" onclick="voteLogout()">identifiez-vous</a>.
+			</p>
 		</div>
 		<?php
 	}

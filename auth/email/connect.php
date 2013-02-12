@@ -45,14 +45,14 @@ if (isset($_REQUEST['action'])) {
 				$signature = aef_auth_generate_signature($email . $pincode);
 				$cookie_pincode = $email . '#' . $signature;
 
-				setcookie(AefPhotosContestFront::COOKIE_PINCODE, $cookie_pincode, 0, '/');
+				//setcookie(AefPhotosContestFront::COOKIE_PINCODE, $cookie_pincode, 0, '/');
 
 				add_filter('wp_mail_content_type', create_function('', 'return "text/html";'));
 				$admin_email = get_bloginfo('admin_email');
 				$blog_name = get_bloginfo('name');
 				$blog_url = get_bloginfo('url');
 				$headers = 'From: ' . $blog_name . ' <' . $admin_email . '>' . "\r\n";
-				$subject = 'Vote du concours photo ' . $blog_name;
+				$subject = 'Vote concours photo ' . $blog_name;
 				$message = '<p>Voici votre code pour voter au concours photo: ' . $pincode . '</p>';
 				$message.= '<p>Cordialement, l´équipe de <a href="' . $blog_url . '">' . $blog_url . '</a></p>';
 				wp_mail($email, $subject, $message, $headers);
