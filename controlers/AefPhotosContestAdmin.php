@@ -4,7 +4,7 @@
  * Admin part of plugin: AEF Simple Photos Contest
  */
 
-require_once( __DIR__ . '/aef-photos-contest.php');
+require_once( __DIR__ . '/AefPhotosContest.php');
 
 class AefPhotosContestAdmin extends AefPhotosContest {
 
@@ -50,7 +50,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 
 		global $wp_version;
 
-		if (version_compare(PHP_VERSION, '5.1.2', '<')) {
+		if (version_compare(PHP_VERSION, '5.3.3', '<')) {
 			wp_die('Need Php > ' . self::REQUIRE_VERSION_PHP);
 		}
 		if (version_compare($wp_version, self::REQUIRE_VERSION_WP, '<')) {

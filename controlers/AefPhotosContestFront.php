@@ -4,7 +4,7 @@
  * Front part of plugin: AEF Simple Photos Contest
  */
 
-require_once( __DIR__ . '/aef-photos-contest.php');
+require_once( __DIR__ . '/AefPhotosContest.php');
 
 class AefPhotosContestFront extends AefPhotosContest {
 
@@ -175,7 +175,7 @@ class AefPhotosContestFront extends AefPhotosContest {
 
 		_log(__METHOD__);
 
-		require_once(__DIR__ . '/auth/auth.php' );
+		require_once(__DIR__ . '/../auth/auth.php' );
 
 		//foreach ($_REQUEST as $k => $v) {
 		//	_log($k . '=' . print_r($v, true));

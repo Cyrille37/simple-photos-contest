@@ -29,7 +29,7 @@ if (empty($_REQUEST['action']))
 send_nosniff_header();
 nocache_headers();
 
-require_once( __DIR__ . '/aef-photos-contest-front.php');
+require_once( __DIR__ . '/controlers/AefPhotosContestFront.php');
 
 do_action( 'init' );
 do_action( 'init_ajax_nopriv_' . $_REQUEST['action'] );
