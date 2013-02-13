@@ -21,10 +21,10 @@
 	}
 	.vote_pour {
 		margin-right: 10% ;
-		margin-top: 10% ;
+		margin-top: 14px ;
 	}
 	.vote_cancel {
-		margin-top: 10% ;		
+		margin-top: 14px ;		
 	}
 	.photo_name{
 		font-family: fantasy;
@@ -207,10 +207,9 @@
 				<span class="photo_name"><?php echo $photo['photo_name'] ?></span>
 				<br/>
 				<span class="photographer_name"><?php echo $photo['photographer_name'] ?></span>
-		</p>
-			<p  style="text-align: center">
-				<input class="vote_pour" type="button" value="Je vote pour" />
-				<input class="vote_cancel" type="button" value="Annuler"/>
+				<br/>
+				<input class="vote_pour" type="button" value="Je vote pour" onclick="vote()" />
+				<input class="vote_cancel" type="button" value="Annuler" onclick="jQuery.fancybox.close()" />
 			</p>
 			<p>
 				Vous êtes identifié comme <span class="aef-vote-voter-email"><?php echo $voterEmail ?></span>.
@@ -218,8 +217,8 @@
 			</p>
 			<script type="text/javascript">
 
-				jQuery('#vote-form .vote_pour').click(function() {
-															
+				//jQuery('#vote-form .vote_pour').click(function() {
+				function vote() {										
 					var params = {
 						action: 'vote',
 						photo_id: <?php echo $photo['id']; ?>
@@ -244,7 +243,7 @@
 						}
 					}
 				);
-				});
+			};
 																		
 			</script>
 		</div>

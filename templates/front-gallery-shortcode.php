@@ -21,12 +21,39 @@
 			},
 			callbacks: {
 				init: function() {
-					jQuery('.ad-controls', '#gallery').append(jQuery("#aef-vote-button"));
+	
+					var root = jQuery('.ad-image-wrapper','#gallery');
+					var o = jQuery('#aef-vote-button') ;
+					root.append(o);
+
+					var o2 = jQuery('.aef-vote-opener','#gallery');
+					o2.click(openVoteBox);
+					o2.hover(
+					function () {
+						this.src = '<?php echo AefPhotosContest::$images_url . 'favoris-votez2.png' ?>';
+					}, function () {
+						this.src = '<?php echo AefPhotosContest::$images_url . 'favoris-votez.png' ?>';
+					});
+
+					o.css('position', 'relative');
+					o.css('top', (root.height() - o.height() )+'px' );
+					o.css('left', (root.width() - 90) +'px');
+					o.css('z-index', jQuery('.ad-next').css('z-index') );
+
+				},
+				beforeImageVisible: function (){
+
+					var o = jQuery('#aef-vote-button') ;
+					o.show();
+					var root = jQuery('.ad-image-wrapper','#gallery');
+					o.css('top', (root.height() - o.height() )+'px' );
+					o.css('left', (root.width() - 90) +'px');
+
 				}
 			}
 		});
 
-		jQuery('.ad-gallery').on("click", ".ad-image", function() {
+		jQuery('.ad-gallery', '#gallery').on("click", ".ad-image", function() {
 
 			var href = jQuery(this).find("img").attr("src");
 			jQuery.fancybox({
@@ -34,38 +61,32 @@
 				showCloseButton: true,
 				hideOnContentClick: true,
 				openEffect : 'none',
-				titleShow: true,
+				transitionIn: 'fade',
+				transitionOut: 'elastic',
 				titlePosition  : 'inside',
 				titleFormat		: function (title, currentArray, currentIndex, currentOpts) {
 					var title = jQuery('.image'+gallery[0].current_index, '#gallery').attr('title') ;
 					var alt = jQuery('.image'+gallery[0].current_index , '#gallery').attr('alt') ;
+
 					return '<div id="fancybox-title" class="fancybox-title-over" style="display: block; margin-left: 10px; width: 100%; bottom: 10px;"><div id="fancybox-title-over">'
 						+'' + (title && title.length ?  title  : '' )  
 						+' ' + (alt && alt.length ?  alt : '' ) 
 						+'</div></div>';
-				},
-				//openEffect : 'elastic',
-				//openSpeed  : 150,
-				closeEffect : 'none',
-				//closeEffect : 'elastic',
-				//closeSpeed  : 150,
-				helpers : {
-					overlay : null
 				}
 			});
 		});
 
-		jQuery("#aef-vote-opener").click(openVoteBox);
 
 	});
 	
 	function getCurrentPhotoId()
 	{
-		return jQuery( '#gallery .image'+gallery[0].current_index).attr('data-photo_id');
+		return jQuery( '.image'+gallery[0].current_index, '#gallery').attr('data-photo_id');
 	}
 
 </script>
 <style type="text/css">
+
 	/*
 	#descriptions {
 		position: relative;
@@ -82,33 +103,31 @@
 	#descriptions .ad-image-description .ad-description-title {
 		display: block;
 	}
-*/
-/*
-	.entry-content li {
-		margin: 0px;
-		padding: 0px;
-	}
-	.ad-thumbs {
-		margin: 0px;
-		padding: 0px;		
-	}
-	.ad-thumbs-list {
-		margin: 0px;
-		padding: 0px;		
-	}
-	.ad-thumbs-list li {
-		margin: 0px;
-		padding: 0px;		
-	}
-*/
+	*/
+	/*
+		.entry-content li {
+			margin: 0px;
+			padding: 0px;
+		}
+		.ad-thumbs {
+			margin: 0px;
+			padding: 0px;		
+		}
+		.ad-thumbs-list {
+			margin: 0px;
+			padding: 0px;		
+		}
+		.ad-thumbs-list li {
+			margin: 0px;
+			padding: 0px;		
+		}
+	*/
 
 	/* if fancybox used, make the image seem clickable */
 	.ad-image {
 		cursor: pointer;
 	}
-	#aef-vote-button {
-		float: right ;
-	}
+
 
 </style>
 
@@ -127,12 +146,13 @@
 					<li>
 						<a href="<?php echo $this->getPhotoUrl($row, 'view'); ?>" >
 							<img src="<?php echo $this->getPhotoUrl($row,
-					'thumb'); ?>"
-									 class="image<?php echo $gallery_idx++; ?>"
-									 alt="<?php echo htmlspecialchars($row['photographer_name']); ?>"
-									 title="<?php echo htmlspecialchars($row['photo_name']); ?>"
-									 data-photo_id="<?php echo htmlspecialchars($row['id']); ?>"
-									 />
+					'thumb');
+					?>"
+								class="image<?php echo $gallery_idx++; ?>"
+								alt="<?php echo htmlspecialchars($row['photographer_name']); ?>"
+								title="<?php echo htmlspecialchars($row['photo_name']); ?>"
+								data-photo_id="<?php echo htmlspecialchars($row['id']); ?>"
+								/>
 						</a>
 					</li>
 					<?php
@@ -143,6 +163,6 @@
 	</div>
 </div>
 
-<div id="aef-vote-button">
-	<span id="aef-vote-opener" >voter</span>
+<div id="aef-vote-button" >
+	<img class="aef-vote-opener" src="<?php echo AefPhotosContest::$images_url . 'favoris-votez.png' ?>"/>	
 </div>
