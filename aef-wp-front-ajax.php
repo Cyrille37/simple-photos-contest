@@ -1,8 +1,7 @@
 <?php
-
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Ajax entry point for Front stuff,
+ * because we doesn't want to use the WP one which is only in Admin mode.
  */
 
 /* AJAX check  */

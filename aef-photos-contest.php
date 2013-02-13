@@ -4,8 +4,8 @@
   Plugin Name: AEF Simple Photos Contest
   Plugin URI: https://github.com/Cyrille37/aef-photos-contest
   Description: A simple photos contest plugin for WordPress
-  Author: Cyrille Giquello (Artéfacts), Marc Frèrebeau (Artéfacts)
-  Author URI: http://www.artefacts.coop
+  Author: Artéfacts & Conseil Général de Loir-et-Cher
+  Author URI: http://www.artefacts.coop, http://cg41.fr
   Version: 1.0
 
   Copyright (c) 2012 Artéfacts
