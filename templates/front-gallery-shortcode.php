@@ -12,6 +12,9 @@
 	var gallery ;
 
 	jQuery(document).ready( function() {
+		
+	
+//jQuery('.ad-controls', '#gallery').append(jQuery("#share-buttons"));
 
 		gallery = jQuery('.ad-gallery').adGallery(
 		{
@@ -52,8 +55,8 @@
 				},
 				afterImageVisible: function (){
 
-					var o = jQuery('.ad-info', '#gallery');
-					o.html( o.html()+' photos') ;
+					//var o = jQuery('.ad-info', '#gallery');
+					//o.html( o.html()+' photos') ;
 				}
 			}
 		});
@@ -89,6 +92,37 @@
 		return jQuery( '.image'+gallery[0].current_index, '#gallery').attr('data-photo_id');
 	}
 
+	function sharePhoto(socialNetwork)
+	{
+		console.log(jQuery('.image'+gallery[0].current_index).attr('src'));
+		var url ;
+		switch( socialNetwork)
+		{
+			case 'Facebook':
+				url = 'https://www.facebook.com/dialog/feed?link='+encodeURIComponent(window.location)
+					+ '&app_id='+AefPC.facebook_client_id
+					+ '&picture='+ encodeURIComponent(jQuery('.image'+gallery[0].current_index).attr('src') )
+					+ '&redirect_uri='+encodeURIComponent(window.location)
+				;
+				break;
+			case 'Twitter':
+				url = 'http://twitter.com/share'
+					+ '?url='+encodeURIComponent(window.location)
+					+'&text=Superbe photo sur '+ encodeURIComponent(AefPC.bloginfo_name)
+					+'&hashtags=CG41,Concours,Photo'
+				;
+				break;
+			case 'Google':
+				url = 'http://plus.google.com/share'
+					+ '?url='+encodeURIComponent(window.location)
+					;
+				break;
+		}
+		console.log(url);
+		
+		window.open(url,'Partager','scrollbars=yes,menubar=no,height=420,width=700,resizable=yes,toolbar=no,status=no');
+	}
+	
 </script>
 <style type="text/css">
 
@@ -109,30 +143,54 @@
 		display: block;
 	}
 	*/
-	/*
-		.entry-content li {
-			margin: 0px;
-			padding: 0px;
-		}
-		.ad-thumbs {
-			margin: 0px;
-			padding: 0px;		
-		}
-		.ad-thumbs-list {
-			margin: 0px;
-			padding: 0px;		
-		}
-		.ad-thumbs-list li {
-			margin: 0px;
-			padding: 0px;		
-		}
-	*/
+
 
 	/* if fancybox used, make the image seem clickable */
 	.ad-image {
 		cursor: pointer;
 	}
 
+/* -- Begin social sharing buttons
+------------------------------------------------------------- */
+.ss-share {
+  padding-left: 0;
+  list-style: none; }
+
+.ss-share-item {
+  display: inline;
+  margin-right: 0.25em; }
+
+.ss-share-link {
+  /* crude button styles */
+  text-decoration: none !important;
+  color: #444;
+  padding: .01em .5em .05em 30px;
+  background-color: #f5f5f5;
+  border: 1px solid #ccc;
+  border-radius: 2px; }
+  .ss-share-link:hover, .ss-share-link:active, .ss-share-link:focus {
+    color: #891434; }
+
+[class*="ico-"] {
+  display: inline-block;
+  background-size: 16px 16px;
+  background-repeat: no-repeat;
+  background-position: 4px center; }
+
+.ico-facebook {
+  background-image: url("http://www.facebook.com/favicon.ico"); }
+
+.ico-twitter {
+  background-image: url("http://twitter.com/favicons/favicon.ico"); }
+
+.ico-google {
+  background-image: url("https://ssl.gstatic.com/s2/oz/images/faviconr2.ico"); }
+
+
+.ad-gallery .ad-controls {
+	margin-top: 0;
+	margin-bottom: 14px;
+}
 
 </style>
 
@@ -140,6 +198,26 @@
 	<div class="ad-image-wrapper">
 	</div>
 	<div class="ad-controls">
+
+			<ul class="ss-share">Partager cette photo sur
+				<li class="ss-share-item">
+					<a class="ss-share-link ico-facebook"
+						 href="javascript:void(0);" onclick="sharePhoto('Facebook')"
+						 rel="nofollow" target="_blank">Facebook</a>
+				</li>
+				<li class="ss-share-item">
+					<a class="ss-share-link ico-twitter"
+						 href="javascript:void(0);" onclick="sharePhoto('Twitter')"
+						 rel="nofollow"
+						 target="_blank">Twitter</a>
+				</li>
+				<li class="ss-share-item">
+					<a class="ss-share-link ico-google"
+						 href="javascript:void(0);" onclick="sharePhoto('Google')"
+						 rel="nofollow" target="_blank">Google+</a>
+				</li>
+			</ul>
+	
 	</div>
 	<div class="ad-nav">
 		<div class="ad-thumbs">
@@ -167,6 +245,7 @@
 		</div>
 	</div>
 </div>
+
 
 <div id="aef-vote-button" >
 	<img class="aef-vote-opener" src="<?php echo AefPhotosContest::$images_url . 'favoris-votez.png' ?>"/>	

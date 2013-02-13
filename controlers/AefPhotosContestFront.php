@@ -62,7 +62,12 @@ class AefPhotosContestFront extends AefPhotosContest {
 			wp_enqueue_script('aef-ajax-vote', self::$javascript_url . 'aef.vote.js', array('jquery'));
 			// declare the URL to the file that handles the AJAX request (wp-admin/admin-ajax.php)
 			//wp_localize_script('my-ajax-request', 'AefPC', array('ajaxurl' => admin_url('admin-ajax.php')));
-			wp_localize_script('aef-ajax-vote', 'AefPC', array('ajaxurl' => self::$plugin_ajax_url));
+			wp_localize_script('aef-ajax-vote', 'AefPC', array(
+				'ajaxurl' => self::$plugin_ajax_url,
+				'facebook_client_id'=> $this->getOption('facebookClientId'),
+				'bloginfo_url' => get_bloginfo('url'),
+				'bloginfo_name' => get_bloginfo('name')
+				));
 		}
 	}
 
