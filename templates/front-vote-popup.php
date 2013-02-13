@@ -56,7 +56,7 @@
 				<ul class="hlist">
 					<li><a href="javascript:void(0);" title="identifiez vous avec Facebook" class="aef-auth-facebook"><img alt="Facebook" src="<?php echo AefPhotosContest::$images_url . 'facebook_32.png' ?>" /></a></li>
 					<li><a href="javascript:void(0);" title="identifiez vous avec Google+" class="aef-auth-google"><img alt="Google" src="<?php echo AefPhotosContest::$images_url . 'google_32.png' ?>" /></a></li>
-					<li><a href="javascript:void(0);" title="identifiez vous avec Yahoo" class="aef-auth-yahoo"><img alt="Yahoo" src="<?php echo AefPhotosContest::$images_url . 'yahoo_32.png' ?>" /></a></li>
+					<!--li><a href="javascript:void(0);" title="identifiez vous avec Yahoo" class="aef-auth-yahoo"><img alt="Yahoo" src="<?php echo AefPhotosContest::$images_url . 'yahoo_32.png' ?>" /></a></li-->
 					<li><a href="javascript:void(0);" onclick="return auth_email();" title="identifiez vous avec un code envoyez par email" class="aef-auth-email"><img alt="eMail" src="<?php echo AefPhotosContest::$images_url . 'email_32.jpg' ?>" /></a></li>
 				</ul>
 				<br/>
