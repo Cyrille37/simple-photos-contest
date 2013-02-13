@@ -9,6 +9,7 @@ require_once( __DIR__ . '/AefPhotosContest.php');
 class AefPhotosContestAdmin extends AefPhotosContest {
 
 	const PAGE_OVERVIEW = 'aef-photos-contest_overview';
+	const PAGE_VOTES = 'aef-photos-contest_votes';
 	const PAGE_PHOTOS = 'aef-photos-contest_photos';
 	const PAGE_PHOTO_EDIT = 'aef-photos-contest_photo_edit';
 	const PAGE_CONFIGURATION = 'aef-photos-contest_configuration';
@@ -138,7 +139,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 		if ($pagenow == 'index.php') {
 			add_action('wp_dashboard_setup', array($this, 'wp_dashboard_setup'));
 		}
-		else if ($pagenow == 'admin.php') {
+		else if ($pagenow == 'admin.php' && isset($_GET['page'])) {
 
 			switch ($_GET['page']) {
 
@@ -170,7 +171,6 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 				case self::PAGE_PHOTOS:
 
 					if (isset($_GET['action'])) {
-
 						switch ($_GET['action']) {
 
 							case 'delete':
@@ -181,6 +181,24 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 								wp_redirect($current_url);
 								exit();
 
+								break;
+							default;
+								$this->errors['action'] = __('Unknow action');
+								break;
+						}
+					}
+					break;
+
+				case self::PAGE_VOTES:
+
+					if (isset($_GET['action'])) {
+						switch ($_GET['action']) {
+							case 'delete':
+								$this->getDaoVotes()->delete($_GET['id']);
+								$current_url = set_url_scheme('http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+								$current_url = remove_query_arg(array('action', 'id'), $current_url);
+								//wp_redirect(admin_url('admin.php?page=' . $plugin_page));
+								wp_redirect($current_url);
 								break;
 							default;
 								$this->errors['action'] = __('Unknow action');
@@ -261,6 +279,9 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 		add_submenu_page(self::PAGE_OVERVIEW, __('Overview', self::PLUGIN), __('Overview', self::PLUGIN), self::WP_ROLE,
 			self::PAGE_OVERVIEW, array($this, 'wp_on_menu'));
 
+		add_submenu_page(self::PAGE_OVERVIEW, __('Votes', self::PLUGIN), __('Votes', self::PLUGIN), self::WP_ROLE,
+			self::PAGE_VOTES, array($this, 'wp_on_menu'));
+
 		add_submenu_page(self::PAGE_OVERVIEW, __('Photos', self::PLUGIN), __('Photos', self::PLUGIN), self::WP_ROLE,
 			self::PAGE_PHOTOS, array($this, 'wp_on_menu'));
 
@@ -294,6 +315,10 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 				include( self::$templates_folder . '/admin-photo-edit-page.php' );
 				break;
 
+			case self::PAGE_VOTES:
+				include( self::$templates_folder . '/admin-votes-page.php' );
+				break;
+
 			case self::PAGE_OVERVIEW:
 			default :
 				include( self::$templates_folder . '/admin-overview-page.php' );
@@ -304,10 +329,17 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 	public function wp_admin_enqueue_scripts_and_styles() {
 
 		wp_enqueue_script('jquery');
+
+		//wp_enqueue_script('aef-admin', self::$javascript_url . 'aef-admin.js', array('jquery'));
+
+		wp_enqueue_style('thickbox');
+		wp_enqueue_script('thickbox');
+
 		// using jquery-ui
 		wp_enqueue_script('jquery-ui-core');
 
 		if ($_GET['page'] == self::PAGE_CONFIGURATION) {
+
 			// using the jquery-ui datepicker
 			wp_enqueue_script('jquery-ui-datepicker');
 
@@ -334,9 +366,6 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 		}
 		else if ($_GET['page'] == self::PAGE_PHOTOS) {
 
-			wp_enqueue_style('thickbox');
-			wp_enqueue_script('jquery');
-			wp_enqueue_script('thickbox');
 		}
 	}
 
@@ -828,8 +857,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 
 		wp_enqueue_style('dashboard_widget_vote_style', self::$styles_url . 'dashboard_widget_vote.css');
 
-		wp_add_dashboard_widget('custom_dashboard_widget_vote', 'Concours photos',
-			array($this, 'dashboard_widget_vote'));
+		wp_add_dashboard_widget('custom_dashboard_widget_vote', 'Concours photos', array($this, 'dashboard_widget_vote'));
 	}
 
 	public function dashboard_widget_vote() {
@@ -841,15 +869,15 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 			$class = 'approved';
 			$msg.= 'Le vote est ouvert depuis le '
 				. $this->formatDate($this->getVoteOpenDate())
-				. ' jusqu´au ' . $this->formatDate($this->getVoteCloseDate()).'.';
+				. ' jusqu´au ' . $this->formatDate($this->getVoteCloseDate()) . '.';
 		}
 		else if ($this->isVoteToCome()) {
 			$class = 'waiting';
-			$msg.= 'Le vote ouvrira le ' . $this->formatDate($this->getVoteOpenDate()).'.';
+			$msg.= 'Le vote ouvrira le ' . $this->formatDate($this->getVoteOpenDate()) . '.';
 		}
 		else if ($this->isVoteFinished()) {
 			$class = 'waiting';
-			$msg.= 'Le vote est fermé depuis le ' . $this->formatDate($this->getVoteCloseDate()).'.';
+			$msg.= 'Le vote est fermé depuis le ' . $this->formatDate($this->getVoteCloseDate()) . '.';
 		}
 		else {
 			$class = 'unconfigured';
@@ -874,7 +902,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 			return;
 		}
 
-		$ok = $this->daoPhotos->deleteById($photo_id);
+		$ok = $this->daoPhotos->delete($photo_id);
 
 		if (!$ok) {
 			$this->errors['action'] = __('Failed to delete photo.') . ' (id=' . $photo_id . ')';

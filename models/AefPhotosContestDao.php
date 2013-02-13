@@ -201,7 +201,7 @@ abstract class AefPhotosContestModelDao {
 	 * @param int $id
 	 * @return type
 	 */
-	public function deleteById($id) {
+	public function delete($id) {
 
 		$res = $this->wpdb->query('DELETE FROM ' . $this->getTableName() . ' WHERE id = ' . intval($id));
 		return $res;

@@ -3,13 +3,13 @@
  * Plugin admin : Photos page
  */
 
-if (!class_exists('WP_List_Table')) {
-	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
+if (!class_exists('AefListTable')) {
+	require_once( __DIR__ . '/../models/AefListTable.php' );
 }
 
 /**
  * Class Photos_List_Table to manage the photos list in admin "photos" page.
- * Subclass of WP_List_Table
+ * Subclass of AefListTable
  * 
  * Doc:
  * http://codex.wordpress.org/Class_Reference/WP_List_Table
@@ -18,14 +18,8 @@ if (!class_exists('WP_List_Table')) {
  * Styling:
  * http://wpengineer.com/2426/wp_list_table-a-step-by-step-guide/
  */
-class Photos_List_Table extends WP_List_Table {
+class Photos_List_Table extends AefListTable {
 
-	const DEFAULT_ORDERBY = 'id'; // 'photo_name';
-	const DEFAULT_ORDER = 'asc';
-	const DEFAULT_ITEMS_PER_PAGE = 25;
-	const DEFAULT_COLUMN_TYPE = 'str';
-
-	protected $columns;
 
 	function __construct() {
 
@@ -36,42 +30,13 @@ class Photos_List_Table extends WP_List_Table {
 		));
 
 		$this->columns = array(
-			'id' => array('label' => __('Id'), 'type' => 'int', 'hiddenZ' => true),
+			'id' => array('label' => __('Id'), 'type' => 'int', 'hiddenZ' => true, 'sortableZ' => false),
 			'thumb' => array('label' => 'Photo'),
 			'votes' => array('label' => 'Votes'),
 			'photo_name' => array('label' => __('Photo name')),
 			'photographer_name' => array('label' => __('Photographer name')),
 			'photographer_email' => array('label' => __('Photographer email'))
 		);
-	}
-
-	function get_columns() {
-
-		$columns = array();
-		foreach ($this->columns as $k => $v) {
-			$columns[$k] = $v['label'];
-		}
-		return $columns;
-	}
-
-	function get_sortable_columns() {
-
-		$sortable_columns = array();
-		foreach ($this->columns as $k => $v) {
-			$sortable_columns[$k] = array($k, $k == self::DEFAULT_ORDERBY ? true : false);
-		}
-		//$sortable_columns['vote'] = array('vote', 'vote' == self::DEFAULT_ORDERBY ? true : false);
-		return $sortable_columns;
-	}
-
-	function get_hidden_columns() {
-
-		$columns = array();
-		foreach ($this->columns as $k => $v) {
-			if (isset($this->columns[$k]['hidden']))
-				$columns[] = $k;
-		}
-		return $columns;
 	}
 
 	function column_id($item) {
@@ -85,7 +50,7 @@ class Photos_List_Table extends WP_List_Table {
 		global $aefPC;
 
 		return
-			'<a href="' . $aefPC->getPhotoUrl($item, 'view') . '">'
+			'<a class="thickbox" title="´'.$item['photo_name'].'´ by ´'.$item['photographer_name'].'´" href="' . $aefPC->getPhotoUrl($item, 'view') . '">'
 			. '<img src="' . $aefPC->getPhotoUrl($item, 'thumb') . '" />'
 			. '</a>';
 	}
@@ -108,20 +73,6 @@ class Photos_List_Table extends WP_List_Table {
 				__('Confirm deletion of photo id ') . $item['id']),
 		);
 		return sprintf('%1$s<br/>%2$s', $name, $this->row_actions($actions));
-	}
-
-	function column_default($item, $column_name) {
-
-		$cType = self::DEFAULT_COLUMN_TYPE;
-		if (isset($this->columns[$column_name]['type'])) {
-			$cType = $this->columns[$column_name]['type'];
-		}
-		switch ($cType) {
-			case 'int':
-			case 'str':
-			default:
-				return $item[$column_name];
-		}
 	}
 
 	/**
@@ -193,7 +144,7 @@ $photosListTable->prepare_items();
 _e('Photos', AefPhotosContest::PLUGIN);
 ?></h2>
 
-	<form id="photos-filter" method="get">
+	<form id="photos-list" method="get">
 		<input type="hidden" name="page" value="<?php echo $_REQUEST['page'] ?>" />
 		<?php $photosListTable->display() ?>
 	</form>

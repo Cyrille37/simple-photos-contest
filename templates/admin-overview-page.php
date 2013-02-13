@@ -8,7 +8,7 @@
 		<br>
 	</div>
 	
-	<h2>Concours photo - tableau de bord</h2>
+	<h2><?php _e('Concours photo - Tableau de bord')?></h2>
 	
 	<p>
 		<?php

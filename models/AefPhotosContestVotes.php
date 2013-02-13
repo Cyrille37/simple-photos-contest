@@ -38,6 +38,26 @@ class AefPhotosContestVotes extends AefPhotosContestModelDao {
 
 		return $rows;
 	}
+	
+	/**
+	 * Get all vote plus columns wich contains some photo data.
+	 * @param AefQueryOptions $queryOptions
+	 * @return array Array of votes plus some photo's columns
+	 */
+	public function getAllWithPhotoData(AefQueryOptions $queryOptions=null)
+	{
+		$sql='select v.*, p.photo_name, p.photographer_name, p.photo_mime_type ';
+		$sql.=' from wp_aef_spc_votes v';
+		$sql.=' left join wp_aef_spc_photos p on (p.id=v.photo_id)';
+		//$sql.=' group by p.id';
+
+		$this->applyQueryOptions($sql, $queryOptions);
+
+		$rows = $this->wpdb->get_results($sql, ARRAY_A);
+		return $rows;
+
+
+	}
 
 	/**
 	 * 
