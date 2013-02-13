@@ -154,8 +154,10 @@
 					<input type="button" onclick="rebuildThumbs();" value="<?php _e('Rebuild thumbs') ?>"/>
 					<img id="rebuildThumbsSpin" src="<?php echo plugins_url(AefPhotosContest::PLUGIN);?>/images/wpspin-2x.gif" style="vertical-align: middle"/>
 
+					<?php /*
 					<br/>
 					<input type="button" onclick="buildFakePhotos();" value="<?php _e('Build fake photos') ?>"/>
+					 */ ?>
 				</td>
 			</tr>
 		</table>
