@@ -49,11 +49,16 @@
 					o.css('top', (root.height() - o.height() )+'px' );
 					o.css('left', (root.width() - 90) +'px');
 
+				},
+				afterImageVisible: function (){
+
+					var o = jQuery('.ad-info', '#gallery');
+					o.html( o.html()+' photos') ;
 				}
 			}
 		});
 
-		jQuery('.ad-gallery', '#gallery').on("click", ".ad-image", function() {
+		jQuery('.ad-gallery').on("click", ".ad-image", function() {
 
 			var href = jQuery(this).find("img").attr("src");
 			jQuery.fancybox({
