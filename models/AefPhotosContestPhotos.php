@@ -27,5 +27,21 @@ class AefPhotosContestPhotos extends AefPhotosContestModelDao {
 		$rows = $this->wpdb->get_results($sql, ARRAY_A);
 		return $rows;
 	}
+	
+	/**
+	 * @param int $id
+	 * @return array ['votes'=>n, 'voters'=>n]
+	 */
+	public function getVotesAndVotersCounts( $id )
+	{
+		$sql = 'SELECT count(id) as votes, count(distinct voter_email) as voters';
+		$sql.=' FROM wp_aef_spc_votes';
+		$sql.= ' WHERE photo_id='. intval($id);
+
+		$row = $this->wpdb->get_row($sql, ARRAY_A);
+
+		return array( $row['votes'], $row['voters'] );
+		
+	}
 
 }

@@ -3,6 +3,7 @@
  * Plugin admin : Add photo
  *  page
  */
+
 ?>
 <div class="wrap">
 	<div id="icon-options-general" class="icon32">
@@ -12,7 +13,7 @@
 	<h2><?php _e('Add Photo', AefPhotosContest::PLUGIN); ?></h2>
 
 	<?php if( isset($this->photo) ) { ?>
-	
+
 	<form name="configuration" method="post" action="<?php echo $_SERVER['REQUEST_URI']; ?>" enctype="multipart/form-data">
 		<?php wp_nonce_field(AefPhotosContestAdmin::PAGE_PHOTO_EDIT.$this->photo['id'], AefPhotosContestAdmin::PAGE_PHOTO_EDIT.'_nonce') ?>
 

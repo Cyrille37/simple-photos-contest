@@ -266,7 +266,14 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 			}
 
 			$this->photo_save();
+
 		}
+
+		if (isset($this->photo['id']) && !empty($this->photo['id'])) {
+			list($votesCount, $votersCount) = $this->getDaoPhotos()->getVotesAndVotersCounts($this->photo['id']);
+			$this->notices[] = $votesCount.' votes en '.$votersCount.' votants pour cette photo.' ;
+		}
+
 	}
 
 	public function wp_admin_menu() {
@@ -365,7 +372,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 			}
 		}
 		else if ($_GET['page'] == self::PAGE_PHOTOS) {
-
+			
 		}
 	}
 
