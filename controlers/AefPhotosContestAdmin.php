@@ -642,15 +642,15 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 		if (isset($this->photo['photographer_name'])) {
 			//$v = htmlspecialchars(trim($this->photo['photographer_name']),ENT_NOQUOTES);
 			$v = stripslashes(trim($this->photo['photographer_name']));
-			if ($v == '') {
-				_log('Photographer name could not be empty.');
-				$errors['photographer_name'] = __('Photographer name could not be empty.');
-			}
+			//if ($v == '') {
+			//	_log('Photographer name could not be empty.');
+			//	$errors['photographer_name'] = __('Photographer name could not be empty.');
+			//}
 			$this->photo['photographer_name'] = $v;
-		}
-		else {
-			_log('Photographer name could not be empty.');
-			$errors['photographer_name'] = __('Photographer name could not be empty.');
+		//}
+		//else {
+		//	_log('Photographer name could not be empty.');
+		//	$errors['photographer_name'] = __('Photographer name could not be empty.');
 		}
 
 		if (isset($this->photo['photographer_email'])) {
