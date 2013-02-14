@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="fr"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="fr"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="fr"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!--><html lang="fr"> <!--<![endif]-->
+	<head>
+		<meta charset="UTF-8" />
+		<title>AEF Simple Photos Contest - Facebook</title>
+		<meta name="author" content="Cyrille Giquello" />
+		<meta name="description" content="AEF Simple Photos Contest, documentation, Facebook" />
+		<meta name="keywords" content="" />
+		<!--link rel="stylesheet" type="text/css" media="all" href="base.css" /-->
+		<script type="text/javascript" src="../../../../../wp-includes/js/jquery/jquery.js"></script>
+		<script type="text/javascript">
+			thickboxL10n = {
+				loadingAnimation : 'images/loadingAnimation.gif'
+			};
+			jQuery(document).ready( function() {
+			});
+		</script>
+		<script type="text/javascript" src="../../../../../wp-includes/js/thickbox/thickbox.js"></script>
+		<link rel="stylesheet" href="../../../../../wp-includes/js/thickbox/thickbox.css" type="text/css" media="screen" />
+		<link rel="stylesheet" href="base.css" type="text/css" media="screen" />
+		<link rel="stylesheet" href="skeleton.css" type="text/css" media="screen" />
+		<link rel="stylesheet" href="layout.css" type="text/css" media="screen" />
+	</head>
+	<body>
+
+		<div class="container">
+
+			<div class="sixteen columns">
+				<h1 class="remove-bottom" style="margin-top: 40px">AEF Simple Photos Contest</h1>
+				<h5>Version 0.3</h5>
+				<hr />
+			</div>
+
+			<h2>1.1 Facebook</h2>
+
+			<h3>1.1.2 Identification des votants</h3>
+			<p>
+				Les votants peuvent s'identifier avec leur compte Facebook. Pour permettre cette fonction il faut déclarer le site auprès de Facebook en créant une application.
+				Les identifiants associés à cette application seront utilisés pour la configuration du plugin.
+			</p>
+
+			<h4>Création d'une application Facebook</h4>
+
+			<ol>
+				<li>Se connecter à Facebook, de préférence avec un compte en rapport avec le site internet sur lequel est installé le plugin</li>
+				<li>Utiliser le menu "créer une application" (voir <a href="images/facebook01.png" class="thickbox">écran1</a>, <a href="images/facebook02.png" class="thickbox">écran2</a>)</li>
+				<li>Renseigner le "Nom de l'application", le champs "Espace de nom de l'application" est facultatif, malgré l'éventuel message rouge "Échec" (voir <a href="images/facebook03.png" class="thickbox">écran3</a>).</li>
+				<li>Sur la page de configuration de l'application, ouvrir la section "Site web avec une authentification Facebook" est renseigner l'"Url du site" (voir <a href="images/facebook04.png" class="thickbox">écran4</a>)</li>
+				<li>En haut de la page de configuration de l'application il y a les deux valeurs "App ID" et "App Secret" qu'il va falloir utiliser pour configurer le plugin.</li>
+			</ol>
+
+			<h4>Configuration du plugin</h4>
+
+			<ol>
+				<li>Sur la page de configuration du plugin, dans la section "Options avancées" recopier</li>
+				<li>la valeur "App ID" dans le champs "Facebook client id"</li>
+				<li>la valeur "App Secret" dans le champs "Facebook secret key"</li>
+				<li>Enregistrer les modifications, et l'identification par Facebook doit être opérationnelle</li>
+			</ol>
+
+		</div><!-- container -->
+
+	</body>
+</html>

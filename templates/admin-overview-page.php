@@ -46,5 +46,5 @@
 
 	<p>Le code (shortcode) qu'il faut utiliser dans le contenu d'une page pour afficher la galerie du concours photos est:</p>
 	<code><?php echo AefPhotosContest::SHORT_CODE_PHOTOS_CONTEST ?></code>
-	
+	<p>Voir la <a href="<?php echo AefPhotosContest::$plugin_url.'docs/index.html' ?>" target="aef-spc-documentation">documentation</a>.</p>
 </div>
