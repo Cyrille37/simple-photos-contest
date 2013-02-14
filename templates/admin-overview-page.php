@@ -10,6 +10,8 @@
 	
 	<h2><?php _e('Concours photo - Tableau de bord')?></h2>
 	
+	<h3><?php _e('Infomation')?></h3>
+	
 	<p>
 		<?php
 		if ($this->isVoteOpen()) {
@@ -39,4 +41,10 @@
 	<p>
 		Il y a <?php echo $this->daoPhotos->count(); ?> photos.
 	</p>
+
+	<h3><?php _e('Documentation')?></h3>
+
+	<p>Le code (shortcode) qu'il faut utiliser dans le contenu d'une page pour afficher la galerie du concours photos est:</p>
+	<code><?php echo AefPhotosContest::SHORT_CODE_PHOTOS_CONTEST ?></code>
+	
 </div>

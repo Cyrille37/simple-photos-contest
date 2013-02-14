@@ -8,14 +8,9 @@ require_once( __DIR__ . '/AefPhotosContest.php');
 
 class AefPhotosContestFront extends AefPhotosContest {
 
-	const SHORT_CODE_PHOTOS_CONTEST = 'aefPhotosContest';
-	const COOKIE_VOTER = 'aefPC_Voter';
-
 	//const COOKIE_PINCODE = 'aefPC_PinCode';
 
 	public function __construct() {
-
-		global $wpdb;
 
 		parent::__construct();
 

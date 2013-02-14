@@ -33,6 +33,9 @@ class AefPhotosContest {
 	const VERSION = '1.0';
 	const DBVERSION = '1.0';
 
+	const SHORT_CODE_PHOTOS_CONTEST = 'aefPhotosContest';
+	const COOKIE_VOTER = 'aefPC_Voter';
+
 	public static $plugin_name;
 	public static $plugin;
 	public static $plugin_file;
