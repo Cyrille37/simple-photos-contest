@@ -124,13 +124,24 @@
 		<table class="form-table">
 			<tr valign="top">
 				<th align="left">
+					<?php _e('Photo name display length', AefPhotosContest::PLUGIN); ?>
+				</th>
+				<td>
+					<?php _e('width',AefPhotosContest::PLUGIN) ?><input class="" type="text" size="4" name="photoDescLengthMax" value="<?php echo $aefPC->getOption('photoDescLengthMax'); ?>" />
+					<span class="setting-description">
+						<?php _e('This is photo name max length after which name is truncated.', AefPhotosContest::PLUGIN); ?>
+					</span>
+				</td>
+			</tr>
+			<tr valign="top">
+				<th align="left">
 					<?php _e('Thumbnails size', AefPhotosContest::PLUGIN); ?>
 				</th>
 				<td>
 					<?php _e('width',AefPhotosContest::PLUGIN) ?><input class="" type="text" size="4" name="thumb_w" value="<?php echo $aefPC->getOption('thumbW'); ?>" />
 					<?php _e('height',AefPhotosContest::PLUGIN) ?><input class="" type="text" size="4" name="thumb_h" value="<?php echo $aefPC->getOption('thumbH'); ?>" />
 					<span class="setting-description">
-						<?php _e('This is photos thumbnail size.', AefPhotosContest::PLUGIN); ?>
+						<?php _e('This is photos thumbnails size.', AefPhotosContest::PLUGIN); ?>
 					</span>
 				</td>
 			</tr>
@@ -142,7 +153,7 @@
 					<?php _e('width',AefPhotosContest::PLUGIN) ?><input class="" type="text" size="4" name="view_w" value="<?php echo $aefPC->getOption('viewW'); ?>" />
 					<?php _e('height',AefPhotosContest::PLUGIN) ?><input class="" type="text" size="4" name="view_h" value="<?php echo $aefPC->getOption('viewH'); ?>" />
 					<span class="setting-description">
-						<?php _e('This is photo view size.', AefPhotosContest::PLUGIN); ?>
+						<?php _e('This is photos views size.', AefPhotosContest::PLUGIN); ?>
 					</span>
 				</td>
 			</tr>

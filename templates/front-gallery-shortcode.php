@@ -216,7 +216,7 @@
 					?>"
 								class="image<?php echo $gallery_idx++; ?>"
 								alt="<?php echo htmlspecialchars($row['photographer_name']); ?>"
-								title="<?php echo htmlspecialchars($row['photo_name']); ?>"
+								title="<?php echo $this->truncatePhotoName(htmlspecialchars($row['photo_name'])); ?>"
 								data-photo_id="<?php echo htmlspecialchars($row['id']); ?>"
 								/>
 						</a>

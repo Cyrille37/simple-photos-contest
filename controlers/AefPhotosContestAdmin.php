@@ -34,7 +34,6 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 
 		self::check_requirements();
 
-
 		if (defined('DOING_AJAX') && DOING_AJAX) {
 
 			add_action('wp_ajax_photo_order', array($this, 'wp_ajax_photo_order'));
@@ -477,6 +476,13 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 
 			if (!isset($this->errors['photoFolder']))
 				$this->options['photoFolder'] = $photoFolder;
+		}
+
+		if (isset($_POST['photoDescLengthMax']) && is_numeric($_POST['photoDescLengthMax'])) {
+			$this->options['photoDescLengthMax'] = $_POST['photoDescLengthMax'];
+		}
+		else {
+			$this->errors['photoDescLengthMax'] = _('Photo name max length must be set');
 		}
 
 		if (isset($_POST['thumb_w']) && is_numeric($_POST['thumb_w'])) {

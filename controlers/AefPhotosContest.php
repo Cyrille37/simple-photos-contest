@@ -91,6 +91,7 @@ if (!defined('ABSPATH')) {
 			'thumbH' => 150,
 			'viewW' => 1920,
 			'viewH' => 1440,
+			'photoDescLengthMax' => 32 ,
 			self::OPTION_VOTEFREQUENCY => self::VOTE_FREQ_ONEPERCONTEST,
 			self::OPTION_VOTEFREQUENCYHOURS => 24
 		);
@@ -194,6 +195,16 @@ if (!defined('ABSPATH')) {
 			$photo_url = $this->getPhotoFolderUrl() . '/' . $photo_row['id']
 				. (!empty($type) ? '-' . $type : '' ) . '.' . $ext[1];
 			return $photo_url;
+		}
+
+		public function truncatePhotoName($photoName)
+		{
+			$mLen = $this->getOption('photoDescLengthMax');
+			if( strlen($photoName) > $mLen)
+			{
+				return substr($photoName, 0, $mLen-2 ).'...';
+			}
+			return $photoName ;
 		}
 
 		public function getPhotoFolderPath() {
