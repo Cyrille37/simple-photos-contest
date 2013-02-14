@@ -49,7 +49,9 @@
 			</label>
 			<span class="description">Commentaire seulement visible ici.</span>
 		</p>
-		<?php if( !empty( $this->photo['id']) ) { ?>
+		<?php if( empty( $this->photo['id']) ) { ?>
+		<p><?php _e('You will be able to upload a photo after changes saved') ?></p>
+		<?php } else { ?>
 		
 			<?php if( !empty($this->photo['photo_mime_type']) ){ ?>
 				<p>
