@@ -64,8 +64,12 @@
 					<?php } else { ?>
 					<?php } ?>
 
-				},
-				afterImageVisible: function (){
+				}
+			}
+		});
+//console.dir(gallery[0]);
+
+		gallery[0].settings.callbacks.afterImageVisible = function (){
 
 					<?php if($this->isVoteOpen() ) { ?>
 
@@ -112,9 +116,7 @@
 
 					<?php } ?>
 
-				}
-			}
-		});
+				};
 
 		jQuery('.ad-gallery').on("click", ".ad-image", function() {
 
