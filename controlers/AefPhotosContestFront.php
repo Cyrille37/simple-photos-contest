@@ -135,7 +135,8 @@ class AefPhotosContestFront extends AefPhotosContest {
 
 		$photo_id = isset($_REQUEST['photo_id']) ? $_REQUEST['photo_id'] : null;
 		$voterEmail = $this->getVoterEMail();
-_log(__METHOD__. ' voterEmail='.$voterEmail.', photo_id='.$photo_id);
+		//_log(__METHOD__. ' voterEmail='.$voterEmail.', photo_id='.$photo_id);
+		
 		$output = array();
 
 		if (empty($voterEmail)) {
@@ -147,8 +148,7 @@ _log(__METHOD__. ' voterEmail='.$voterEmail.', photo_id='.$photo_id);
 			$output['command'] = 'can_vote';
 			$output['can_vote'] = $voterStatus->canVote;
 		}
-
-_log(__METHOD__. ' can_vote = '. ($output['can_vote']==true?'TRUE':'FALSE') );
+		//_log(__METHOD__. ' can_vote = '. ($output['can_vote']==true?'TRUE':'FALSE') );
 		
 		echo json_encode( $output );
 		wp_die();
