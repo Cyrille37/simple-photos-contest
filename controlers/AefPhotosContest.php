@@ -44,7 +44,6 @@ class AefPhotosContest {
 	public static $javascript_url;
 	public static $adminConfigPageName;
 	public static $options_name;
-	public static $dbtable_photos;
 
 	/**
 	 * @var array Plugin Options
@@ -122,8 +121,6 @@ class AefPhotosContest {
 
 		self::$adminConfigPageName = self::PLUGIN . '-configuration';
 		self::$templates_folder = dirname(__FILE__) . '/../templates/';
-
-		self::$dbtable_photos = $wpdb->prefix . self::DBTABLE_PREFIX . '_photos';
 
 		self::$options_name = self::PLUGIN;
 		$this->loadOptions();

@@ -127,8 +127,8 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 			wp_die('Failed to create table ' . aefphotoscontestvotes::gettablename());
 		}
 		else {
-		if ($wpdb->get_var('SHOW TABLES LIKE "' . aefphotoscontestvotes::gettablename() . '"') != aefphotoscontestvotes::gettablename())
-			wp_die('Failed to create table ' . aefphotoscontestvotes::gettablename());
+			if ($wpdb->get_var('SHOW TABLES LIKE "' . aefphotoscontestvotes::gettablename() . '"') != aefphotoscontestvotes::gettablename())
+				wp_die('Failed to create table ' . aefphotoscontestvotes::gettablename());
 		}
 	}
 
@@ -259,7 +259,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 			else {
 				// Init empty photo
 				$this->photo = array();
-				foreach ($wpdb->get_col('DESC ' . self::$dbtable_photos, 0) as $column_name) {
+				foreach ($wpdb->get_col('DESC ' . $this->getDaoPhotos()->getTableName(), 0) as $column_name) {
 					$this->photo[$column_name] = null;
 				}
 			}
@@ -293,9 +293,17 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 
 			$this->photo = $this->getDaoPhotos()->getById($photo_id);
 
-			foreach ($wpdb->get_col('DESC ' . self::$dbtable_photos, 0) as $column_name) {
-				if (isset($_POST[$column_name]))
+			if (!is_array($this->photo)) {
+				$this->photo = array();
+			}
+
+			foreach ($wpdb->get_col('DESC ' . $this->getDaoPhotos()->getTableName(), 0) as $column_name) {
+				if (isset($_POST[$column_name])) {
 					$this->photo[$column_name] = stripslashes($_POST[$column_name]);
+				}
+				else if (!isset($this->photo[$column_name])) {
+					$this->photo[$column_name] = null;
+				}
 			}
 
 			$ok = $this->photo_save();
@@ -690,7 +698,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 					$sql.=',';
 				$sql.= $k . '=%s';
 			}
-			$sql = 'UPDATE ' . self::$dbtable_photos . ' SET ' . $sql . ' WHERE id=%d';
+			$sql = 'UPDATE ' . $this->getDaoPhotos()->getTableName() . ' SET ' . $sql . ' WHERE id=%d';
 			$res = $wpdb->query($wpdb->prepare($sql, array_merge(array_values($this->photo), array($this->photo['id']))));
 			if ($res) {
 				$this->notices[] = __('Photo updated');
