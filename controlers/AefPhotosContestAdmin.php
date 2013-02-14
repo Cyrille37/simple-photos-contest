@@ -268,9 +268,10 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 			check_admin_referer(self::PAGE_PHOTO_EDIT . $photo_id, self::PAGE_PHOTO_EDIT . '_nonce');
 
 			// Copy sent photo's fields into photo
+			
 			foreach ($wpdb->get_col('DESC ' . self::$dbtable_photos, 0) as $column_name) {
 				if (isset($_POST[$column_name]))
-					$this->photo[$column_name] = $_POST[$column_name];
+					$this->photo[$column_name] = stripslashes($_POST[$column_name]);
 			}
 
 			$this->photo_save();
@@ -600,7 +601,8 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 		$errors = array();
 
 		if (isset($this->photo['photographer_name'])) {
-			$v = htmlspecialchars(trim($this->photo['photographer_name']));
+			//$v = htmlspecialchars(trim($this->photo['photographer_name']),ENT_NOQUOTES);
+			$v = stripslashes(trim($this->photo['photographer_name']));
 			if ($v == '') {
 				_log('Photographer name could not be empty.');
 				$errors['photographer_name'] = __('Photographer name could not be empty.');
@@ -622,7 +624,8 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 		}
 
 		if (isset($this->photo['photo_name'])) {
-			$v = htmlspecialchars(trim($this->photo['photo_name']));
+			//$v = htmlspecialchars(trim($this->photo['photo_name']), ENT_NOQUOTES);
+			$v = stripslashes( trim($this->photo['photo_name']) );
 			if ($v == '') {
 				_log('Photo name could not be empty.');
 				$errors['photo_name'] = __('Photo name could not be empty.');
@@ -894,7 +897,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 		}
 		else {
 			$output['command'] = 'error';
-			$output['message'] = 'Unknow insert: ' . htmlspecialchars($insert);
+			$output['message'] = 'Unknow insert: ' . htmlspecialchars($insert,ENT_NOQUOTES);
 		}
 
 		echo json_encode($output);
