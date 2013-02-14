@@ -51,7 +51,7 @@
 		</p>
 		<?php if( !empty( $this->photo['id']) ) { ?>
 		
-			<?php if( !empty($this->photo['photo_user_filename']) ){ ?>
+			<?php if( !empty($this->photo['photo_mime_type']) ){ ?>
 				<p>
 					<label>Nom du fichier original<br/>
 						<span><?php echo $this->photo['photo_user_filename']; ?></span>
