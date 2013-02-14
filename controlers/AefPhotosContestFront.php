@@ -10,6 +10,7 @@ class AefPhotosContestFront extends AefPhotosContest {
 
 	const SHORT_CODE_PHOTOS_CONTEST = 'aefPhotosContest';
 	const COOKIE_VOTER = 'aefPC_Voter';
+
 	//const COOKIE_PINCODE = 'aefPC_PinCode';
 
 	public function __construct() {
@@ -62,12 +63,13 @@ class AefPhotosContestFront extends AefPhotosContest {
 			wp_enqueue_script('aef-ajax-vote', self::$javascript_url . 'aef.vote.js', array('jquery'));
 			// declare the URL to the file that handles the AJAX request (wp-admin/admin-ajax.php)
 			//wp_localize_script('my-ajax-request', 'AefPC', array('ajaxurl' => admin_url('admin-ajax.php')));
-			wp_localize_script('aef-ajax-vote', 'AefPC', array(
+			wp_localize_script('aef-ajax-vote', 'AefPC',
+				array(
 				'ajaxurl' => self::$plugin_ajax_url,
-				'facebook_client_id'=> $this->getOption('facebookClientId'),
+				'facebook_client_id' => $this->getOption('facebookClientId'),
 				'bloginfo_url' => get_bloginfo('url'),
 				'bloginfo_name' => get_bloginfo('name')
-				));
+			));
 		}
 	}
 
@@ -116,14 +118,12 @@ class AefPhotosContestFront extends AefPhotosContest {
 	 * Store the voter's email in the cookie self::COOKIE_VOTER
 	 * @param string $email
 	 */
-	public function setVoterEmail($email=null) {
+	public function setVoterEmail($email = null) {
 
-		if( $email == null )
-		{
-			setcookie(self::COOKIE_VOTER, null, -1, '/');			
+		if ($email == null) {
+			setcookie(self::COOKIE_VOTER, null, -1, '/');
 		}
-		else
-		{
+		else {
 			$cookie_voter = $email . '#' . hash_hmac('SHA256', $email, AUTH_KEY);
 			setcookie(self::COOKIE_VOTER, $cookie_voter, 0, '/');
 		}
@@ -133,14 +133,17 @@ class AefPhotosContestFront extends AefPhotosContest {
 
 		global $aefPC;
 
-		$voterEmail = null ;
+		$voterEmail = null;
 
-		if( isset($_REQUEST['logout']) )
-		{
+		if (!$this->isVoteOpen()) {
+			echo '';
+			return;
+		}
+
+		if (isset($_REQUEST['logout'])) {
 			$this->setVoterEmail();
 		}
-		else
-		{
+		else {
 			$voterEmail = $this->getVoterEMail();
 		}
 
@@ -268,13 +271,19 @@ class AefPhotosContestFront extends AefPhotosContest {
 		if (isset($email)) {
 			$this->setVoterEmail($email);
 		}
-
 	}
 
 	/**
 	 * output data was computed at init_ajax_vote_auth().
 	 */
 	public function wp_ajax_vote_auth() {
+
+		if (!$this->isVoteOpen()) {
+
+			$this->ajax_ouput_data = array();
+			$this->ajax_ouput_data['command'] = 'error';
+			$this->ajax_ouput_data['message'] = 'Le vote est fermé';
+		}
 
 		echo json_encode($this->ajax_ouput_data);
 	}

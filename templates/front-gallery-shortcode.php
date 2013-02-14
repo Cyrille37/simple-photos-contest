@@ -13,6 +13,8 @@
 
 	jQuery(document).ready( function() {
 
+		jQuery('#aef-vote-button').hide();
+
 		gallery = jQuery('.ad-gallery').adGallery(
 		{
 			loader_image: '<?php echo AefPhotosContest::$javascript_url; ?>AD_Gallery-1.2.7/loader.gif',
@@ -22,10 +24,12 @@
 			callbacks: {
 				init: function() {
 	
+					<?php if($this->isVoteOpen() ) { ?>
+
 					var root = jQuery('.ad-image-wrapper','#gallery');
 					var o = jQuery('#aef-vote-button') ;
 					root.append(o);
-
+					
 					var o2 = jQuery('.aef-vote-opener','#gallery');
 					o2.click(openVoteBox);
 					o2.hover(
@@ -40,14 +44,21 @@
 					o.css('left', (root.width() - 90) +'px');
 					o.css('z-index', jQuery('.ad-next').css('z-index') );
 
+					<?php } else { ?>
+					<?php } ?>
+
 				},
 				beforeImageVisible: function (){
+
+					<?php if($this->isVoteOpen() ) { ?>
 
 					var o = jQuery('#aef-vote-button') ;
 					o.show();
 					var root = jQuery('.ad-image-wrapper','#gallery');
 					o.css('top', (root.height() - o.height() )+'px' );
 					o.css('left', (root.width() - 90) +'px');
+
+					<?php } ?>
 
 				}
 			}
@@ -85,7 +96,6 @@
 
 	function sharePhoto(socialNetwork)
 	{
-		console.log(jQuery('.image'+gallery[0].current_index).attr('src'));
 		var url ;
 		switch( socialNetwork)
 		{
@@ -109,41 +119,26 @@
 					;
 				break;
 		}
-		console.log(url);
-		
+
 		window.open(url,'Partager','scrollbars=yes,menubar=no,height=420,width=700,resizable=yes,toolbar=no,status=no');
 		return false ;
 	}
 	
 </script>
 <style type="text/css">
-
-	/*
-	#descriptions {
-		position: relative;
-		height: 50px;
-		background: #EEE;
-		margin-top: 10px;
-		width: 640px;
-		padding: 10px;
-		overflow: hidden;
-	}
-	#descriptions .ad-image-description {
-		position: absolute;
-	}
-	#descriptions .ad-image-description .ad-description-title {
-		display: block;
-	}
-	*/
-
+	
+.ad-gallery .ad-controls {
+	margin-top: 0;
+	margin-bottom: 14px;
+}
 
 	/* if fancybox used, make the image seem clickable */
 	.ad-image {
 		cursor: pointer;
 	}
 
-/* -- Begin social sharing buttons
-------------------------------------------------------------- */
+/* social sharing buttons */
+
 .ss-share {
   padding-left: 0;
   list-style: none; }
@@ -177,12 +172,6 @@
 
 .ico-google {
   background-image: url("https://ssl.gstatic.com/s2/oz/images/faviconr2.ico"); }
-
-
-.ad-gallery .ad-controls {
-	margin-top: 0;
-	margin-bottom: 14px;
-}
 
 </style>
 
@@ -239,7 +228,6 @@
 		</div>
 	</div>
 </div>
-
 
 <div id="aef-vote-button" >
 	<img class="aef-vote-opener" src="<?php echo AefPhotosContest::$images_url . 'favoris-votez.png' ?>"/>	
