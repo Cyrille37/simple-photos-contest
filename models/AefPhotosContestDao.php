@@ -80,7 +80,7 @@ abstract class AefPhotosContestModelDao {
 	 */
 	public function count(AefQueryOptions $queryOptions = null) {
 
-		$sql = 'SELECT COUNT(*) FROM ' . $this->getTableName() ;
+		$sql = 'SELECT COUNT(*) FROM ' . $this->getTableName();
 
 		$this->applyQueryOptions($sql, $queryOptions);
 
@@ -110,6 +110,11 @@ abstract class AefPhotosContestModelDao {
 
 		$row = $this->wpdb->get_row('SELECT * FROM ' . $this->getTableName() . ' WHERE id = ' . intval($id), ARRAY_A);
 		return $row;
+	}
+
+	public function getVar($id, $fieldName) {
+		$var = $this->wpdb->get_var('SELECT ' . $this->wpdb->escape($fieldName) . ' FROM ' . $this->getTableName() . ' WHERE id = ' . intval($id));
+		return $var;
 	}
 
 	protected function applyQueryOptions(&$sql, AefQueryOptions $queryOptions = null) {
@@ -193,6 +198,24 @@ abstract class AefPhotosContestModelDao {
 		if ($res !== false) {
 			$this->lastInsertId = $this->wpdb->insert_id;
 		}
+		return $res;
+	}
+
+	public function updateById($id, array $data) {
+
+		$fields = array();
+		$values = array();
+		foreach ($data as $k => $v) {
+			if ($k == 'id')
+				continue;
+			$fields[] = $this->wpdb->escape($k) . '=%s';
+			$values[] = $v;
+		}
+		$values[] = $id;
+
+		$sql = 'UPDATE ' . $this->getTableName() . ' SET ' . implode(',', $fields) . ' WHERE id=%d';
+		$res = $this->wpdb->query($this->wpdb->prepare($sql, $values));
+
 		return $res;
 	}
 

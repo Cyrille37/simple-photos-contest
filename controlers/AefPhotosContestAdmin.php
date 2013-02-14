@@ -11,6 +11,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 	const PAGE_OVERVIEW = 'aef-photos-contest_overview';
 	const PAGE_VOTES = 'aef-photos-contest_votes';
 	const PAGE_PHOTOS = 'aef-photos-contest_photos';
+	const PAGE_PHOTOS_ORDER = 'aef-photos-contest_photos_order';
 	const PAGE_PHOTO_EDIT = 'aef-photos-contest_photo_edit';
 	const PAGE_CONFIGURATION = 'aef-photos-contest_configuration';
 	const WP_ROLE = 'edit_pages';
@@ -33,17 +34,24 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 
 		self::check_requirements();
 
-		register_activation_hook(self::$plugin_file, array($this, 'wp_activate'));
-		register_deactivation_hook(self::$plugin_file, array($this, 'wp_deactivate'));
-		// Init de base de l'admin
-		add_action('admin_init', array($this, 'wp_admin_init'));
-		add_action('admin_menu', array($this, 'wp_admin_menu'));
-		add_action('admin_notices', array($this, 'wp_admin_notices'));
 
-		if (self::is_plugin_page()) {
-			// THIS PLUGIN's pages only
-			add_action('admin_enqueue_scripts', array($this, 'wp_admin_enqueue_scripts_and_styles'));
-			//add_action('save_post', array($this, 'wp_post_type_save'));
+		if (defined('DOING_AJAX') && DOING_AJAX) {
+
+			add_action('wp_ajax_photo_order', array($this, 'wp_ajax_photo_order'));
+		}
+		else {
+			register_activation_hook(self::$plugin_file, array($this, 'wp_activate'));
+			register_deactivation_hook(self::$plugin_file, array($this, 'wp_deactivate'));
+			// Init de base de l'admin
+			add_action('admin_init', array($this, 'wp_admin_init'));
+			add_action('admin_menu', array($this, 'wp_admin_menu'));
+			add_action('admin_notices', array($this, 'wp_admin_notices'));
+
+			if (self::is_plugin_page()) {
+				// THIS PLUGIN's pages only
+				add_action('admin_enqueue_scripts', array($this, 'wp_admin_enqueue_scripts_and_styles'));
+				//add_action('save_post', array($this, 'wp_post_type_save'));
+			}
 		}
 	}
 
@@ -266,14 +274,12 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 			}
 
 			$this->photo_save();
-
 		}
 
 		if (isset($this->photo['id']) && !empty($this->photo['id'])) {
 			list($votesCount, $votersCount) = $this->getDaoPhotos()->getVotesAndVotersCounts($this->photo['id']);
-			$this->notices[] = $votesCount.' votes en '.$votersCount.' votants pour cette photo.' ;
+			$this->notices[] = $votesCount . ' votes en ' . $votersCount . ' votants pour cette photo.';
 		}
-
 	}
 
 	public function wp_admin_menu() {
@@ -297,6 +303,10 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 
 		add_submenu_page(self::PAGE_OVERVIEW, __('Configuration', self::PLUGIN), __('Configuration', self::PLUGIN),
 			self::WP_ROLE, self::PAGE_CONFIGURATION, array($this, 'wp_on_menu'));
+
+		// Not visible in menu: parent slug is null
+		add_submenu_page(null, __('Photos order', self::PLUGIN), __('Photos order', self::PLUGIN), self::WP_ROLE,
+			self::PAGE_PHOTOS_ORDER, array($this, 'wp_on_menu'));
 	}
 
 	public function wp_on_menu() {
@@ -306,16 +316,20 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 		 */
 		global $aefPC, $wpdb;
 
+		//_log(__METHOD__.' page='.$_GET['page']);
+
 		switch ($_GET['page']) {
 
 			case self::PAGE_CONFIGURATION:
-
 				include( self::$templates_folder . '/admin-configuration-page.php' );
 				break;
 
 			case self::PAGE_PHOTOS:
-
 				include( self::$templates_folder . '/admin-photos-page.php' );
+				break;
+
+			case self::PAGE_PHOTOS_ORDER:
+				include( self::$templates_folder . '/admin-photos-order.php' );
 				break;
 
 			case self::PAGE_PHOTO_EDIT:
@@ -371,8 +385,10 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 					'https://raw.github.com/jquery/jquery-ui/master/ui/i18n/jquery.ui.datepicker-' . $language . '.js');
 			}
 		}
-		else if ($_GET['page'] == self::PAGE_PHOTOS) {
-			
+		else if ($_GET['page'] == self::PAGE_PHOTOS_ORDER) {
+
+			wp_enqueue_script('jquery-ui-sortable');
+			wp_enqueue_style('jquery-ui', self::$styles_url . 'jquery-ui.css');
 		}
 	}
 
@@ -790,6 +806,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 	}
 
 	public function photos_build_fake() {
+
 		_log(__METHOD__);
 
 		$nbPhotos = 20;
@@ -858,6 +875,30 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 		}
 
 		$this->notices[] = 'Generated ' . $cptPhotos . ' over ' . $nbPhotos;
+	}
+
+	public function wp_ajax_photo_order() {
+
+		$output = array();
+		$output['command'] = 'order_ok';
+
+		$insert = $_REQUEST['insert'];
+		$srcId = $_REQUEST['photoId'];
+		$targetId = $_REQUEST['targetId'];
+
+		if ($insert == 'before') {
+			$this->getDaoPhotos()->orderInsertBefore($srcId, $targetId);
+		}
+		else if ($insert == 'after') {
+			$this->getDaoPhotos()->orderInsertAfter($srcId, $targetId);
+		}
+		else {
+			$output['command'] = 'error';
+			$output['message'] = 'Unknow insert: ' . htmlspecialchars($insert);
+		}
+
+		echo json_encode($output);
+		wp_die();
 	}
 
 	public function wp_dashboard_setup() {

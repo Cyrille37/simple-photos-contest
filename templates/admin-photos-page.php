@@ -20,7 +20,6 @@ if (!class_exists('AefListTable')) {
  */
 class Photos_List_Table extends AefListTable {
 
-
 	function __construct() {
 
 		parent::__construct(array(
@@ -50,7 +49,8 @@ class Photos_List_Table extends AefListTable {
 		global $aefPC;
 
 		return
-			'<a class="thickbox" title="´'.$item['photo_name'].'´ by ´'.$item['photographer_name'].'´" href="' . $aefPC->getPhotoUrl($item, 'view') . '">'
+			'<a class="thickbox" title="´' . $item['photo_name'] . '´ by ´' . $item['photographer_name'] . '´" href="' . $aefPC->getPhotoUrl($item,
+				'view') . '">'
 			. '<img src="' . $aefPC->getPhotoUrl($item, 'thumb') . '" />'
 			. '</a>';
 	}
@@ -109,9 +109,9 @@ class Photos_List_Table extends AefListTable {
 		$total_items = $dataCountAll;
 
 		$this->set_pagination_args(array(
-			'total_items' => $total_items, //WE have to calculate the total number of items
-			'per_page' => $per_page, //WE have to determine how many items to show on a page
-			'total_pages' => ceil($total_items / $per_page) //WE have to calculate the total number of pages
+			'total_items' => $total_items,
+			'per_page' => $per_page,
+			'total_pages' => ceil($total_items / $per_page)
 		));
 	}
 
@@ -119,20 +119,23 @@ class Photos_List_Table extends AefListTable {
 
 $photosListTable = new Photos_List_Table();
 $photosListTable->prepare_items();
+
 ?>
 <style type="text/css">
+
 	.alternate { background-color: #f2f2f2}
 	.wp-list-table tbody td {vertical-align: middle}
-
-	/*.wp-list-table tbody th.check-column  {vertical-align: middle; padding: 2px}
-	.wp-list-table tbody th.check-column img {width: 100%; height: 100%; vertical-align: middle; border:0; }*/
 
 	.wp-list-table .column-id { width: 5%; }
 	.wp-list-table .column-thumb { width: 70px;}
 	.wp-list-table .column-thumb img { width: 60px; height: 50px;}
-	.wp-list-table .column-votes { width: 5%;  text-align: center;}
+	.wp-list-table .column-votes { width: 7%;  text-align: center;}
 
 	.span-photo_user_filename { font-style: italic; font-stretch: condensed; }
+	
+	#photos-order {
+		margin-left: 5%;
+	}
 </style>
 
 <div class="wrap">
@@ -140,9 +143,11 @@ $photosListTable->prepare_items();
 		<br>
 	</div>
 
-	<h2><?php
-_e('Photos', AefPhotosContest::PLUGIN);
-?></h2>
+	<h2><?php _e('Concours photo - Liste des photos', AefPhotosContest::PLUGIN)?></h2>
+
+	<form id="photos-order">
+		<input type="button" onclick="window.location='<?php echo admin_url('admin.php?page='.AefPhotosContestAdmin::PAGE_PHOTOS_ORDER) ?>'" value="Trier les photos"/>
+	</form>
 
 	<form id="photos-list" method="get">
 		<input type="hidden" name="page" value="<?php echo $_REQUEST['page'] ?>" />
