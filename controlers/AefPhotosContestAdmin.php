@@ -280,12 +280,15 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 
 			// Copy sent photo's fields into photo
 
+			$this->photo = $this->getDaoPhotos()->getById($photo_id);
+
 			foreach ($wpdb->get_col('DESC ' . self::$dbtable_photos, 0) as $column_name) {
 				if (isset($_POST[$column_name]))
 					$this->photo[$column_name] = stripslashes($_POST[$column_name]);
 			}
 
-			$this->photo_save();
+			$ok = $this->photo_save();
+
 		}
 
 		if (isset($this->photo['id']) && !empty($this->photo['id'])) {
@@ -657,8 +660,10 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 
 		if (count($errors) > 0) {
 			$this->errors = array_merge($this->errors, $errors);
-			return;
+			return false ;
 		}
+
+		$result = null ;
 
 		ksort($this->photo);
 
@@ -679,9 +684,11 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 			$res = $wpdb->query($wpdb->prepare($sql, array_merge(array_values($this->photo), array($this->photo['id']))));
 			if ($res) {
 				$this->notices[] = __('Photo updated');
+				$result = true ;
 			}
 			else {
 				$this->errors[] = __('Failed to update photo');
+				$result = false ;
 			}
 		}
 		else {
@@ -695,11 +702,14 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 			$this->photo['id'] = $wpdb->insert_id;
 			if ($res) {
 				$this->notices[] = __('Photo saved');
+				$result = true ;
 			}
 			else {
 				$this->errors[] = __('Failed to save photo');
+				$result = false ;
 			}
 		}
+		return $result ;
 	}
 
 	public function photo_save_file() {
