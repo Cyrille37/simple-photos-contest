@@ -91,7 +91,7 @@ CREATE TABLE `wp_aef_spc_photos` (
   `photo_user_filename` varchar(255) NOT NULL,
   `photo_order` tinyint(3) unsigned NOT NULL,
   `photographer_name` varchar(255) NOT NULL,
-  `photographer_email` varchar(255) NOT NULL,
+  `photographer_email` varchar(255) NULL,
   `notes` tinytext,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
@@ -109,12 +109,13 @@ CREATE TABLE `wp_aef_spc_photos` (
 				`photo_user_filename` VARCHAR(255) NOT NULL,
 				`photo_order` TINYINT UNSIGNED NOT NULL,
 				`photographer_name` VARCHAR(255) NOT NULL,
-				`photographer_email` VARCHAR(255) NOT NULL,
+				`photographer_email` VARCHAR(255) NULL,
 				`notes` TINYTEXT,
 				`created_at` DATETIME,
 				`updated_at` DATETIME,
 				PRIMARY KEY (`id`),
-				UNIQUE KEY `UQ_photo_name` (`photo_name`)
+				UNIQUE KEY `UQ_photo_name` (`photo_name`),
+				KEY `IX_photo_order` (`photo_order`)
 			) DEFAULT CHARSET=utf8 ;'; // DEFAULT CHARSET=utf8
 
 		dbDelta($sql);
@@ -643,7 +644,7 @@ CREATE TABLE `wp_aef_spc_photos` (
 
 		if (isset($this->photo['photographer_email'])) {
 			$v = sanitize_email(trim($this->photo['photographer_email']));
-			if (!is_email($v)) {
+			if ($v!='' && !is_email($v)) {
 				_log('Photographer email is not valid : [' . $v . ']');
 				$errors['photographer_email'] = __('Photographer email is not valid.');
 			}
