@@ -83,7 +83,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 		// dbDelta génère des erreurs et ne fait pas le boulot de DIFF quand il y a des changements ...
 		// Du coup j'ajoute "IF NOT EXISTS" ...
 		//$sql = 'CREATE TABLE IF NOT EXISTS `' . AefPhotosContestPhotos::getTableName() . '` (
-		$sql = 'create table ' . aefphotoscontestphotos::gettablename() . ' (
+		$sql = 'create table IF NOT EXISTS ' . aefphotoscontestphotos::gettablename() . ' (
 				id int unsigned NOT NULL AUTO_INCREMENT,
 				photo_name varchar(255) NOT NULL,
 				photo_mime_type varchar(50) NOT NULL,
@@ -110,7 +110,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 				wp_die('Failed to create table ' . aefphotoscontestphotos::gettablename());
 		}
 
-		$sql = 'create table ' . aefphotoscontestvotes::gettablename() . ' (
+		$sql = 'create table IF NOT EXISTS ' . aefphotoscontestvotes::gettablename() . ' (
 				id int unsigned not null auto_increment,
 				voter_name varchar(255) not null,
 				voter_email varchar(255) not null,
