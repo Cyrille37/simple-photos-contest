@@ -67,9 +67,11 @@
 				}
 			}
 		});
-//console.dir(gallery[0]);
 
 		gallery[0].settings.callbacks.afterImageVisible = function (){
+
+				// Sur certains postes, l'appel à cette callback semble arriver trop tôt
+				// car dans la fonction getCurrentPhotoId() "gallery" est "undefined".
 
 					<?php if($this->isVoteOpen() ) { ?>
 
@@ -79,7 +81,8 @@
 
 					var params = {};  
 					params.action = 'can_vote' ;
-					params.photo_id = getCurrentPhotoId() ;
+					//params.photo_id = getCurrentPhotoId() ;
+					params.photo_id = jQuery( '.image'+this.current_index, '#gallery').attr('data-photo_id') ;
 
 					jQuery.post(
 						AefPC.ajaxurl,
