@@ -87,7 +87,7 @@ class AefPhotosContestFront extends AefPhotosContest {
 		//_log(__METHOD__);
 
 		$qOptions = new AefQueryOptions();
-		$qOptions->orderBy('id', 'ASC');
+		$qOptions->orderBy('photo_order', 'ASC');
 		$photos = $this->daoPhotos->getAll($qOptions);
 
 		ob_start();
