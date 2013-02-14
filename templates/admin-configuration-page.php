@@ -39,14 +39,15 @@
 		<br>
 	</div>
 
-	<h2><?php _e('Photos contest configuration', AefPhotosContest::PLUGIN); ?></h2>
+	<h2><?php _e('Photos contest - Configuration', AefPhotosContest::PLUGIN); ?></h2>
 
 	<form name="configuration" id="configuration" method="post" action="<?php echo $_SERVER['REQUEST_URI']; ?>">
 		<?php wp_nonce_field(AefPhotosContestAdmin::PAGE_CONFIGURATION, AefPhotosContestAdmin::PAGE_CONFIGURATION.'_nonce') ?>
 
 		<?php submit_button(); ?>
 
-		<h3><?php _e('Concours',AefPhotosContest::PLUGIN); ?></h3>
+		<h3><?php _e('Contest',AefPhotosContest::PLUGIN); ?></h3>
+
 		<table class="form-table">
 			<tr valign="top">
 				<th align="left">
@@ -98,7 +99,7 @@
 					<label id="setting-voteFrequencyHours">
 						<input type="text" size="3" name="<?php echo AefPhotosContest::OPTION_VOTEFREQUENCYHOURS ?>" value="<?php echo $aefPC->getOption(AefPhotosContest::OPTION_VOTEFREQUENCYHOURS); ?>" />
 						<span class="setting-description">
-							<?php _e('How many hours between votes, when vote frequency is limited by hours.', AefPhotosContest::PLUGIN) ?>
+							<?php _e('How many hours between votes, when vote frequency is time limited.', AefPhotosContest::PLUGIN) ?>
 						</span>
 					</label>
 					<script type="text/javascript">
@@ -121,13 +122,14 @@
 		</table>
 		
 		<h3><?php _e('Photos',AefPhotosContest::PLUGIN); ?></h3>
+
 		<table class="form-table">
 			<tr valign="top">
 				<th align="left">
 					<?php _e('Photo name display length', AefPhotosContest::PLUGIN); ?>
 				</th>
 				<td>
-					<?php _e('width',AefPhotosContest::PLUGIN) ?><input class="" type="text" size="4" name="photoDescLengthMax" value="<?php echo $aefPC->getOption('photoDescLengthMax'); ?>" />
+					<input class="" type="text" size="4" name="photoDescLengthMax" value="<?php echo $aefPC->getOption('photoDescLengthMax'); ?>" />
 					<span class="setting-description">
 						<?php _e('This is photo name max length after which name is truncated.', AefPhotosContest::PLUGIN); ?>
 					</span>
@@ -174,6 +176,7 @@
 		</table>
 
 		<h3><?php _e('Advanced options',AefPhotosContest::PLUGIN); ?></h3>
+
 		<table class="form-table">
 			<tr valign="top">
 				<th align="left">

@@ -319,7 +319,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 
 		//_log(__METHOD__);
 
-		add_menu_page(__('Concours photos', self::PLUGIN), __('Concours photos', self::PLUGIN), self::WP_ROLE,
+		add_menu_page(__('Photos contest', self::PLUGIN), __('Photos contest', self::PLUGIN), self::WP_ROLE,
 			self::PAGE_OVERVIEW, array($this, 'wp_on_menu'));
 
 		add_submenu_page(self::PAGE_OVERVIEW, __('Overview', self::PLUGIN), __('Overview', self::PLUGIN), self::WP_ROLE,
@@ -441,18 +441,22 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 		}
 
 		if (self::is_plugin_page()) {
+
 			if ($this->isVoteOpen()) {
-				$this->notices[] = __('Vote is open since')
-					. ' ' . $this->formatDate($this->getVoteOpenDate())
-					. ' to ' . $this->formatDate($this->getVoteCloseDate());
+				$this->notices[] = sprintf(
+					__('Vote is open since %1s to %2s', self::PLUGIN),
+					$this->formatDate($this->getVoteOpenDate()),
+					$this->formatDate($this->getVoteCloseDate()) );
 			}
 			else if ($this->isVoteToCome()) {
-				$this->notices[] = __('Vote will be open as from')
-					. ' ' . $this->formatDate($this->getVoteOpenDate());
+				$this->notices[] = sprint(
+					__('Vote will be open as from %s', self::PLUGIN),
+					$this->formatDate($this->getVoteOpenDate()) );
 			}
 			else if ($this->isVoteFinished()) {
-				$this->notices[] = __('Vote completed since')
-					. ' ' . $this->formatDate($this->getVoteCloseDate());
+				$this->notices[] = sprintf(
+					__('Vote completed since %s', self::PLUGIN),
+					$this->formatDate($this->getVoteCloseDate()) );
 			}
 			else {
 				$this->notices[] = __('Vote is not configured');
@@ -798,7 +802,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 			return false;
 		}
 
-		$this->notices[] = __('Photo upload at path: ') . esc_html($dest_file);
+		$this->notices[] = __('Photo uploaded at path: ') . esc_html($dest_file);
 
 		$this->photo['photo_user_filename'] = $file['name'];
 		$this->photo['photo_mime_type'] = $ftype;

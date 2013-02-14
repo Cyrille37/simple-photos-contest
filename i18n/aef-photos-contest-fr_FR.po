@@ -1,0 +1,403 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Aef Simple Photo Contest\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-14 23:16+0100\n"
+"PO-Revision-Date: 2013-02-14 23:17+0100\n"
+"Last-Translator: Cyrille37 <cyrille37@gmail.com>\n"
+"Language-Team: \n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: __;gettext;gettext_noop;_e\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SearchPath-0: ..\n"
+
+#: ../controlers/AefPhotosContestAdmin.php:189
+#: ../controlers/AefPhotosContestAdmin.php:216
+#: ../controlers/AefPhotosContestAdmin.php:234
+msgid "Unknow action"
+msgstr "Action inconnue"
+
+#: ../controlers/AefPhotosContestAdmin.php:257
+#: ../controlers/AefPhotosContestAdmin.php:277
+#: ../controlers/AefPhotosContestAdmin.php:283
+msgid "Requested photo not found"
+msgstr "La photo indiquée n'existe pas"
+
+#: ../controlers/AefPhotosContestAdmin.php:322
+msgid "Photos contest"
+msgstr "Concours photos"
+
+#: ../controlers/AefPhotosContestAdmin.php:325
+msgid "Overview"
+msgstr "Synthèse"
+
+#: ../controlers/AefPhotosContestAdmin.php:328
+msgid "Votes"
+msgstr "Votes"
+
+#: ../controlers/AefPhotosContestAdmin.php:331
+msgid "Photos"
+msgstr "Photos"
+
+#: ../controlers/AefPhotosContestAdmin.php:334
+msgid "Add photo"
+msgstr "Ajouter une photo"
+
+#: ../controlers/AefPhotosContestAdmin.php:337
+msgid "Configuration"
+msgstr "Réglages"
+
+#: ../controlers/AefPhotosContestAdmin.php:341
+msgid "Photos order"
+msgstr "Tri des photos"
+
+#: ../controlers/AefPhotosContestAdmin.php:447
+#, php-format
+msgid "Vote is open since %1s to %2s"
+msgstr "Le vote est ouvert depuis le %1s jusqu'au %2s"
+
+#: ../controlers/AefPhotosContestAdmin.php:453
+#, php-format
+msgid "Vote will be open as from %s"
+msgstr "Le vote sera ouvert le %s"
+
+#: ../controlers/AefPhotosContestAdmin.php:458
+#, php-format
+msgid "Vote completed since %s"
+msgstr "Le vote est fermé depuis le %s"
+
+#: ../controlers/AefPhotosContestAdmin.php:462
+msgid "Vote is not configured"
+msgstr "Le vote n'est pas configuré"
+
+#: ../controlers/AefPhotosContestAdmin.php:503
+msgid "Photos folder is not set"
+msgstr "Le répertoire des photos n'est pas renseigné"
+
+#: ../controlers/AefPhotosContestAdmin.php:510
+msgid "Photos folder path does not exists or is not writable."
+msgstr "Le répertoire des photos n'existe pas ou n'est pas accessible en écriture"
+
+#: ../controlers/AefPhotosContestAdmin.php:522
+msgid "Photo name max length must be set"
+msgstr "La longueur maximal affichée pour le nom des photos doit être indiqué"
+
+#: ../controlers/AefPhotosContestAdmin.php:529
+msgid "Thumbnail width must be set"
+msgstr "La largeur des miniatures doit être indiquée"
+
+#: ../controlers/AefPhotosContestAdmin.php:535
+msgid "Thumbnail height must be set"
+msgstr "La hauteur des miniatures doit être indiquée"
+
+#: ../controlers/AefPhotosContestAdmin.php:542
+msgid "View width must be set"
+msgstr "La largeur des vues des photos doit être renseignée"
+
+#: ../controlers/AefPhotosContestAdmin.php:548
+msgid "View height must be set"
+msgstr "La hauteur des vues des photos doit être renseignée"
+
+#: ../controlers/AefPhotosContestAdmin.php:564
+msgid "Unknown dateFormat"
+msgstr "Format de date inconnu"
+
+#: ../controlers/AefPhotosContestAdmin.php:580
+msgid "Vote open date is not a valid date"
+msgstr "La date d'ouverture du vote est invalide"
+
+#: ../controlers/AefPhotosContestAdmin.php:602
+msgid "Vote close date is not a valid date"
+msgstr "La date de fermeture du vote est invalide"
+
+#: ../controlers/AefPhotosContestAdmin.php:622
+msgid "Vote frequency error, number of hours must be set"
+msgstr "Erreur de fréquence de vote, le nombre d'heures doit être renseigné"
+
+#: ../controlers/AefPhotosContestAdmin.php:664
+msgid "Photographer email is not valid."
+msgstr "L'email du photographe n'est pas valide"
+
+#: ../controlers/AefPhotosContestAdmin.php:674
+#: ../controlers/AefPhotosContestAdmin.php:680
+msgid "Photo name could not be empty."
+msgstr "Le nom de la photo doit être renseigné"
+
+#: ../controlers/AefPhotosContestAdmin.php:708
+msgid "Photo updated"
+msgstr "Photo mise à jour"
+
+#: ../controlers/AefPhotosContestAdmin.php:712
+msgid "Failed to update photo"
+msgstr "Échec de mise à jour de la photo"
+
+#: ../controlers/AefPhotosContestAdmin.php:726
+msgid "Photo saved"
+msgstr "La photo a été enregistrée"
+
+#: ../controlers/AefPhotosContestAdmin.php:730
+msgid "Failed to save photo"
+msgstr "Échec d'enregistrement de la photo"
+
+#: ../controlers/AefPhotosContestAdmin.php:751
+msgid "UPLOAD_ERR_INI_SIZE"
+msgstr ""
+
+#: ../controlers/AefPhotosContestAdmin.php:754
+msgid "UPLOAD_ERR_FORM_SIZE"
+msgstr ""
+
+#: ../controlers/AefPhotosContestAdmin.php:757
+msgid "UPLOAD_ERR_PARTIAL"
+msgstr ""
+
+#: ../controlers/AefPhotosContestAdmin.php:760
+msgid "UPLOAD_ERR_NO_TMP_DIR"
+msgstr ""
+
+#: ../controlers/AefPhotosContestAdmin.php:763
+msgid "UPLOAD_ERR_CANT_WRITE"
+msgstr ""
+
+#: ../controlers/AefPhotosContestAdmin.php:766
+msgid "UPLOAD_ERR_EXTENSION"
+msgstr ""
+
+#: ../controlers/AefPhotosContestAdmin.php:782
+msgid "Photo file is not a valid format: "
+msgstr "Mauvais format de photo: "
+
+#: ../controlers/AefPhotosContestAdmin.php:789
+msgid "Photos path does not exists or is not writable: "
+msgstr "Le répertoire des photos n'existe pas ou n'est pas accessible en écriture"
+
+#: ../controlers/AefPhotosContestAdmin.php:801
+msgid "Upload error, the file could not be moved to: "
+msgstr "Erreur de téléversement, le fichier ne peut être enregistré dans: "
+
+#: ../controlers/AefPhotosContestAdmin.php:805
+msgid "Photo uploaded at path: "
+msgstr "La photo a été téléversée dans le fichier: "
+
+#: ../controlers/AefPhotosContestAdmin.php:859
+msgid "All photos thumbs were rebuilt"
+msgstr "Toutes les miniatures ont été reconstruites"
+
+#: ../controlers/AefPhotosContestAdmin.php:1003
+msgid "Photo not found."
+msgstr "Photo non trouvée."
+
+#: ../controlers/AefPhotosContestAdmin.php:1010
+msgid "Failed to delete photo."
+msgstr "Échec de suppression de la photo."
+
+#: ../controlers/AefPhotosContestAdmin.php:1018
+msgid "Photo deleted."
+msgstr "Photo supprimée."
+
+#: ../controlers/AefPhotosContest.php:118
+msgid "Concours Photos"
+msgstr ""
+
+#: ../templates/admin-votes-page.php:18
+msgid "vote"
+msgstr "vote"
+
+#: ../templates/admin-votes-page.php:19
+msgid "votes"
+msgstr "votes"
+
+#: ../templates/admin-votes-page.php:24
+#: ../templates/admin-photos-page.php:32
+msgid "Id"
+msgstr ""
+
+#: ../templates/admin-votes-page.php:26
+msgid "Date"
+msgstr ""
+
+#: ../templates/admin-votes-page.php:27
+msgid "Photo"
+msgstr ""
+
+#: ../templates/admin-votes-page.php:37
+msgid "Confirm deletion of vote from "
+msgstr ""
+
+#: ../templates/admin-votes-page.php:118
+msgid "Concours photo - Votes"
+msgstr ""
+
+#: ../templates/admin-overview-page.php:11
+msgid "Photos contest - Overview"
+msgstr "Concours photos - Synthèse"
+
+#: ../templates/admin-overview-page.php:13
+msgid "Infomation"
+msgstr ""
+
+#: ../templates/admin-overview-page.php:45
+msgid "Documentation"
+msgstr ""
+
+#: ../templates/admin-photos-page.php:26
+msgid "photo"
+msgstr ""
+
+#: ../templates/admin-photos-page.php:27
+msgid "photos"
+msgstr ""
+
+#: ../templates/admin-photos-page.php:35
+msgid "Photo name"
+msgstr "Nom de la photo"
+
+#: ../templates/admin-photos-page.php:36
+msgid "Photographer name"
+msgstr "Nom du photographe"
+
+#: ../templates/admin-photos-page.php:37
+msgid "Photographer email"
+msgstr "Email du photographe"
+
+#: ../templates/admin-photos-page.php:73
+msgid "Confirm deletion of photo id "
+msgstr ""
+
+#: ../templates/admin-photos-page.php:146
+msgid "Concours photo - Liste des photos"
+msgstr ""
+
+#: ../templates/admin-photos-order.php:118
+msgid "Concours photo - Tri des photos"
+msgstr ""
+
+#: ../templates/admin-configuration-page.php:42
+msgid "Photos contest - Configuration"
+msgstr "Concours photos - Réglages"
+
+#: ../templates/admin-configuration-page.php:49
+msgid "Contest"
+msgstr "Concours"
+
+#: ../templates/admin-configuration-page.php:54
+msgid "Vote open date"
+msgstr "Date d'ouverture du vote"
+
+#: ../templates/admin-configuration-page.php:59
+msgid "This is vote open date formated as "
+msgstr "Ceci est la date d'ouverture du vote au format "
+
+#: ../templates/admin-configuration-page.php:65
+msgid "Vote close date"
+msgstr "Date de fermeture du vote"
+
+#: ../templates/admin-configuration-page.php:70
+msgid "This is vote close date formated as "
+msgstr "Ceci est la date de fermeture du vote au format "
+
+#: ../templates/admin-configuration-page.php:76
+msgid "Vote frequency"
+msgstr "Fréquence de vote"
+
+#: ../templates/admin-configuration-page.php:85
+msgid "only one vote by contest."
+msgstr "un seul vote par concours"
+
+#: ../templates/admin-configuration-page.php:95
+msgid "only one vote by a given time."
+msgstr "un seul vote par limite de temps"
+
+#: ../templates/admin-configuration-page.php:102
+msgid "How many hours between votes, when vote frequency is time limited."
+msgstr "Nombre d'heures entre les votes, quand la fréquence de vote est limité dans le temps."
+
+#: ../templates/admin-configuration-page.php:129
+msgid "Photo name display length"
+msgstr "Longueur affichage nom photo"
+
+#: ../templates/admin-configuration-page.php:134
+msgid "This is photo name max length after which name is truncated."
+msgstr "Ceci est la longueur maximale pour le nom des photos, au dessus de laquelle le nom des photos est tronqué."
+
+#: ../templates/admin-configuration-page.php:140
+msgid "Thumbnails size"
+msgstr "Taille miniature"
+
+#: ../templates/admin-configuration-page.php:143
+#: ../templates/admin-configuration-page.php:155
+msgid "width"
+msgstr "largeur"
+
+#: ../templates/admin-configuration-page.php:144
+#: ../templates/admin-configuration-page.php:156
+msgid "height"
+msgstr "hauteur"
+
+#: ../templates/admin-configuration-page.php:146
+msgid "This is photos thumbnails size."
+msgstr "Ceci est la taille des miniatures des photos"
+
+#: ../templates/admin-configuration-page.php:152
+msgid "Views size"
+msgstr "Taille de vue"
+
+#: ../templates/admin-configuration-page.php:158
+msgid "This is photos views size."
+msgstr "Ceci est la taille d'affichage des photos"
+
+#: ../templates/admin-configuration-page.php:167
+msgid "Rebuild thumbs"
+msgstr "Reconstruire les miniatures"
+
+#: ../templates/admin-configuration-page.php:178
+msgid "Advanced options"
+msgstr "Réglages avancés"
+
+#: ../templates/admin-configuration-page.php:183
+msgid "Facebook client id"
+msgstr "Facebook client id"
+
+#: ../templates/admin-configuration-page.php:188
+msgid "This is the Facebook client id"
+msgstr "C'est l'identifiant de l'application Facebook (App ID)"
+
+#: ../templates/admin-configuration-page.php:194
+msgid "Facebook secret key"
+msgstr "Facebook secret key"
+
+#: ../templates/admin-configuration-page.php:199
+msgid "This is the Facebook secret key"
+msgstr "C'est la clé secrète de l'application Facebook (App Secret)"
+
+#: ../templates/admin-configuration-page.php:205
+msgid "Photos folder"
+msgstr "Répertoire des photos"
+
+#: ../templates/admin-configuration-page.php:209
+msgid "This is the folder path for all contest photos, relative to the wordpress content folder (wp-content)."
+msgstr "C'est le répertoire pour stocker les photos du concours, relatif au répertoir \"wp-content\" de Wordpress"
+
+#: ../templates/admin-configuration-page.php:214
+msgid "Date format"
+msgstr "Format de date"
+
+#: ../templates/admin-configuration-page.php:224
+msgid "This is the date format for vote date."
+msgstr "Ceci est le format utilisé pour afficher les dates du vote."
+
+#: ../templates/admin-photo-edit-page.php:12
+msgid "Add Photo"
+msgstr "Ajouter une photo"
+
+#: ../templates/admin-photo-edit-page.php:54
+msgid "You will be able to upload a photo after changes saved"
+msgstr "Vous pourrez téléverser une photo après l'enregistrement des modifications"
+
+#: ../templates/front-vote-popup.php:283
+msgid "Unknow error"
+msgstr "Erreur inconnue"
+

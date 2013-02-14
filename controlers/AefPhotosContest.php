@@ -128,8 +128,19 @@ class AefPhotosContest {
 		self::$options_name = self::PLUGIN;
 		$this->loadOptions();
 
+		add_action('init', array($this, 'base_wp_init'));
+
 		$this->daoVotes = new AefPhotosContestVotes($wpdb);
 		$this->daoPhotos = new AefPhotosContestPhotos($wpdb);
+	}
+
+	public function base_wp_init()
+	{
+		//$locale = apply_filters('plugin_locale', get_locale(), self::PLUGIN);
+		//_log(__METHOD__.' locale : '.$locale);
+		
+		load_plugin_textdomain(self::PLUGIN, false, self::PLUGIN . '/i18n/' );
+
 	}
 
 	/**
