@@ -100,7 +100,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 			) default charset=utf8 ;'; // default charset=utf8
 
 		$for_update = dbdelta($sql, true);
-		_log('for_update: ' . print_r($for_update, true));
+		//_log('for_update: ' . print_r($for_update, true));
 
 		if ($wpdb->get_var('SHOW TABLES LIKE "' . aefphotoscontestphotos::gettablename() . '"') != aefphotoscontestphotos::gettablename())
 			wp_die('Failed to create table ' . aefphotoscontestphotos::gettablename());
@@ -115,7 +115,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 				KEY ix_votes_photo_id (photo_id)
 			) default charset=utf8 ;';
 		$for_update = dbdelta($sql, true);
-		_log('for_update: ' . print_r($for_update, true));
+		//_log('for_update: ' . print_r($for_update, true));
 
 		if ($wpdb->get_var('SHOW TABLES LIKE "' . aefphotoscontestvotes::gettablename() . '"') != aefphotoscontestvotes::gettablename())
 			wp_die('Failed to create table ' . aefphotoscontestvotes::gettablename());
