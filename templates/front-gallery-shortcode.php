@@ -12,9 +12,6 @@
 	var gallery ;
 
 	jQuery(document).ready( function() {
-		
-	
-//jQuery('.ad-controls', '#gallery').append(jQuery("#share-buttons"));
 
 		gallery = jQuery('.ad-gallery').adGallery(
 		{
@@ -52,11 +49,6 @@
 					o.css('top', (root.height() - o.height() )+'px' );
 					o.css('left', (root.width() - 90) +'px');
 
-				},
-				afterImageVisible: function (){
-
-					//var o = jQuery('.ad-info', '#gallery');
-					//o.html( o.html()+' photos') ;
 				}
 			}
 		});
@@ -84,9 +76,8 @@
 			});
 		});
 
-
 	});
-	
+
 	function getCurrentPhotoId()
 	{
 		return jQuery( '.image'+gallery[0].current_index, '#gallery').attr('data-photo_id');
@@ -121,6 +112,7 @@
 		console.log(url);
 		
 		window.open(url,'Partager','scrollbars=yes,menubar=no,height=420,width=700,resizable=yes,toolbar=no,status=no');
+		return false ;
 	}
 	
 </script>
@@ -203,18 +195,20 @@
 				<li class="ss-share-item">
 					<a class="ss-share-link ico-facebook"
 						 href="javascript:void(0);" onclick="sharePhoto('Facebook')"
-						 rel="nofollow" target="_blank">Facebook</a>
+						 rel="nofollow"
+						 >Facebook</a>
 				</li>
 				<li class="ss-share-item">
 					<a class="ss-share-link ico-twitter"
 						 href="javascript:void(0);" onclick="sharePhoto('Twitter')"
 						 rel="nofollow"
-						 target="_blank">Twitter</a>
+						 >Twitter</a>
 				</li>
 				<li class="ss-share-item">
 					<a class="ss-share-link ico-google"
 						 href="javascript:void(0);" onclick="sharePhoto('Google')"
-						 rel="nofollow" target="_blank">Google+</a>
+						 rel="nofollow"
+						 >Google+</a>
 				</li>
 			</ul>
 	
