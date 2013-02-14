@@ -70,4 +70,8 @@ class AefPhotosContestPhotos extends AefPhotosContestModelDao {
 		$this->updateById($srcId, array('photo_order' => $destPhotoOrder));
 	}
 
+	public function getPhotoOrderMax()
+	{
+		return $this->wpdb->get_var('SELECT max(photo_order) from '.$this->getTableName() );
+	}
 }

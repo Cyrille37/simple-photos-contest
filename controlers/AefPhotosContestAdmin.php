@@ -32,8 +32,6 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 
 		parent::__construct();
 
-		self::check_requirements();
-
 		if (defined('DOING_AJAX') && DOING_AJAX) {
 
 			add_action('wp_ajax_photo_order', array($this, 'wp_ajax_photo_order'));
@@ -75,60 +73,52 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 
 	public function wp_activate() {
 
+		global $wpdb;
+
 		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
-		// FIXME: Update database schema does not works
+		self::check_requirements();
+
+		// FIXME: Update database schema does not works every time, depends of changes ????
 		// dbDelta génère des erreurs et ne fait pas le boulot de DIFF quand il y a des changements ...
 		// Du coup j'ajoute "IF NOT EXISTS" ...
+		//$sql = 'CREATE TABLE IF NOT EXISTS `' . AefPhotosContestPhotos::getTableName() . '` (
+		$sql = 'create table ' . aefphotoscontestphotos::gettablename() . ' (
+				id int unsigned not null auto_increment,
+				photo_name varchar(255) not null,
+				photo_mime_type varchar(50) not null,
+				photo_user_filename varchar(255) not null,
+				photo_order tinyint unsigned not null,
+				photographer_name varchar(255) not null,
+				photographer_email varchar(255) null,
+				notes tinytext,
+				created_at datetime,
+				updated_at datetime,
+				PRIMARY KEY (id),
+				UNIQUE KEY uq_photo_name (photo_name),
+				key ix_photos_photo_order (photo_order)
+			) default charset=utf8 ;'; // default charset=utf8
 
-/*
-delimiter $$
+		$for_update = dbdelta($sql, true);
+		_log('for_update: ' . print_r($for_update, true));
 
-CREATE TABLE `wp_aef_spc_photos` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `photo_name` varchar(255) NOT NULL,
-  `photo_mime_type` varchar(50) NOT NULL,
-  `photo_user_filename` varchar(255) NOT NULL,
-  `photo_order` tinyint(3) unsigned NOT NULL,
-  `photographer_name` varchar(255) NOT NULL,
-  `photographer_email` varchar(255) NULL,
-  `notes` tinytext,
-  `created_at` datetime DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `UQ_photo_name` (`photo_name`),
-  KEY `IX_photo_order` (`photo_order`)
-) ENGINE=InnoDB AUTO_INCREMENT=226 DEFAULT CHARSET=utf8$$
+		if ($wpdb->get_var('SHOW TABLES LIKE "' . aefphotoscontestphotos::gettablename() . '"') != aefphotoscontestphotos::gettablename())
+			wp_die('Failed to create table ' . aefphotoscontestphotos::gettablename());
 
- */
+		$sql = 'create table ' . aefphotoscontestvotes::gettablename() . ' (
+				id int unsigned not null auto_increment,
+				voter_name varchar(255) not null,
+				voter_email varchar(255) not null,
+				vote_date datetime,
+				photo_id int unsigned,
+				PRIMARY KEY (id),
+				KEY ix_votes_photo_id (photo_id)
+			) default charset=utf8 ;';
+		$for_update = dbdelta($sql, true);
+		_log('for_update: ' . print_r($for_update, true));
 
-		$sql = 'CREATE TABLE IF NOT EXISTS `' . AefPhotosContestPhotos::getTableName() . '` (
-				`id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-				`photo_name` VARCHAR(255) NOT NULL,
-				`photo_mime_type` VARCHAR(50) NOT NULL,
-				`photo_user_filename` VARCHAR(255) NOT NULL,
-				`photo_order` TINYINT UNSIGNED NOT NULL,
-				`photographer_name` VARCHAR(255) NOT NULL,
-				`photographer_email` VARCHAR(255) NULL,
-				`notes` TINYTEXT,
-				`created_at` DATETIME,
-				`updated_at` DATETIME,
-				PRIMARY KEY (`id`),
-				UNIQUE KEY `UQ_photo_name` (`photo_name`),
-				KEY `IX_photo_order` (`photo_order`)
-			) DEFAULT CHARSET=utf8 ;'; // DEFAULT CHARSET=utf8
-
-		dbDelta($sql);
-
-		$sql = 'CREATE TABLE IF NOT EXISTS `' . AefPhotosContestVotes::getTableName() . '` (
-				`id` int(11) NOT NULL AUTO_INCREMENT,
-				`voter_name` varchar(255) NOT NULL,
-				`voter_email` varchar(255) NOT NULL,
-				`vote_date` datetime,
-				`photo_id` int(11),
-				PRIMARY KEY (`id`)
-			) DEFAULT CHARSET=utf8 ;';
-		dbDelta($sql);
+		if ($wpdb->get_var('SHOW TABLES LIKE "' . aefphotoscontestvotes::gettablename() . '"') != aefphotoscontestvotes::gettablename())
+			wp_die('Failed to create table ' . aefphotoscontestvotes::gettablename());
 	}
 
 	/**
@@ -289,7 +279,7 @@ CREATE TABLE `wp_aef_spc_photos` (
 			check_admin_referer(self::PAGE_PHOTO_EDIT . $photo_id, self::PAGE_PHOTO_EDIT . '_nonce');
 
 			// Copy sent photo's fields into photo
-			
+
 			foreach ($wpdb->get_col('DESC ' . self::$dbtable_photos, 0) as $column_name) {
 				if (isset($_POST[$column_name]))
 					$this->photo[$column_name] = stripslashes($_POST[$column_name]);
@@ -644,7 +634,7 @@ CREATE TABLE `wp_aef_spc_photos` (
 
 		if (isset($this->photo['photographer_email'])) {
 			$v = sanitize_email(trim($this->photo['photographer_email']));
-			if ($v!='' && !is_email($v)) {
+			if ($v != '' && !is_email($v)) {
 				_log('Photographer email is not valid : [' . $v . ']');
 				$errors['photographer_email'] = __('Photographer email is not valid.');
 			}
@@ -653,7 +643,7 @@ CREATE TABLE `wp_aef_spc_photos` (
 
 		if (isset($this->photo['photo_name'])) {
 			//$v = htmlspecialchars(trim($this->photo['photo_name']), ENT_NOQUOTES);
-			$v = stripslashes( trim($this->photo['photo_name']) );
+			$v = stripslashes(trim($this->photo['photo_name']));
 			if ($v == '') {
 				_log('Photo name could not be empty.');
 				$errors['photo_name'] = __('Photo name could not be empty.');
@@ -698,6 +688,7 @@ CREATE TABLE `wp_aef_spc_photos` (
 			// Create
 
 			$this->photo['created_at'] = date("Y-m-d H:i:s");
+			$this->photo['photo_order'] = $this->getDaoPhotos()->getPhotoOrderMax();
 
 			$res = $this->daoPhotos->insert($this->photo);
 
@@ -925,7 +916,7 @@ CREATE TABLE `wp_aef_spc_photos` (
 		}
 		else {
 			$output['command'] = 'error';
-			$output['message'] = 'Unknow insert: ' . htmlspecialchars($insert,ENT_NOQUOTES);
+			$output['message'] = 'Unknow insert: ' . htmlspecialchars($insert, ENT_NOQUOTES);
 		}
 
 		echo json_encode($output);
