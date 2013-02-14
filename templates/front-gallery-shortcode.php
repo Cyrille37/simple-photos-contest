@@ -15,7 +15,7 @@
 	{
 		var img= jQuery('.aef-vote-opener', '#aef-vote-button') ;
 		img.attr('src', '<?php echo AefPhotosContest::$images_url . 'vote-off-cg41.jpg' ?>' );
-		img.unbind('click',openVoteBox);
+		//img.unbind('click',openVoteBox);
 		img.css('cursor','auto');
 	}
 
@@ -44,8 +44,8 @@
 					var o = jQuery('#aef-vote-button') ;
 					root.append(o);
 
-					//var o2 = jQuery('.aef-vote-opener',o);
-					//o2.click(openVoteBox);
+					var o2 = jQuery('.aef-vote-opener',o);
+					o2.click(openVoteBox);
 
 					/*o2.hover(
 					function () {
@@ -88,13 +88,13 @@
 								if( res.can_vote )
 								{
 									img.attr('src', '<?php echo AefPhotosContest::$images_url . 'vote-cg41.jpg' ?>' );
-									img.bind('click',openVoteBox);
+									//img.bind('click',openVoteBox);
 									img.css('cursor','pointer');
 								}
 								else
 								{
 									img.attr('src', '<?php echo AefPhotosContest::$images_url . 'vote-off-cg41.jpg' ?>' );
-									img.unbind('click',openVoteBox);
+									//img.unbind('click',openVoteBox);
 									img.css('cursor','auto');
 								}
 								o.show();

@@ -77,9 +77,30 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 
 		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
-		// TODO: Update database schema does not works
+		// FIXME: Update database schema does not works
 		// dbDelta génère des erreurs et ne fait pas le boulot de DIFF quand il y a des changements ...
 		// Du coup j'ajoute "IF NOT EXISTS" ...
+
+/*
+delimiter $$
+
+CREATE TABLE `wp_aef_spc_photos` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `photo_name` varchar(255) NOT NULL,
+  `photo_mime_type` varchar(50) NOT NULL,
+  `photo_user_filename` varchar(255) NOT NULL,
+  `photo_order` tinyint(3) unsigned NOT NULL,
+  `photographer_name` varchar(255) NOT NULL,
+  `photographer_email` varchar(255) NOT NULL,
+  `notes` tinytext,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UQ_photo_name` (`photo_name`),
+  KEY `IX_photo_order` (`photo_order`)
+) ENGINE=InnoDB AUTO_INCREMENT=226 DEFAULT CHARSET=utf8$$
+
+ */
 
 		$sql = 'CREATE TABLE IF NOT EXISTS `' . AefPhotosContestPhotos::getTableName() . '` (
 				`id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
