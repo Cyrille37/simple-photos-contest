@@ -11,7 +11,21 @@
 	jQuery.noConflict();
 	var gallery ;
 
+	var onVoteDone = function ()
+	{
+		var img= jQuery('.aef-vote-opener', '#aef-vote-button') ;
+		img.attr('src', '<?php echo AefPhotosContest::$images_url . 'vote-off-cg41.jpg' ?>' );
+		img.unbind('click',openVoteBox);
+		img.css('cursor','auto');
+	}
+
 	jQuery(document).ready( function() {
+
+		jQuery("html").bind("ajaxStart", function(){  
+			jQuery(this).addClass('busy');  
+		}).bind("ajaxStop", function(){  
+			jQuery(this).removeClass('busy');  
+		});  
 
 		jQuery('#aef-vote-button').hide();
 
@@ -29,34 +43,72 @@
 					var root = jQuery('.ad-image-wrapper','#gallery');
 					var o = jQuery('#aef-vote-button') ;
 					root.append(o);
-					
-					var o2 = jQuery('.aef-vote-opener','#gallery');
-					o2.click(openVoteBox);
-					o2.hover(
+
+					//var o2 = jQuery('.aef-vote-opener',o);
+					//o2.click(openVoteBox);
+
+					/*o2.hover(
 					function () {
-						this.src = '<?php echo AefPhotosContest::$images_url . 'favoris-votez2.png' ?>';
+						this.src = '<?php echo AefPhotosContest::$images_url . 'favoris-votez-hover.png' ?>';
 					}, function () {
 						this.src = '<?php echo AefPhotosContest::$images_url . 'favoris-votez.png' ?>';
 					});
+					*/
 
 					o.css('position', 'relative');
 					o.css('top', (root.height() - o.height() )+'px' );
-					o.css('left', (root.width() - 90) +'px');
+
 					o.css('z-index', jQuery('.ad-next').css('z-index') );
+					o.hide();
 
 					<?php } else { ?>
 					<?php } ?>
 
 				},
-				beforeImageVisible: function (){
+				afterImageVisible: function (){
 
 					<?php if($this->isVoteOpen() ) { ?>
 
-					var o = jQuery('#aef-vote-button') ;
-					o.show();
 					var root = jQuery('.ad-image-wrapper','#gallery');
+					var o = jQuery('#aef-vote-button') ;
 					o.css('top', (root.height() - o.height() )+'px' );
-					o.css('left', (root.width() - 90) +'px');
+
+					var params = {};  
+					params.action = 'can_vote' ;
+					params.photo_id = getCurrentPhotoId() ;
+
+					jQuery.post(
+						AefPC.ajaxurl,
+						params,
+						function( json ) {
+							var res = JSON.parse(json);
+							if( res.command == 'can_vote' )
+							{
+								var img= jQuery('.aef-vote-opener', o) ;
+								if( res.can_vote )
+								{
+									img.attr('src', '<?php echo AefPhotosContest::$images_url . 'vote-cg41.jpg' ?>' );
+									img.bind('click',openVoteBox);
+									img.css('cursor','pointer');
+								}
+								else
+								{
+									img.attr('src', '<?php echo AefPhotosContest::$images_url . 'vote-off-cg41.jpg' ?>' );
+									img.unbind('click',openVoteBox);
+									img.css('cursor','auto');
+								}
+								o.show();
+							}
+							else
+							{
+								if( res.command == 'error' ){
+									alert( res.message );
+								}else{
+									alert('unknow result');
+								}
+							}
+						}
+					);
 
 					<?php } ?>
 
@@ -127,11 +179,19 @@
 </script>
 <style type="text/css">
 	
+	html.busy, html.busy * {  
+		cursor: wait !important;  
+	}
+
 .ad-gallery .ad-controls {
-	margin-top: 0;
+	margin-top: 4px;
 	margin-bottom: 14px;
 }
 
+#aef-vote-button  {
+	margin-right: 0px;
+	text-align: right ;
+}
 	/* if fancybox used, make the image seem clickable */
 	.ad-image {
 		cursor: pointer;
@@ -230,5 +290,5 @@
 </div>
 
 <div id="aef-vote-button" >
-	<img class="aef-vote-opener" src="<?php echo AefPhotosContest::$images_url . 'favoris-votez.png' ?>"/>	
+	<img class="aef-vote-opener" src="<?php echo AefPhotosContest::$images_url . 'vote-cg41.jpg' ?>"/>	
 </div>

@@ -10,8 +10,6 @@ if (!class_exists('AefListTable')) {
 
 class VotesListTable extends AefListTable {
 
-	const DEFAULT_ITEMS_PER_PAGE = 5;
-
 	protected $columns;
 
 	function __construct() {

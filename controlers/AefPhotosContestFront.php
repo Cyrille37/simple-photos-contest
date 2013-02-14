@@ -29,6 +29,8 @@ class AefPhotosContestFront extends AefPhotosContest {
 
 			add_action('send_headers', 'wp_send_headers_ajax');
 
+			add_action('init_ajax_nopriv_can_vote', array($this, 'wp_ajax_can_vote'));
+
 			add_action('wp_ajax_nopriv_vote_init', array($this, 'wp_ajax_vote_init'));
 			add_action('wp_ajax_nopriv_vote', array($this, 'wp_ajax_vote'));
 
@@ -129,6 +131,29 @@ class AefPhotosContestFront extends AefPhotosContest {
 		}
 	}
 
+	public function wp_ajax_can_vote() {
+
+		$photo_id = isset($_REQUEST['photo_id']) ? $_REQUEST['photo_id'] : null;
+		$voterEmail = $this->getVoterEMail();
+_log(__METHOD__. ' voterEmail='.$voterEmail.', photo_id='.$photo_id);
+		$output = array();
+
+		if (empty($voterEmail)) {
+			$output['command'] = 'can_vote';
+			$output['can_vote'] = true ;
+		}
+		else {
+			$voterStatus = $this->getVoterStatusByEmail($voterEmail, $photo_id);
+			$output['command'] = 'can_vote';
+			$output['can_vote'] = $voterStatus->canVote;
+		}
+
+_log(__METHOD__. ' can_vote = '. ($output['can_vote']==true?'TRUE':'FALSE') );
+		
+		echo json_encode( $output );
+		wp_die();
+	}
+
 	public function wp_ajax_vote_init() {
 
 		global $aefPC;
@@ -147,13 +172,12 @@ class AefPhotosContestFront extends AefPhotosContest {
 			$voterEmail = $this->getVoterEMail();
 		}
 
-		$voterStatus = $this->getVoterStatusByEmail($voterEmail);
+		$photo_id = isset($_REQUEST['photo_id']) ? $_REQUEST['photo_id'] : null;
+
+		$voterStatus = $this->getVoterStatusByEmail($voterEmail, $photo_id);
 
 		if (!$voterStatus->canVote && !empty($voterStatus->lastVotedPhotoId)) {
 			$photo_id = $voterStatus->lastVotedPhotoId;
-		}
-		else if (isset($_REQUEST['photo_id'])) {
-			$photo_id = $_REQUEST['photo_id'];
 		}
 
 		if (!empty($photo_id)) {
@@ -168,7 +192,8 @@ class AefPhotosContestFront extends AefPhotosContest {
 		//_log(__METHOD__);
 
 		$voterEmail = $this->getVoterEMail();
-		$voterStatus = $this->getVoterStatusByEmail($voterEmail);
+		$photo_id = isset($_REQUEST['photo_id']) ? $_REQUEST['photo_id'] : null;
+		$voterStatus = $this->getVoterStatusByEmail($voterEmail, $photo_id);
 
 		$this->ajax_ouput_data = array();
 

@@ -231,6 +231,10 @@
 						var res = JSON.parse(jsonString);
 						if( res.command == 'vote_ok' )
 						{
+							if( window.onVoteDone != undefined )
+							{
+								window.onVoteDone();
+							}
 							jQuery.fancybox.close();
 						}
 						else

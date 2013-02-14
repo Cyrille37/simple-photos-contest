@@ -14,14 +14,29 @@ class AefPhotosContestVotes extends AefPhotosContestModelDao {
 
 	/**
 	 * @param string $email
+	 * @param int $photoId (optional)
+	 * @param AefQueryOptions $queryOptions (optional)
 	 * @return array
 	 */
-	public function findByEmail($email, AefQueryOptions $queryOptions = null) {
+	public function findByEmail($email, $photoId = null, AefQueryOptions $queryOptions = null) {
 
-		return $this->findBy('voter_email', $email, $queryOptions);
+		//return $this->findBy('voter_email', $email, $queryOptions);
+
+		$values = array($email);
+		$sql = 'SELECT * FROM ' . $this->getTableName() . ' WHERE voter_email=%s';
+		
+		if (!empty($photoId)) {
+			$sql.=' AND photo_id=%d';
+			$values[] = $photoId;
+		}
+		$this->applyQueryOptions($sql, $queryOptions);
+
+		$rows = $this->wpdb->get_results($this->wpdb->prepare($sql, $values), ARRAY_A);
+		return $rows;
 	}
 
 	public function getVotersCount() {
+
 		$queryOptions = new AefQueryOptions();
 		$queryOptions->groupBy('voter_email');
 		return $this->count($queryOptions);
@@ -31,22 +46,21 @@ class AefPhotosContestVotes extends AefPhotosContestModelDao {
 
 		$sql = 'select photo_id, count(id) from ' . $this->getTableName();
 		$sql.= ' where photo_id IN (';
-		$sql.= implode(',', array_fill ( 0 , count($photo_ids) , '%s'));
+		$sql.= implode(',', array_fill(0, count($photo_ids), '%s'));
 		$sql.=') group by photo_id';
 
 		$rows = $this->wpdb->get_results($this->wpdb->prepare($sql, $photo_ids), ARRAY_A);
 
 		return $rows;
 	}
-	
+
 	/**
 	 * Get all vote plus columns wich contains some photo data.
 	 * @param AefQueryOptions $queryOptions
 	 * @return array Array of votes plus some photo's columns
 	 */
-	public function getAllWithPhotoData(AefQueryOptions $queryOptions=null)
-	{
-		$sql='select v.*, p.photo_name, p.photographer_name, p.photo_mime_type ';
+	public function getAllWithPhotoData(AefQueryOptions $queryOptions = null) {
+		$sql = 'select v.*, p.photo_name, p.photographer_name, p.photo_mime_type ';
 		$sql.=' from wp_aef_spc_votes v';
 		$sql.=' left join wp_aef_spc_photos p on (p.id=v.photo_id)';
 		//$sql.=' group by p.id';
@@ -55,8 +69,6 @@ class AefPhotosContestVotes extends AefPhotosContestModelDao {
 
 		$rows = $this->wpdb->get_results($sql, ARRAY_A);
 		return $rows;
-
-
 	}
 
 	/**

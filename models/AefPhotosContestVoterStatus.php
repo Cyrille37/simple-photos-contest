@@ -15,7 +15,7 @@ class AefPhotosContestVoterStatus {
 	 * @param string $email
 	 * @return \AefPhotosContestVoterStatus
 	 */
-	public static function getVoterStatus(AefPhotosContest $aefPC, $email) {
+	public static function getVoterStatus(AefPhotosContest $aefPC, $email, $photoId=null) {
 
 		$voteStatus = new AefPhotosContestVoterStatus();
 
@@ -29,7 +29,7 @@ class AefPhotosContestVoterStatus {
 
 		$queryOptions = new AefQueryOptions();
 		$queryOptions->orderBy('vote_date', AefQueryOptions::ORDER_DESC);
-		$votes = $votesDao->findByEmail($email, $queryOptions);
+		$votes = $votesDao->findByEmail($email, $photoId, $queryOptions);
 
 		if (count($votes) == 0) {
 			$voteStatus->canVote = true;
