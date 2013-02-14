@@ -84,13 +84,13 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 		// Du coup j'ajoute "IF NOT EXISTS" ...
 		//$sql = 'CREATE TABLE IF NOT EXISTS `' . AefPhotosContestPhotos::getTableName() . '` (
 		$sql = 'create table ' . aefphotoscontestphotos::gettablename() . ' (
-				id int unsigned not null auto_increment,
-				photo_name varchar(255) not null,
-				photo_mime_type varchar(50) not null,
-				photo_user_filename varchar(255) not null,
-				photo_order tinyint unsigned not null,
-				photographer_name varchar(255) not null,
-				photographer_email varchar(255) null,
+				id int unsigned NOT NULL AUTO_INCREMENT,
+				photo_name varchar(255) NOT NULL,
+				photo_mime_type varchar(50) NOT NULL,
+				photo_user_filename varchar(255) NOT NULL,
+				photo_order tinyint unsigned NOT NULL,
+				photographer_name varchar(255) NOT NULL,
+				photographer_email varchar(255) NULL,
 				notes tinytext,
 				created_at datetime,
 				updated_at datetime,
@@ -98,12 +98,17 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 				UNIQUE KEY uq_photo_name (photo_name),
 				key ix_photos_photo_order (photo_order)
 			) default charset=utf8 ;'; // default charset=utf8
-
-		$for_update = dbdelta($sql, true);
+		//$for_update = dbDelta($sql, true);
 		//_log('for_update: ' . print_r($for_update, true));
 
-		if ($wpdb->get_var('SHOW TABLES LIKE "' . aefphotoscontestphotos::gettablename() . '"') != aefphotoscontestphotos::gettablename())
+		$res = $wpdb->query($sql);
+		if (!$res) {
 			wp_die('Failed to create table ' . aefphotoscontestphotos::gettablename());
+		}
+		else {
+			if ($wpdb->get_var('SHOW TABLES LIKE "' . aefphotoscontestphotos::gettablename() . '"') != aefphotoscontestphotos::gettablename())
+				wp_die('Failed to create table ' . aefphotoscontestphotos::gettablename());
+		}
 
 		$sql = 'create table ' . aefphotoscontestvotes::gettablename() . ' (
 				id int unsigned not null auto_increment,
@@ -114,11 +119,17 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 				PRIMARY KEY (id),
 				KEY ix_votes_photo_id (photo_id)
 			) default charset=utf8 ;';
-		$for_update = dbdelta($sql, true);
+		//$for_update = dbDelta($sql, true);
 		//_log('for_update: ' . print_r($for_update, true));
 
+		$res = $wpdb->query($sql);
+		if (!$res) {
+			wp_die('Failed to create table ' . aefphotoscontestvotes::gettablename());
+		}
+		else {
 		if ($wpdb->get_var('SHOW TABLES LIKE "' . aefphotoscontestvotes::gettablename() . '"') != aefphotoscontestvotes::gettablename())
 			wp_die('Failed to create table ' . aefphotoscontestvotes::gettablename());
+		}
 	}
 
 	/**
@@ -288,7 +299,6 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 			}
 
 			$ok = $this->photo_save();
-
 		}
 
 		if (isset($this->photo['id']) && !empty($this->photo['id'])) {
@@ -660,10 +670,10 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 
 		if (count($errors) > 0) {
 			$this->errors = array_merge($this->errors, $errors);
-			return false ;
+			return false;
 		}
 
-		$result = null ;
+		$result = null;
 
 		ksort($this->photo);
 
@@ -684,11 +694,11 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 			$res = $wpdb->query($wpdb->prepare($sql, array_merge(array_values($this->photo), array($this->photo['id']))));
 			if ($res) {
 				$this->notices[] = __('Photo updated');
-				$result = true ;
+				$result = true;
 			}
 			else {
 				$this->errors[] = __('Failed to update photo');
-				$result = false ;
+				$result = false;
 			}
 		}
 		else {
@@ -702,14 +712,14 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 			$this->photo['id'] = $wpdb->insert_id;
 			if ($res) {
 				$this->notices[] = __('Photo saved');
-				$result = true ;
+				$result = true;
 			}
 			else {
 				$this->errors[] = __('Failed to save photo');
-				$result = false ;
+				$result = false;
 			}
 		}
-		return $result ;
+		return $result;
 	}
 
 	public function photo_save_file() {
