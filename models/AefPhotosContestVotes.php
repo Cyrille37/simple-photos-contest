@@ -54,6 +54,16 @@ class AefPhotosContestVotes extends AefPhotosContestModelDao {
 		return $rows;
 	}
 
+	public function getVotesCountByPhoto($photo_id)
+	{
+		$sql = 'select count(id) from ' . $this->getTableName();
+		$sql.= ' where photo_id = %s';
+		
+		$count = $this->wpdb->get_var($this->wpdb->prepare($sql, $photo_id));
+
+		return $count;		
+	}
+
 	/**
 	 * Get all vote plus columns wich contains some photo data.
 	 * @param AefQueryOptions $queryOptions

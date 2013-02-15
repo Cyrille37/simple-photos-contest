@@ -37,7 +37,6 @@
 			},
 			callbacks: {
 				init: function() {
-jQuery('a.link-img','#gallery').removeAttr('rel');
 	
 					<?php if($this->isVoteOpen() ) { ?>
 
@@ -106,6 +105,15 @@ jQuery('a.link-img','#gallery').removeAttr('rel');
 									img.css('cursor','auto');
 								}
 								o.show();
+
+								if( res.photo_votes_count != null )
+								{
+									if( res.photo_votes_count> 1 )
+										$voteStr = res.photo_votes_count+' votes' ;
+									else
+										$voteStr = res.photo_votes_count+' vote' ;
+									jQuery('.ad-image-description span', '#gallery').append(' - <b>' + $voteStr +'</b>');
+								}
 							}
 							else
 							{

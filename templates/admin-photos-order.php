@@ -136,9 +136,11 @@ $nbPhotos = count($photos);
 		</ul>
 	</div>
 
+	<?php /*
 	<form>
 		<input type="button" onclick="window.location='<?php echo admin_url('admin.php?page='.AefPhotosContestAdmin::PAGE_PHOTOS_ORDER.'&action=force-reorder') ?>'"
 					 value="Tri forcé"/>
 	</form>
+	*/ ?>
 
 </div>

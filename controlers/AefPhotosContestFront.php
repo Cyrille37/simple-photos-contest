@@ -151,6 +151,15 @@ class AefPhotosContestFront extends AefPhotosContest {
 		}
 		//_log(__METHOD__. ' can_vote = '. ($output['can_vote']==true?'TRUE':'FALSE') );
 
+		// Add image votes count to response
+		if( ! empty($photo_id) )
+		{
+			$output['photo_votes_count'] = $this->getDaoVotes()->getVotesCountByPhoto($photo_id);
+		}
+		else{
+			$output['photo_votes_count'] = null ;
+		}
+
 		echo json_encode($output);
 		wp_die();
 	}
