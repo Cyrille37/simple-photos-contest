@@ -717,7 +717,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 			// Create
 
 			$this->photo['created_at'] = date("Y-m-d H:i:s");
-			$this->photo['photo_order'] = $this->getDaoPhotos()->getPhotoOrderMax();
+			$this->photo['photo_order'] = 1 + $this->getDaoPhotos()->getPhotoOrderMax();
 
 			$res = $this->daoPhotos->insert($this->photo);
 
