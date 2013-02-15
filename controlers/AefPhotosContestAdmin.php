@@ -237,11 +237,47 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 					}
 					break;
 
-				case self::PAGE_OVERVIEW:
+				case self::PAGE_PHOTOS_ORDER :
+
+					if (isset($_GET['action'])) {
+						switch ($_GET['action']) {
+							case 'force-reorder':
+								$this->photos_reorder_force();
+								$this->notices[] = __('Forced order done.');
+								$current_url = set_url_scheme('http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+								$current_url = remove_query_arg(array('action'), $current_url);
+								//wp_redirect(admin_url('admin.php?page=' . $plugin_page));
+								wp_redirect($current_url);
+							break;
+							default;
+								$this->errors['action'] = __('Unknow action');
+								break;
+						}
+					}
+					break;
+
+				case self::PAGE_OVERVIEW :
 				default :
 					break;
 			}
 		}
+	}
+
+	protected function photos_reorder_force()
+	{
+		_log(__METHOD__);
+
+		$qOptions = new AefQueryOptions();
+		$qOptions->orderBy('photo_order', 'ASC');
+		$photos = $this->daoPhotos->getAll($qOptions);
+
+		$i = 1 ;
+		foreach( $photos as $photo )
+		{
+			$this->getDaoPhotos()->updateById($photo['id'], array('photo_order'=>$i));
+			$i ++ ;
+		}
+
 	}
 
 	protected function page_photo_edit_init() {
@@ -444,19 +480,16 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 
 			if ($this->isVoteOpen()) {
 				$this->notices[] = sprintf(
-					__('Vote is open since %1s to %2s', self::PLUGIN),
-					$this->formatDate($this->getVoteOpenDate()),
-					$this->formatDate($this->getVoteCloseDate()) );
+					__('Vote is open since %1s to %2s', self::PLUGIN), $this->formatDate($this->getVoteOpenDate()),
+					$this->formatDate($this->getVoteCloseDate()));
 			}
 			else if ($this->isVoteToCome()) {
 				$this->notices[] = sprint(
-					__('Vote will be open as from %s', self::PLUGIN),
-					$this->formatDate($this->getVoteOpenDate()) );
+					__('Vote will be open as from %s', self::PLUGIN), $this->formatDate($this->getVoteOpenDate()));
 			}
 			else if ($this->isVoteFinished()) {
 				$this->notices[] = sprintf(
-					__('Vote completed since %s', self::PLUGIN),
-					$this->formatDate($this->getVoteCloseDate()) );
+					__('Vote completed since %s', self::PLUGIN), $this->formatDate($this->getVoteCloseDate()));
 			}
 			else {
 				$this->notices[] = __('Vote is not configured');
@@ -651,10 +684,10 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 			//	$errors['photographer_name'] = __('Photographer name could not be empty.');
 			//}
 			$this->photo['photographer_name'] = $v;
-		//}
-		//else {
-		//	_log('Photographer name could not be empty.');
-		//	$errors['photographer_name'] = __('Photographer name could not be empty.');
+			//}
+			//else {
+			//	_log('Photographer name could not be empty.');
+			//	$errors['photographer_name'] = __('Photographer name could not be empty.');
 		}
 
 		if (isset($this->photo['photographer_email'])) {
