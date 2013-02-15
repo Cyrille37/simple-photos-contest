@@ -248,7 +248,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 								$current_url = remove_query_arg(array('action'), $current_url);
 								//wp_redirect(admin_url('admin.php?page=' . $plugin_page));
 								wp_redirect($current_url);
-							break;
+								break;
 							default;
 								$this->errors['action'] = __('Unknow action');
 								break;
@@ -257,27 +257,120 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 					break;
 
 				case self::PAGE_OVERVIEW :
+					if (isset($_GET['action'])) {
+						switch ($_GET['action']) {
+							case 'export':
+								$this->export();
+								$this->notices[] = __('Export done.');
+								$current_url = set_url_scheme('http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+								$current_url = remove_query_arg(array('action'), $current_url);
+								//wp_redirect(admin_url('admin.php?page=' . $plugin_page));
+								wp_redirect($current_url);
+								break;
+							default;
+								$this->errors['action'] = __('Unknow action');
+								break;
+						}
+					}
+					break;
+
 				default :
 					break;
 			}
 		}
 	}
 
-	protected function photos_reorder_force()
-	{
+	protected function export() {
+
+		require_once( __DIR__ . '/../models/AefExport.php');
+		$export = new AefExport();
+
+		// Photos Votes sheet
+
+		$data = array(
+			'headers' => array(),
+			'rows'=>array()
+		);
+		$queryOptions = new AefQueryOptions();
+		$queryOptions->orderBy('votes');
+		$photos = $this->getDaoPhotos()->getAllWithVotesCount($queryOptions);
+		foreach (array_keys($photos[0]) as $k) {
+			$data['headers'][] = array('label' => $k);
+		}
+		foreach( $photos as $photo )
+		{
+			$data['rows'][] = array_values($photo);
+		}
+		$export->addSheet('photos', $data);
+
+		//
+		// Voters sheet
+
+		$data = array(
+			'headers' => array(),
+			'rows'=>array()
+		);
+		$votes = $this->getDaoVotes()->getVotesCountByVoters();
+		foreach (array_keys($votes[0]) as $k) {
+			$data['headers'][] = array('label' => $k);
+		}
+		foreach( $votes as $vote )
+		{
+			$data['rows'][] = array_values($vote);
+		}
+		$export->addSheet('votants', $data);
+
+		// Raw Votes sheet
+
+		$data = array(
+			'headers' => array(),
+			'rows'=>array()
+		);
+		$votes = $this->getDaoVotes()->getAll();
+		foreach (array_keys($votes[0]) as $k) {
+			$data['headers'][] = array('label' => $k);
+		}
+		foreach( $votes as $vote )
+		{
+			$data['rows'][] = array_values($vote);
+		}
+		$export->addSheet('votes', $data);
+
+		// Shot da file
+
+		$temp_filename = tempnam(sys_get_temp_dir(), 'Tux');
+		//$temp_filename = '/home/cyrille/Taf/CG41/20130124 - Concours photos/www/wp-content/plugins/aef-photos-contest/temp.xlsx' ;
+		$export->save($temp_filename);
+
+		//$finfo = new \finfo(FILEINFO_MIME);
+		//_log( $finfo->file($temp_filename, FILEINFO_MIME_TYPE) );
+
+		$out_filename = 'aef-photos-contest ' .date('Y-m-d_H-i').'.xlsx';
+
+		ob_end_clean();
+		// disable browser caching -- the server may be doing this on its own
+		header('Pragma: public');
+		header('Expires: 0');
+		header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+		header('Content-Type: application/vnd.ms-excel');
+		header('Content-Disposition: attachment; filename="'.$out_filename.'"');
+		readfile($temp_filename);
+		exit();
+
+	}
+
+	protected function photos_reorder_force() {
 		_log(__METHOD__);
 
 		$qOptions = new AefQueryOptions();
 		$qOptions->orderBy('photo_order', 'ASC');
 		$photos = $this->daoPhotos->getAll($qOptions);
 
-		$i = 1 ;
-		foreach( $photos as $photo )
-		{
-			$this->getDaoPhotos()->updateById($photo['id'], array('photo_order'=>$i));
-			$i ++ ;
+		$i = 1;
+		foreach ($photos as $photo) {
+			$this->getDaoPhotos()->updateById($photo['id'], array('photo_order' => $i));
+			$i++;
 		}
-
 	}
 
 	protected function page_photo_edit_init() {

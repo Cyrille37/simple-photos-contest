@@ -12,6 +12,7 @@ class AefPhotosContestPhotos extends AefPhotosContestModelDao {
 
 	/**
 	 * Get all photos plus a column 'votes' wich contains the votes count by photo.
+	 * Note: add a group by to $queryOptions.
 	 * @param AefQueryOptions $queryOptions
 	 * @return array Array of photos and a column votes
 	 */
@@ -20,7 +21,9 @@ class AefPhotosContestPhotos extends AefPhotosContestModelDao {
 		$sql = 'select count(v.id) as votes, p.* ';
 		$sql.=' from wp_aef_spc_photos p';
 		$sql.=' left join wp_aef_spc_votes v on (v.photo_id=p.id)';
-		$sql.=' group by p.id';
+
+		//$sql.=' group by p.id';
+		$queryOptions->groupBy('p.id');
 
 		$this->applyQueryOptions($sql, $queryOptions);
 

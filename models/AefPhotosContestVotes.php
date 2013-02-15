@@ -24,7 +24,7 @@ class AefPhotosContestVotes extends AefPhotosContestModelDao {
 
 		$values = array($email);
 		$sql = 'SELECT * FROM ' . $this->getTableName() . ' WHERE voter_email=%s';
-		
+
 		if (!empty($photoId)) {
 			$sql.=' AND photo_id=%d';
 			$values[] = $photoId;
@@ -42,26 +42,39 @@ class AefPhotosContestVotes extends AefPhotosContestModelDao {
 		return $this->count($queryOptions);
 	}
 
-	public function getVotesCountByPhotos(array $photo_ids) {
+	public function getVotesCountByVoters() {
 
-		$sql = 'select photo_id, count(id) from ' . $this->getTableName();
-		$sql.= ' where photo_id IN (';
-		$sql.= implode(',', array_fill(0, count($photo_ids), '%s'));
-		$sql.=') group by photo_id';
+		$sql = 'select voter_email, count(id) as votes from ' . $this->getTableName();
+		$sql.=' group by voter_email';
 
-		$rows = $this->wpdb->get_results($this->wpdb->prepare($sql, $photo_ids), ARRAY_A);
-
+		$rows = $this->wpdb->get_results($sql, ARRAY_A);
 		return $rows;
 	}
 
-	public function getVotesCountByPhoto($photo_id)
-	{
+	public function getVotesCountByPhotos($photo_ids = null) {
+
+		$sql = 'select photo_id, count(id) from ' . $this->getTableName();
+		if (is_array($photo_ids)) {
+			$sql.= ' where photo_id IN (';
+			$sql.= implode(',', array_fill(0, count($photo_ids), '%s'));
+			$sql.=')';
+		}
+
+		$queryOptions = new AefQueryOptions();
+		$queryOptions->groupBy('photo_id');
+		$this->applyQueryOptions($sql, $queryOptions);
+
+		$rows = $this->wpdb->get_results($this->wpdb->prepare($sql, $photo_ids), ARRAY_A);
+		return $rows;
+	}
+
+	public function getVotesCountByPhoto($photo_id) {
 		$sql = 'select count(id) from ' . $this->getTableName();
 		$sql.= ' where photo_id = %s';
-		
+
 		$count = $this->wpdb->get_var($this->wpdb->prepare($sql, $photo_id));
 
-		return $count;		
+		return $count;
 	}
 
 	/**
