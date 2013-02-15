@@ -15,6 +15,8 @@ class AefPhotosContestFront extends AefPhotosContest {
 		parent::__construct();
 
 		//_log(__METHOD__);
+		// To early, does not work
+		//if( $this->has_shortcode(self::SHORT_CODE_PHOTOS_CONTEST) )
 
 		add_action('wp_enqueue_scripts', array($this, 'wp_enqueue_scripts'));
 
@@ -45,29 +47,30 @@ class AefPhotosContestFront extends AefPhotosContest {
 
 		//_log(__METHOD__);
 
-		if ($this->has_shortcode(self::SHORT_CODE_PHOTOS_CONTEST)) {
-
-			wp_enqueue_script('jquery');
-			// using AD Gallery
-			//wp_enqueue_style('ad-gallery-css', self::$javascript_url . 'AD_Gallery-1.2.7/jquery.ad-gallery.css');
-			wp_enqueue_style('ad-gallery-css', self::$styles_url . 'ad-gallery/ad-gallery.css');
-			wp_enqueue_script('ad-gallery', self::$javascript_url . 'AD_Gallery-1.2.7/jquery.ad-gallery.min.js');
-			// Fancybox
-			wp_enqueue_style('fancybox-css', self::$javascript_url . 'fancybox-1.3.4/jquery.fancybox-1.3.4.css');
-			wp_enqueue_script('fancybox', self::$javascript_url . 'fancybox-1.3.4/jquery.fancybox-1.3.4.pack.js');
-
-			// embed the javascript file that makes the AJAX request
-			wp_enqueue_script('aef-ajax-vote', self::$javascript_url . 'aef.vote.js', array('jquery'));
-			// declare the URL to the file that handles the AJAX request (wp-admin/admin-ajax.php)
-			//wp_localize_script('my-ajax-request', 'AefPC', array('ajaxurl' => admin_url('admin-ajax.php')));
-			wp_localize_script('aef-ajax-vote', 'AefPC',
-				array(
-				'ajaxurl' => self::$plugin_ajax_url,
-				'facebook_client_id' => $this->getOption('facebookClientId'),
-				'bloginfo_url' => get_bloginfo('url'),
-				'bloginfo_name' => get_bloginfo('name')
-			));
+		if (!$this->has_shortcode(self::SHORT_CODE_PHOTOS_CONTEST)) {
+			return;
 		}
+
+		wp_enqueue_script('jquery');
+		// using AD Gallery
+		//wp_enqueue_style('ad-gallery-css', self::$javascript_url . 'AD_Gallery-1.2.7/jquery.ad-gallery.css');
+		wp_enqueue_style('ad-gallery-css', self::$styles_url . 'ad-gallery/ad-gallery.css');
+		wp_enqueue_script('ad-gallery', self::$javascript_url . 'AD_Gallery-1.2.7/jquery.ad-gallery.min.js');
+		// Fancybox
+		wp_enqueue_style('fancybox-css', self::$javascript_url . 'fancybox-1.3.4/jquery.fancybox-1.3.4.css');
+		wp_enqueue_script('fancybox', self::$javascript_url . 'fancybox-1.3.4/jquery.fancybox-1.3.4.pack.js');
+
+		// embed the javascript file that makes the AJAX request
+		wp_enqueue_script('aef-ajax-vote', self::$javascript_url . 'aef.vote.js', array('jquery'));
+		// declare the URL to the file that handles the AJAX request (wp-admin/admin-ajax.php)
+		//wp_localize_script('my-ajax-request', 'AefPC', array('ajaxurl' => admin_url('admin-ajax.php')));
+		wp_localize_script('aef-ajax-vote', 'AefPC',
+			array(
+			'ajaxurl' => self::$plugin_ajax_url,
+			'facebook_client_id' => $this->getOption('facebookClientId'),
+			'bloginfo_url' => get_bloginfo('url'),
+			'bloginfo_name' => get_bloginfo('name')
+		));
 	}
 
 	/**
@@ -80,6 +83,9 @@ class AefPhotosContestFront extends AefPhotosContest {
 		global $aefPC, $wpdb;
 
 		//_log(__METHOD__);
+
+		//add_filter('the_content', 'lab_add_rel_to_linked_img', 99);
+		remove_filter('the_content', 'lab_add_rel_to_linked_img', 99);
 
 		$qOptions = new AefQueryOptions();
 		$qOptions->orderBy('photo_order', 'ASC');
@@ -131,12 +137,12 @@ class AefPhotosContestFront extends AefPhotosContest {
 		$photo_id = isset($_REQUEST['photo_id']) ? $_REQUEST['photo_id'] : null;
 		$voterEmail = $this->getVoterEMail();
 		//_log(__METHOD__. ' voterEmail='.$voterEmail.', photo_id='.$photo_id);
-		
+
 		$output = array();
 
 		if (empty($voterEmail)) {
 			$output['command'] = 'can_vote';
-			$output['can_vote'] = true ;
+			$output['can_vote'] = true;
 		}
 		else {
 			$voterStatus = $this->getVoterStatusByEmail($voterEmail, $photo_id);
@@ -144,8 +150,8 @@ class AefPhotosContestFront extends AefPhotosContest {
 			$output['can_vote'] = $voterStatus->canVote;
 		}
 		//_log(__METHOD__. ' can_vote = '. ($output['can_vote']==true?'TRUE':'FALSE') );
-		
-		echo json_encode( $output );
+
+		echo json_encode($output);
 		wp_die();
 	}
 

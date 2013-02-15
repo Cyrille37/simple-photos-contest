@@ -187,7 +187,7 @@ class AefPhotosContest {
 	 */
 	public static function has_shortcode($shortcode) {
 
-		if (!get_the_ID())
+		if (!get_post())
 			return false;
 
 		$post_to_check = get_post(get_the_ID());

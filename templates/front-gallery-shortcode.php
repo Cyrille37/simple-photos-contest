@@ -37,6 +37,7 @@
 			},
 			callbacks: {
 				init: function() {
+jQuery('a.link-img','#gallery').removeAttr('rel');
 	
 					<?php if($this->isVoteOpen() ) { ?>
 
