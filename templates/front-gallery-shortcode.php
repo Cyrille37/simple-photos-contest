@@ -16,7 +16,8 @@
 		var img= jQuery('.aef-vote-opener', '#aef-vote-button') ;
 		img.attr('src', '<?php echo AefPhotosContest::$images_url . 'vote-off-cg41.jpg' ?>' );
 		//img.unbind('click',openVoteBox);
-		img.css('cursor','auto');
+		//img.css('cursor','auto');
+		img.css('cursor','pointer');
 	}
 
 	jQuery(document).ready( function() {
@@ -102,7 +103,8 @@
 								{
 									img.attr('src', '<?php echo AefPhotosContest::$images_url . 'vote-off-cg41.jpg' ?>' );
 									//img.unbind('click',openVoteBox);
-									img.css('cursor','auto');
+									//img.css('cursor','auto');
+									img.css('cursor','pointer');
 								}
 								o.show();
 
@@ -112,7 +114,13 @@
 										$voteStr = res.photo_votes_count+' votes' ;
 									else
 										$voteStr = res.photo_votes_count+' vote' ;
-									jQuery('.ad-image-description span', '#gallery').append(' - <b>' + $voteStr +'</b>');
+									var o2=jQuery('.ad-image-description span', '#gallery');
+									if( o2.length>0)
+										o2.append(' ⟶ <b>' + $voteStr +'</b>');
+									else{
+										o2=jQuery('.ad-image-description .ad-description-title', '#gallery');
+										o2.append(' ⟶ <b>' + $voteStr +'</b>');
+									}
 								}
 							}
 							else
