@@ -56,7 +56,7 @@ class AefPhotosContestVoterStatus {
 				$lastVotedTime = new DateTime($voteStatus->lastVotedDate);
 				// $dt->getTimestamp(); //PHP 5.3
 				// $dt->format('U'); // PHP < 5.3
-				$lastVotedTime = $lastVotedTime->format('U');
+				$lastVotedTime = $lastVotedTime->getTimestamp();
 				$hoursDiff = $nowTime/60/60 - $lastVotedTime/60/60 ;
 				if( $hoursDiff < $freqHours )
 				{
