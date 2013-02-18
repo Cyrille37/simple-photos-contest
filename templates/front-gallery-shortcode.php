@@ -29,6 +29,7 @@
 		});  
 
 		jQuery('#aef-vote-button').hide();
+		jQuery('#votes-bulle').hide();
 
 		gallery = jQuery('.ad-gallery').adGallery(
 		{
@@ -38,105 +39,22 @@
 			},
 			callbacks: {
 				init: function() {
-	
-					<?php if($this->isVoteOpen() ) { ?>
-
-					var root = jQuery('.ad-image-wrapper','#gallery');
-					var o = jQuery('#aef-vote-button') ;
-					root.append(o);
-
-					var o2 = jQuery('.aef-vote-opener',o);
-					o2.click(openVoteBox);
-
-					/*o2.hover(
-					function () {
-						this.src = '<?php echo AefPhotosContest::$images_url . 'favoris-votez-hover.png' ?>';
-					}, function () {
-						this.src = '<?php echo AefPhotosContest::$images_url . 'favoris-votez.png' ?>';
-					});
-					*/
-
-					o.css('position', 'relative');
-					o.css('top', (root.height() - o.height() )+'px' );
-
-					o.css('z-index', jQuery('.ad-next').css('z-index') );
-					o.hide();
-
-					<?php } else { ?>
+					// We can do nothing here, afterImageVisible() could be called before init()
+				},
+				beforeImageVisible: function(new_image, old_image) {
+					<?php if ($this->isVoteOpen()) { ?>
+					jQuery('#aef-vote-button').hide();
+					jQuery('#votes-bulle').hide();
 					<?php } ?>
-
+				},
+				afterImageVisible : function (){
+					<?php if ($this->isVoteOpen()) { ?>
+					photo_id = jQuery( '#gallery .image'+this.current_index ).attr('data-photo_id') ;
+					loadVoteStatus(photo_id, loadVoteStatusCallback);
+					<?php } ?>
 				}
 			}
 		});
-
-		gallery[0].settings.callbacks.afterImageVisible = function (){
-
-				// Sur certains postes, l'appel à cette callback semble arriver trop tôt
-				// car dans la fonction getCurrentPhotoId() "gallery" est "undefined".
-
-					<?php if($this->isVoteOpen() ) { ?>
-
-					var root = jQuery('.ad-image-wrapper','#gallery');
-					var o = jQuery('#aef-vote-button') ;
-					o.css('top', (root.height() - o.height() )+'px' );
-
-					var params = {};  
-					params.action = 'can_vote' ;
-					//params.photo_id = getCurrentPhotoId() ;
-					params.photo_id = jQuery( '.image'+this.current_index, '#gallery').attr('data-photo_id') ;
-
-					jQuery.post(
-						AefPC.ajaxurl,
-						params,
-						function( json ) {
-							var res = JSON.parse(json);
-							if( res.command == 'can_vote' )
-							{
-								var img= jQuery('.aef-vote-opener', o) ;
-								if( res.can_vote )
-								{
-									img.attr('src', '<?php echo AefPhotosContest::$images_url . 'vote-cg41.jpg' ?>' );
-									//img.bind('click',openVoteBox);
-									img.css('cursor','pointer');
-								}
-								else
-								{
-									img.attr('src', '<?php echo AefPhotosContest::$images_url . 'vote-off-cg41.jpg' ?>' );
-									//img.unbind('click',openVoteBox);
-									//img.css('cursor','auto');
-									img.css('cursor','pointer');
-								}
-								o.show();
-
-								if( res.photo_votes_count != null )
-								{
-									if( res.photo_votes_count> 1 )
-										$voteStr = res.photo_votes_count+' votes' ;
-									else
-										$voteStr = res.photo_votes_count+' vote' ;
-									var o2=jQuery('.ad-image-description span', '#gallery');
-									if( o2.length>0)
-										o2.append(' ⟶ <b>' + $voteStr +'</b>');
-									else{
-										o2=jQuery('.ad-image-description .ad-description-title', '#gallery');
-										o2.append(' ⟶ <b>' + $voteStr +'</b>');
-									}
-								}
-							}
-							else
-							{
-								if( res.command == 'error' ){
-									alert( res.message );
-								}else{
-									alert('unknow result');
-								}
-							}
-						}
-					);
-
-					<?php } ?>
-
-				};
 
 		jQuery('.ad-gallery').on("click", ".ad-image", function() {
 
@@ -161,10 +79,65 @@
 			});
 		});
 
+		//setTimeout('window.location=window.location',500);
+
 	});
+
+	function loadVoteStatusCallback(can_vote, photo_votes_count)
+	{
+		console.log('loadVoteStatusCallback() can_vote:'+can_vote+', photo_votes_count:'+photo_votes_count);
+
+		var gal = jQuery('#gallery');
+		var imgWrap = jQuery('.ad-image-wrapper', gal);
+		var o ;
+		var b = jQuery('#aef-vote-button', imgWrap );
+		if( b.length == 0 ){
+			b = jQuery('#aef-vote-button');
+			imgWrap.append(b);
+			b.css('position', 'relative');
+			b.css('top', (imgWrap.height() - b.height() )+'px' );
+			b.css('z-index', jQuery('.ad-next', gal).css('z-index') );
+			o = jQuery('.aef-vote-opener',b);
+			o.click(openVoteBox);
+			o.css('cursor','pointer');
+		} else {
+			o = jQuery('.aef-vote-opener', b);
+		}
+
+		if( can_vote ){
+			o.attr('src', '<?php echo AefPhotosContest::$images_url . 'vote-cg41.jpg' ?>' );
+			//o.hover( function () { this.src = 'hover.png'; }, function () { this.src = 'normal.png'; });
+		} else {
+			o.attr('src', '<?php echo AefPhotosContest::$images_url . 'vote-off-cg41.jpg' ?>' );
+			//o.hover( function () { this.src = 'hover.png'; }, function () { this.src = 'normal.png'; });
+		}
+		b.show();
+
+		var b = jQuery('#votes-bulle', gal );
+		if( b.length == 0 ){
+			b = jQuery('#votes-bulle');
+			b.css('position', 'relative');
+			b.css('float', 'right');
+			gal.prepend(b);
+			b.css('z-index', jQuery('.ad-next', gal).css('z-index')-1 );
+		}
+		if( photo_votes_count > 1 ){
+			b.html( photo_votes_count + '<br/>votes');
+		}
+		else{
+			b.html( photo_votes_count + '<br/>vote');			
+		}
+		b.show();
+		var im = jQuery('.ad-image', gal);
+		b.css('top', (im.position().top) + 'px');
+		b.css('left', '-' + (gal.width() - (im.position().left + im.width() )) +'px');
+
+	}
 
 	function getCurrentPhotoId()
 	{
+				// Sur certains postes, l'appel à cette callback semble arriver trop tôt
+				// car dans la fonction getCurrentPhotoId() "gallery" est "undefined".
 		return jQuery( '.image'+gallery[0].current_index, '#gallery').attr('data-photo_id');
 	}
 
@@ -190,7 +163,7 @@
 			case 'Google':
 				url = 'http://plus.google.com/share'
 					+ '?url='+encodeURIComponent(window.location)
-					;
+				;
 				break;
 		}
 
@@ -200,60 +173,74 @@
 	
 </script>
 <style type="text/css">
-	
+
 	html.busy, html.busy * {  
 		cursor: wait !important;  
 	}
 
-.ad-gallery .ad-controls {
-	margin-top: 4px;
-	margin-bottom: 14px;
-}
+	.ad-gallery .ad-controls {
+		margin-top: 4px;
+		margin-bottom: 14px;
+	}
 
-#aef-vote-button  {
-	margin-right: 0px;
-	text-align: right ;
-}
+	#aef-vote-button  {
+		margin-right: 0px;
+		text-align: right ;
+	}
+
+	#votes-bulle {
+		width: 48px;
+		height: 60px;
+		padding-top: 7px;
+		line-height: 14px ;
+		background-size: contain;
+		background-repeat: no-repeat;
+		background-image: url('<?php echo AefPhotosContest::$images_url . 'bulle.png' ?>') ;
+		text-align: center;
+		font-size: 12px;
+		color: white;
+	}
+
 	/* if fancybox used, make the image seem clickable */
 	.ad-image {
 		cursor: pointer;
 	}
 
-/* social sharing buttons */
+	/* social sharing buttons */
 
-.ss-share {
-  padding-left: 0;
-  list-style: none; }
+	.ss-share {
+		padding-left: 0;
+		list-style: none; }
 
-.ss-share-item {
-  display: inline;
-  margin-right: 0.25em; }
+	.ss-share-item {
+		display: inline;
+		margin-right: 0.25em; }
 
-.ss-share-link {
-  /* crude button styles */
-  text-decoration: none !important;
-  color: #444;
-  padding: .01em .5em .05em 30px;
-  background-color: #f5f5f5;
-  border: 1px solid #ccc;
-  border-radius: 2px; }
+	.ss-share-link {
+		/* crude button styles */
+		text-decoration: none !important;
+		color: #444;
+		padding: .01em .5em .05em 30px;
+		background-color: #f5f5f5;
+		border: 1px solid #ccc;
+		border-radius: 2px; }
   .ss-share-link:hover, .ss-share-link:active, .ss-share-link:focus {
     color: #891434; }
 
-[class*="ico-"] {
-  display: inline-block;
-  background-size: 16px 16px;
-  background-repeat: no-repeat;
-  background-position: 4px center; }
+	[class*="ico-"] {
+		display: inline-block;
+		background-size: 16px 16px;
+		background-repeat: no-repeat;
+		background-position: 4px center; }
 
-.ico-facebook {
-  background-image: url("http://www.facebook.com/favicon.ico"); }
+	.ico-facebook {
+		background-image: url("http://www.facebook.com/favicon.ico"); }
 
-.ico-twitter {
-  background-image: url("http://twitter.com/favicons/favicon.ico"); }
+	.ico-twitter {
+		background-image: url("http://twitter.com/favicons/favicon.ico"); }
 
-.ico-google {
-  background-image: url("https://ssl.gstatic.com/s2/oz/images/faviconr2.ico"); }
+	.ico-google {
+		background-image: url("https://ssl.gstatic.com/s2/oz/images/faviconr2.ico"); }
 
 </style>
 
@@ -262,27 +249,27 @@
 	</div>
 	<div class="ad-controls">
 
-			<ul class="ss-share">Partager cette photo sur
-				<li class="ss-share-item">
-					<a class="ss-share-link ico-facebook"
-						 href="javascript:void(0);" onclick="sharePhoto('Facebook')"
-						 rel="nofollow"
-						 >Facebook</a>
-				</li>
-				<li class="ss-share-item">
-					<a class="ss-share-link ico-twitter"
-						 href="javascript:void(0);" onclick="sharePhoto('Twitter')"
-						 rel="nofollow"
-						 >Twitter</a>
-				</li>
-				<li class="ss-share-item">
-					<a class="ss-share-link ico-google"
-						 href="javascript:void(0);" onclick="sharePhoto('Google')"
-						 rel="nofollow"
-						 >Google+</a>
-				</li>
-			</ul>
-	
+		<ul class="ss-share">Partager cette photo sur
+			<li class="ss-share-item">
+				<a class="ss-share-link ico-facebook"
+					 href="javascript:void(0);" onclick="sharePhoto('Facebook')"
+					 rel="nofollow"
+					 >Facebook</a>
+			</li>
+			<li class="ss-share-item">
+				<a class="ss-share-link ico-twitter"
+					 href="javascript:void(0);" onclick="sharePhoto('Twitter')"
+					 rel="nofollow"
+					 >Twitter</a>
+			</li>
+			<li class="ss-share-item">
+				<a class="ss-share-link ico-google"
+					 href="javascript:void(0);" onclick="sharePhoto('Google')"
+					 rel="nofollow"
+					 >Google+</a>
+			</li>
+		</ul>
+
 	</div>
 	<div class="ad-nav">
 		<div class="ad-thumbs">
@@ -293,14 +280,14 @@
 					?>
 					<li>
 						<a href="<?php echo $this->getPhotoUrl($row, 'view'); ?>" >
-							<img src="<?php echo $this->getPhotoUrl($row,
-					'thumb');
+							<img src="<?php
+					echo $this->getPhotoUrl($row, 'thumb');
 					?>"
-								class="image<?php echo $gallery_idx++; ?>"
-								alt="<?php echo htmlspecialchars($row['photographer_name']); ?>"
-								title="<?php echo $this->truncatePhotoName(htmlspecialchars($row['photo_name'])); ?>"
-								data-photo_id="<?php echo htmlspecialchars($row['id']); ?>"
-								/>
+									 class="image<?php echo $gallery_idx++; ?>"
+									 alt="<?php echo $this->truncatePhotoName(htmlspecialchars($row['photographer_name'])); ?>"
+									 title="<?php echo $this->truncatePhotoName(htmlspecialchars($row['photo_name'])); ?>"
+									 data-photo_id="<?php echo htmlspecialchars($row['id']); ?>"
+									 />
 						</a>
 					</li>
 					<?php
@@ -313,4 +300,8 @@
 
 <div id="aef-vote-button" >
 	<img class="aef-vote-opener" src="<?php echo AefPhotosContest::$images_url . 'vote-cg41.jpg' ?>"/>	
+</div>
+
+<div id="votes-bulle" >
+	999<br/>votes
 </div>

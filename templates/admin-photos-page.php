@@ -153,5 +153,14 @@ $photosListTable->prepare_items();
 		<input type="hidden" name="page" value="<?php echo $_REQUEST['page'] ?>" />
 		<?php $photosListTable->display() ?>
 	</form>
+	
+
+	<?php /*
+	<form>
+		<input type="button" onclick="window.location='<?php echo admin_url('admin.php?page='.AefPhotosContestAdmin::PAGE_PHOTOS.'&action=force-commentInPhotographername') ?>'"
+					 value="Copy comment into photographer name"/>
+	</form>
+	 */ ?>
+
 
 </div>

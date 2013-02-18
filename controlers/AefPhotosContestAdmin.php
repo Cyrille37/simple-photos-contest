@@ -210,8 +210,25 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 								//wp_redirect(admin_url('admin.php?page=' . $plugin_page));
 								wp_redirect($current_url);
 								exit();
-
 								break;
+
+							case 'force-commentInPhotographername':
+
+								$photos = $this->getDaoPhotos()->getAll();
+								foreach( $photos as $photo )
+								{
+									if( !empty($photo['notes']) && empty($photo['photographer_name']))
+									{
+										$this->getDaoPhotos()->updateById($photo['id'], array('photographer_name'=>$photo['notes']) );
+									}
+								}
+								$current_url = set_url_scheme('http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+								$current_url = remove_query_arg(array('action'), $current_url);
+								//wp_redirect(admin_url('admin.php?page=' . $plugin_page));
+								wp_redirect($current_url);
+								exit();
+								break;
+
 							default;
 								$this->errors['action'] = __('Unknow action');
 								break;
@@ -229,7 +246,9 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 								$current_url = remove_query_arg(array('action', 'id'), $current_url);
 								//wp_redirect(admin_url('admin.php?page=' . $plugin_page));
 								wp_redirect($current_url);
+								exit();
 								break;
+							
 							default;
 								$this->errors['action'] = __('Unknow action');
 								break;
@@ -577,7 +596,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 					$this->formatDate($this->getVoteCloseDate()));
 			}
 			else if ($this->isVoteToCome()) {
-				$this->notices[] = sprint(
+				$this->notices[] = sprintf(
 					__('Vote will be open as from %s', self::PLUGIN), $this->formatDate($this->getVoteOpenDate()));
 			}
 			else if ($this->isVoteFinished()) {
