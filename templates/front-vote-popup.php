@@ -233,7 +233,7 @@
 						{
 							if( window.onVoteDone != undefined )
 							{
-								window.onVoteDone();
+								window.onVoteDone( res.photo_votes_count );
 							}
 							jQuery.fancybox.close();
 						}

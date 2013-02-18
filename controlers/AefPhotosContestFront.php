@@ -213,6 +213,7 @@ class AefPhotosContestFront extends AefPhotosContest {
 				$votes = $this->getDaoVotes();
 				$votes->addVote($voterEmail, $photoId);
 				$this->ajax_ouput_data['command'] = 'vote_ok';
+				$this->ajax_ouput_data['photo_votes_count'] = $this->getDaoVotes()->getVotesCountByPhoto($photo_id);
 			}
 			else {
 				$this->ajax_ouput_data['command'] = 'error';
@@ -225,6 +226,7 @@ class AefPhotosContestFront extends AefPhotosContest {
 		}
 
 		echo json_encode($this->ajax_ouput_data);
+		exit();
 	}
 
 	protected $ajax_ouput_data;

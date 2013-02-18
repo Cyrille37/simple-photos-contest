@@ -11,13 +11,20 @@
 	jQuery.noConflict();
 	var gallery ;
 
-	var onVoteDone = function ()
+	var onVoteDone = function (photo_votes_count)
 	{
 		var img= jQuery('.aef-vote-opener', '#aef-vote-button') ;
 		img.attr('src', '<?php echo AefPhotosContest::$images_url . 'vote-off-cg41.jpg' ?>' );
 		//img.unbind('click',openVoteBox);
 		//img.css('cursor','auto');
-		img.css('cursor','pointer');
+		//img.css('cursor','pointer');
+		b = jQuery('#votes-bulle', '#gallery');
+		if( photo_votes_count > 1 ){
+			b.html( photo_votes_count + '<br/>votes');
+		}
+		else{
+			b.html( photo_votes_count + '<br/>vote');			
+		}
 	}
 
 	jQuery(document).ready( function() {
