@@ -1,3 +1,7 @@
+# libs folder does not come with the plugin
+libs/
+
+
 ## generic files to ignore
 *~
 *.lock
