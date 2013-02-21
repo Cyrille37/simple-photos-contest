@@ -84,8 +84,6 @@ var galleryAfterImageVisible = function()
 
 function loadVoteStatus(photo_id, loadVoteStatusCallback )
 {
-	console.log('loadVoteStatus()');
-
 	jQuery.post(
 		AefPC.ajaxurl,
 		{

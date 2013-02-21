@@ -27,7 +27,8 @@
 		}
 	}
 
-	jQuery(document).ready( function() {
+	//jQuery(document).ready( function() {
+	jQuery(window).load( function() {
 
 		jQuery("html").bind("ajaxStart", function(){  
 			jQuery(this).addClass('busy');  
@@ -75,25 +76,21 @@
 				transitionOut: 'elastic',
 				titlePosition  : 'inside',
 				titleFormat		: function (title, currentArray, currentIndex, currentOpts) {
-					var title = jQuery('.image'+gallery[0].current_index, '#gallery').attr('title') ;
-					var alt = jQuery('.image'+gallery[0].current_index , '#gallery').attr('alt') ;
+					var title = jQuery('.image'+gallery[0].current_index, '#gallery').attr('data-photo_name') ;
+					var alt = jQuery('.image'+gallery[0].current_index , '#gallery').attr('data-photographer_name') ;
 
 					return '<div id="fancybox-title" class="fancybox-title-over" style="display: block; margin-left: 10px; width: 100%; bottom: 10px;"><div id="fancybox-title-over">'
-						+'' + (title && title.length ?  title  : '' )  
-						+' ' + (alt && alt.length ?  alt : '' ) 
+						+'' + (title && title.length ?  title  : '' )
+						+' ' + (alt && alt.length ?  alt : '' )
 						+'</div></div>';
 				}
 			});
 		});
 
-		//setTimeout('window.location=window.location',500);
-
 	});
 
 	function loadVoteStatusCallback(can_vote, photo_votes_count)
 	{
-		console.log('loadVoteStatusCallback() can_vote:'+can_vote+', photo_votes_count:'+photo_votes_count);
-
 		var gal = jQuery('#gallery');
 		var imgWrap = jQuery('.ad-image-wrapper', gal);
 		var o ;
@@ -123,9 +120,9 @@
 		var b = jQuery('#votes-bulle', gal );
 		if( b.length == 0 ){
 			b = jQuery('#votes-bulle');
+			imgWrap.prepend(b);
 			b.css('position', 'relative');
 			b.css('float', 'right');
-			gal.prepend(b);
 			b.css('z-index', jQuery('.ad-next', gal).css('z-index')-1 );
 		}
 		if( photo_votes_count > 1 ){
@@ -135,8 +132,8 @@
 			b.html( photo_votes_count + '<br/>vote');			
 		}
 		b.show();
+
 		var im = jQuery('.ad-image', gal);
-		b.css('top', (im.position().top) + 'px');
 		b.css('left', '-' + (gal.width() - (im.position().left + im.width() )) +'px');
 
 	}
@@ -163,7 +160,7 @@
 			case 'Twitter':
 				url = 'http://twitter.com/share'
 					+ '?url='+encodeURIComponent(window.location)
-					+'&text=Superbe photo sur '+ encodeURIComponent(AefPC.bloginfo_name)
+					+'&text=Grand concours photo Loir-et-Cher: Votez pour la photo'
 					+'&hashtags=CG41,Concours,Photo'
 				;
 				break;
@@ -183,6 +180,10 @@
 
 	html.busy, html.busy * {  
 		cursor: wait !important;  
+	}
+
+	.ad-gallery * {
+		font-family: Arial,​Helvetica,​sans-serif ;
 	}
 
 	.ad-gallery .ad-controls {
@@ -217,11 +218,13 @@
 
 	.ss-share {
 		padding-left: 0;
-		list-style: none; }
+		list-style: none;
+	}
 
 	.ss-share-item {
 		display: inline;
-		margin-right: 0.25em; }
+		margin-right: 0.25em;
+	}
 
 	.ss-share-link {
 		/* crude button styles */
@@ -230,15 +233,19 @@
 		padding: .01em .5em .05em 30px;
 		background-color: #f5f5f5;
 		border: 1px solid #ccc;
-		border-radius: 2px; }
+		border-radius: 2px;
+	}
+
   .ss-share-link:hover, .ss-share-link:active, .ss-share-link:focus {
-    color: #891434; }
+    color: #891434;
+	}
 
 	[class*="ico-"] {
 		display: inline-block;
 		background-size: 16px 16px;
 		background-repeat: no-repeat;
-		background-position: 4px center; }
+		background-position: 4px center;
+	}
 
 	.ico-facebook {
 		background-image: url("http://www.facebook.com/favicon.ico"); }
@@ -293,6 +300,8 @@
 									 class="image<?php echo $gallery_idx++; ?>"
 									 alt="<?php echo $this->truncatePhotoName(htmlspecialchars($row['photographer_name'])); ?>"
 									 title="<?php echo $this->truncatePhotoName(htmlspecialchars($row['photo_name'])); ?>"
+									 data-photographer_name="<?php echo htmlspecialchars($row['photographer_name']); ?>"
+									 data-photo_name="<?php echo htmlspecialchars($row['photo_name']); ?>"
 									 data-photo_id="<?php echo htmlspecialchars($row['id']); ?>"
 									 />
 						</a>

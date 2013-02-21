@@ -44,13 +44,13 @@
 		Il y a <?php echo $this->daoPhotos->count(); ?> photos.
 	</p>
 
-	<?php /*
+
 	<form>
 		<input type="button" value="Export"
 					 onclick="window.location='<?php echo admin_url('admin.php?page=' . AefPhotosContestAdmin::PAGE_OVERVIEW . '&action=export') ?>'"
 					 />
 	</form>
-	 */ ?>
+
 
 	<h3><?php _e('Documentation') ?></h3>
 

@@ -36,29 +36,40 @@ class AefPhotosContestVoterStatus {
 			return $voteStatus;
 		}
 
+		//$tz = new DateTimeZone('Europe/Paris');
+		$gmt_offset = get_option('gmt_offset');
+
 		switch ($aefPC->getOption(AefPhotosContest::OPTION_VOTEFREQUENCY)) {
 
 			case AefPhotosContest::VOTE_FREQ_ONEPERCONTEST:
-				
+
 				$voteStatus->canVote = false;
-				$voteStatus->lastVotedDate = $votes[0]['vote_date'] ;
 				$voteStatus->lastVotedPhotoId = $votes[0]['photo_id'] ;
+
+				$dt = new DateTime($votes[0]['vote_date']);
+				$dt->add(new DateInterval('PT'.$gmt_offset.'H'));
+				$voteStatus->lastVotedDate = $dt->format('Y-m-d H:i:s');
+
+				$voteStatus->nextVoteDate = null ;
+
 				break;
 
 			case AefPhotosContest::VOTE_FREQ_ONEPERHOURS:
 
-				$voteStatus->lastVotedDate = $votes[0]['vote_date'] ;
+				//$voteStatus->lastVotedDate = $votes[0]['vote_date'] ;
+				//$voteStatus->lastVotedPhotoId = $votes[0]['photo_id'] ;
+
 				$voteStatus->lastVotedPhotoId = $votes[0]['photo_id'] ;
 
-				$freqHours = $aefPC->getOption(AefPhotosContest::OPTION_VOTEFREQUENCYHOURS);
+				$dt = new DateTime($votes[0]['vote_date']);
+				$dt->add(new DateInterval('PT'.$gmt_offset.'H'));
+				$voteStatus->lastVotedDate = $dt->format('Y-m-d H:i:s');
 
-				$nowTime = time();
-				$lastVotedTime = new DateTime($voteStatus->lastVotedDate);
-				// $dt->getTimestamp(); //PHP 5.3
-				// $dt->format('U'); // PHP < 5.3
-				$lastVotedTime = $lastVotedTime->getTimestamp();
-				$hoursDiff = $nowTime/60/60 - $lastVotedTime/60/60 ;
-				if( $hoursDiff < $freqHours )
+				$dt = new DateTime($votes[0]['vote_date']);
+				$freqHours = $aefPC->getOption(AefPhotosContest::OPTION_VOTEFREQUENCYHOURS);
+				$dt->add(new DateInterval('PT'.$freqHours.'H'));
+
+				if( new DateTime() < $dt )
 				{
 					$voteStatus->canVote = false;
 				}
@@ -67,8 +78,8 @@ class AefPhotosContestVoterStatus {
 					$voteStatus->canVote = true;
 				}
 
-				$nextVoteTime = $lastVotedTime + $freqHours*60*60 ;
-				$voteStatus->nextVoteDate = date('Y-m-d H:i:s', $nextVoteTime) ;
+				$dt->add(new DateInterval('PT'.$gmt_offset.'H'));
+				$voteStatus->nextVoteDate = $dt->format('Y-m-d H:i:s');
 
 				break;
 			default:

@@ -23,6 +23,7 @@ class VotesListTable extends AefListTable {
 		$this->columns = array(
 			'id' => array('label' => __('Id'), 'type' => 'int', 'hidden' => true),
 			'voter_email' => array('label' => 'EMail'),
+			'voter_ip' => array('label' => 'IP'),
 			'vote_date' => array('label' => __('Date')),
 			'photo_id' => array('label' => __('Photo')),
 		);

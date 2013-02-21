@@ -37,9 +37,9 @@ class AefPhotosContestVotes extends AefPhotosContestModelDao {
 
 	public function getVotersCount() {
 
-		$queryOptions = new AefQueryOptions();
-		$queryOptions->groupBy('voter_email');
-		return $this->count($queryOptions);
+		$sql = 'select count( distinct voter_email ) from '. $this->getTableName();
+		$count = $this->wpdb->get_var($sql);
+		return $count;
 	}
 
 	public function getVotesCountByVoters() {
@@ -102,10 +102,12 @@ class AefPhotosContestVotes extends AefPhotosContestModelDao {
 	 */
 	public function addVote($email, $photoId) {
 
+		$nowDT = new DateTime();
 		return $this->insert(array(
 				'voter_email' => $email,
+				'voter_ip' => (isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'null'),
 				'photo_id' => $photoId,
-				'vote_date' => date("Y-m-d H:i:s")
+				'vote_date' => $nowDT->format('Y-m-d H:i:s')
 			));
 	}
 

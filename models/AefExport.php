@@ -3,7 +3,7 @@
 /*
  */
 
-//require_once('/home/cyrille/Taf/CG41/20130124 - Concours photos/docs tech/PHPExcel_1.7.8-with_documentation-pdf_format/Classes/PHPExcel.php');
+require_once( __DIR__.'/../libs/PHPExcel_1.7.8/PHPExcel.php');
 
 /**
  * Description of AefExport

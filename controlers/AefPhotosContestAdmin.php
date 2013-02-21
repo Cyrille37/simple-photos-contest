@@ -110,10 +110,13 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 				wp_die('Failed to create table ' . aefphotoscontestphotos::gettablename());
 		}
 
+		// ALTER TABLE `loiretcher-lemag.fr`.`wp_aef_spc_votes` ADD COLUMN `voter_ip` VARCHAR(255) NULL  AFTER `voter_email` ;
+
 		$sql = 'create table IF NOT EXISTS ' . aefphotoscontestvotes::gettablename() . ' (
 				id int unsigned not null auto_increment,
 				voter_name varchar(255) not null,
 				voter_email varchar(255) not null,
+				voter_ip varchar(255) null,
 				vote_date datetime,
 				photo_id int unsigned,
 				PRIMARY KEY (id),
@@ -163,7 +166,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 
 	public function wp_admin_init() {
 
-		global $pagenow, $plugin_page;
+		global $pagenow, $plugin_page, $wpdb;
 
 		// Add a dashboard widget
 		if ($pagenow == 'index.php') {
@@ -182,9 +185,11 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 							case 'rebuildthumbs':
 								$this->photos_build_thumbs();
 								break;
+							
 							case 'buildFakePhotos':
 								$this->photos_build_fake();
 								break;
+
 							default;
 								$this->errors['action'] = __('Unknow action');
 								break;
