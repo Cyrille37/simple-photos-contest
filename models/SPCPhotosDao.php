@@ -4,7 +4,7 @@
  * 
  */
 
-class AefPhotosContestPhotos extends AefPhotosContestModelDao {
+class SPCPhotosDao extends SPCModelDao {
 
 	public static function getTableName() {
 		return self::DBTABLE_PREFIX . '_photos';
@@ -13,14 +13,14 @@ class AefPhotosContestPhotos extends AefPhotosContestModelDao {
 	/**
 	 * Get all photos plus a column 'votes' wich contains the votes count by photo.
 	 * Note: add a group by to $queryOptions.
-	 * @param AefQueryOptions $queryOptions
+	 * @param SPCQueryOptions $queryOptions
 	 * @return array Array of photos and a column votes
 	 */
-	public function getAllWithVotesCount(AefQueryOptions $queryOptions = null) {
+	public function getAllWithVotesCount(SPCQueryOptions $queryOptions = null) {
 
 		$sql = 'select count(v.id) as votes, p.* ';
-		$sql.=' from wp_aef_spc_photos p';
-		$sql.=' left join wp_aef_spc_votes v on (v.photo_id=p.id)';
+		$sql.=' from '.self::getTableName().' p';
+		$sql.=' left join '.SPCVotesDao::getTableName().' v on (v.photo_id=p.id)';
 
 		//$sql.=' group by p.id';
 		$queryOptions->groupBy('p.id');
@@ -38,7 +38,7 @@ class AefPhotosContestPhotos extends AefPhotosContestModelDao {
 	public function getVotesAndVotersCounts($id) {
 
 		$sql = 'SELECT count(id) as votes, count(distinct voter_email) as voters';
-		$sql.=' FROM wp_aef_spc_votes';
+		$sql.=' FROM '.SPCVotesDao::getTableName();
 		$sql.= ' WHERE photo_id=' . intval($id);
 
 		$row = $this->wpdb->get_row($sql, ARRAY_A);
@@ -52,8 +52,8 @@ class AefPhotosContestPhotos extends AefPhotosContestModelDao {
 
 		$sql = 'UPDATE ' . $this->getTableName()
 			. ' SET photo_order = photo_order + 1'
-			. ' WHERE photo_order >= (SELECT * FROM (SELECT photo_order FROM wp_aef_spc_photos WHERE id = %s) p1 )'
-			. ' AND photo_order < (SELECT * FROM (SELECT photo_order FROM wp_aef_spc_photos WHERE id = %s) p2 )';
+			. ' WHERE photo_order >= (SELECT * FROM (SELECT photo_order FROM '.self::getTableName().' WHERE id = %s) p1 )'
+			. ' AND photo_order < (SELECT * FROM (SELECT photo_order FROM '.self::getTableName().' WHERE id = %s) p2 )';
 
 		$this->wpdb->query($this->wpdb->prepare($sql, array($destId, $srcId)));
 
@@ -66,8 +66,8 @@ class AefPhotosContestPhotos extends AefPhotosContestModelDao {
 
 		$sql = 'UPDATE ' . $this->getTableName()
 			. ' SET photo_order = photo_order - 1'
-			. ' WHERE photo_order > (SELECT * FROM (SELECT photo_order FROM wp_aef_spc_photos WHERE id = %s) p1 )'
-			. ' AND photo_order <= (SELECT * FROM (SELECT photo_order FROM wp_aef_spc_photos WHERE id = %s) p2 )';
+			. ' WHERE photo_order > (SELECT * FROM (SELECT photo_order FROM '.self::getTableName().' WHERE id = %s) p1 )'
+			. ' AND photo_order <= (SELECT * FROM (SELECT photo_order FROM '.self::getTableName().' WHERE id = %s) p2 )';
 		$this->wpdb->query($this->wpdb->prepare($sql, array($srcId, $destId)));
 
 		$this->updateById($srcId, array('photo_order' => $destPhotoOrder));
@@ -75,6 +75,6 @@ class AefPhotosContestPhotos extends AefPhotosContestModelDao {
 
 	public function getPhotoOrderMax()
 	{
-		return $this->wpdb->get_var('SELECT max(photo_order) from '.$this->getTableName() );
+		return $this->wpdb->get_var('SELECT max(photo_order) from '.self::getTableName() );
 	}
 }

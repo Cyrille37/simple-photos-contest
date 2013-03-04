@@ -5,7 +5,7 @@
  * To order photos (field photo_order).
  */
 
-$queryOptions = new AefQueryOptions();
+$queryOptions = new SPCQueryOptions();
 $queryOptions->orderBy('photo_order', 'ASC');
 $photos = $this->getDaoPhotos()->getAll($queryOptions);
 
@@ -115,7 +115,7 @@ $nbPhotos = count($photos);
 		<br>
 	</div>
 
-	<h2><?php _e('Concours photo - Tri des photos') ?></h2>
+	<h2><?php _e('Photos contest - Order photos') ?></h2>
 
 	<div >
 		<ul id="photos-list">
@@ -138,7 +138,7 @@ $nbPhotos = count($photos);
 
 	<?php /*
 	<form>
-		<input type="button" onclick="window.location='<?php echo admin_url('admin.php?page='.AefPhotosContestAdmin::PAGE_PHOTOS_ORDER.'&action=force-reorder') ?>'"
+		<input type="button" onclick="window.location='<?php echo admin_url('admin.php?page='.SimplePhotosContestAdmin::PAGE_PHOTOS_ORDER.'&action=force-reorder') ?>'"
 					 value="Tri forcé"/>
 	</form>
 	*/ ?>

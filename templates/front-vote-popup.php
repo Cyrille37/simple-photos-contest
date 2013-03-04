@@ -4,17 +4,17 @@
  */
 ?>
 <style type="text/css">
-	#aef-vote-dialog{
+	#spc-vote-dialog{
 		width:480px;
 		border-left: #000 solid thin;
 		padding-left: 8px;
 	}
-	#aef-vote-dialog td {
+	#spc-vote-dialog td {
 		vertical-align: middle;
 	}
-	#aef-vote-dialog .hlist {
+	#spc-vote-dialog .hlist {
 	}
-	#aef-vote-dialog .hlist li  {
+	#spc-vote-dialog .hlist li  {
 		padding-left: 12px;
 		display: inline;  
     list-style: none; /* nécessaire pour IE7 */  
@@ -36,7 +36,7 @@
 	}
 </style>
 
-<div id="aef-vote-dialog" title="Vote"  style="">
+<div id="spc-vote-dialog" title="Vote"  style="">
 	<h3>Vote du concours photo</h3>
 	<?php
 	if (empty($voterEmail)) {
@@ -54,18 +54,18 @@
 					</p>
 				</div>
 				<ul class="hlist">
-					<li><a href="javascript:void(0);" title="identifiez vous avec Facebook" class="aef-auth-facebook"><img alt="Facebook" src="<?php echo AefPhotosContest::$images_url . 'facebook_32.png' ?>" /></a></li>
-					<li><a href="javascript:void(0);" title="identifiez vous avec Google+" class="aef-auth-google"><img alt="Google" src="<?php echo AefPhotosContest::$images_url . 'google_32.png' ?>" /></a></li>
-					<!--li><a href="javascript:void(0);" title="identifiez vous avec Yahoo" class="aef-auth-yahoo"><img alt="Yahoo" src="<?php echo AefPhotosContest::$images_url . 'yahoo_32.png' ?>" /></a></li-->
-					<li><a href="javascript:void(0);" onclick="return auth_email();" title="identifiez vous avec un code envoyez par email" class="aef-auth-email"><img alt="eMail" src="<?php echo AefPhotosContest::$images_url . 'email_32.jpg' ?>" /></a></li>
+					<li><a href="javascript:void(0);" title="identifiez vous avec Facebook" class="spc-auth-facebook"><img alt="Facebook" src="<?php echo SimplePhotosContest::$images_url . 'facebook_32.png' ?>" /></a></li>
+					<li><a href="javascript:void(0);" title="identifiez vous avec Google+" class="spc-auth-google"><img alt="Google" src="<?php echo SimplePhotosContest::$images_url . 'google_32.png' ?>" /></a></li>
+					<!--li><a href="javascript:void(0);" title="identifiez vous avec Yahoo" class="spc-auth-yahoo"><img alt="Yahoo" src="<?php echo SimplePhotosContest::$images_url . 'yahoo_32.png' ?>" /></a></li-->
+					<li><a href="javascript:void(0);" onclick="return auth_email();" title="identifiez vous avec un code envoyez par email" class="spc-auth-email"><img alt="eMail" src="<?php echo SimplePhotosContest::$images_url . 'email_32.jpg' ?>" /></a></li>
 				</ul>
 				<br/>
-				<input type="hidden" class="aef-auth-facebook_client_id" name="client_id" value="<?php echo $aefPC->getOption('facebookClientId'); ?>" />
-				<input type="hidden" class="aef-auth-facebook" name="redirect_uri" value="<?php echo urlencode(AefPhotosContest::$plugin_url . 'auth/facebook/callback.php'); ?>" />
-				<input type="hidden" class="aef-auth-google" name="redirect_uri" value="<?php echo( AefPhotosContest::$plugin_url . 'auth/google/connect.php' ); ?>" />
-				<input type="hidden" class="aef-auth-yahoo" name="redirect_uri" value="<?php echo( AefPhotosContest::$plugin_url . 'auth/yahoo/connect.php' ); ?>" />
-				<input type="hidden" class="aef-auth-email" name="redirect_uri" value="<?php echo( AefPhotosContest::$plugin_url . 'auth/email/connect.php' ); ?>" />
-				<input type="hidden" class="aef-auth-email-sign" name="auth_sign" value="" />
+				<input type="hidden" class="spc-auth-facebook_client_id" name="client_id" value="<?php echo $gSPC->getOption('facebookClientId'); ?>" />
+				<input type="hidden" class="spc-auth-facebook" name="redirect_uri" value="<?php echo urlencode(SimplePhotosContest::$plugin_url . 'auth/facebook/callback.php'); ?>" />
+				<input type="hidden" class="spc-auth-google" name="redirect_uri" value="<?php echo( SimplePhotosContest::$plugin_url . 'auth/google/connect.php' ); ?>" />
+				<input type="hidden" class="spc-auth-yahoo" name="redirect_uri" value="<?php echo( SimplePhotosContest::$plugin_url . 'auth/yahoo/connect.php' ); ?>" />
+				<input type="hidden" class="spc-auth-email" name="redirect_uri" value="<?php echo( SimplePhotosContest::$plugin_url . 'auth/email/connect.php' ); ?>" />
+				<input type="hidden" class="spc-auth-email-sign" name="auth_sign" value="" />
 			</form>
 		</div>
 		<div id="vote-auth-email">
@@ -96,9 +96,9 @@
 				jQuery('#vote-auth-email-code').hide();
 
 				var form = jQuery('#vote-auth-form');
-				jQuery('a.aef-auth-facebook', form).click(function() {
-					var client_id = jQuery('input.aef-auth-facebook_client_id', form).val();
-					var redirect_uri = jQuery('input.aef-auth-facebook', form).val();
+				jQuery('a.spc-auth-facebook', form).click(function() {
+					var client_id = jQuery('input.spc-auth-facebook_client_id', form).val();
+					var redirect_uri = jQuery('input.spc-auth-facebook', form).val();
 
 					if(client_id == '') {
 						alert('Error, the Facebook provider is not configured.')
@@ -108,13 +108,13 @@
 					}
 				});
 
-				jQuery('a.aef-auth-google', form).click(function() {
-					var redirect_uri = jQuery('input.aef-auth-google', form).val();
+				jQuery('a.spc-auth-google', form).click(function() {
+					var redirect_uri = jQuery('input.spc-auth-google', form).val();
 					window.open(redirect_uri,'','scrollbars=yes,menubar=no,height=460,width=800,resizable=yes,toolbar=no,status=no');
 				});
 
-				jQuery('a.aef-auth-yahoo', form).click( function() {
-					var redirect_uri = jQuery('input.aef-auth-yahoo', form).val();
+				jQuery('a.spc-auth-yahoo', form).click( function() {
+					var redirect_uri = jQuery('input.spc-auth-yahoo', form).val();
 					window.open(redirect_uri,'','scrollbars=yes,menubar=no,height=460,width=800,resizable=yes,toolbar=no,status=no');
 				});
 
@@ -122,7 +122,7 @@
 
 			function auth_email(step)
 			{
-				var root = jQuery('#aef-vote-dialog');
+				var root = jQuery('#spc-vote-dialog');
 				switch(step){
 
 					case undefined:
@@ -144,7 +144,7 @@
 						{
 							return ;
 						}
-						var redirect_uri = jQuery('input.aef-auth-email', root).val();
+						var redirect_uri = jQuery('input.spc-auth-email', root).val();
 						var params = {};
 						params.action = 'emailSend' ;
 						params.email = email ;
@@ -153,7 +153,7 @@
 							var res = JSON.parse(jsonString);
 							if( res.command == 'mail_sent' )
 							{
-								jQuery('input.aef-auth-email-sign', root).val( res.social_auth_signature );
+								jQuery('input.spc-auth-email-sign', root).val( res.social_auth_signature );
 								jQuery('#vote-auth-email').hide();
 								jQuery('#vote-auth-email-code').show();
 							}
@@ -176,10 +176,10 @@
 		
 					case 'codeConfirm':
 
-						window.aef_vote_auth_callback({
+						window.spc_vote_auth_callback({
 							'social_auth_provider' : 'mail',
 							'social_auth_email' : jQuery('input:text[name=email]', root).val(),
-							'social_auth_signature' : jQuery('input.aef-auth-email-sign', root).val(),
+							'social_auth_signature' : jQuery('input.spc-auth-email-sign', root).val(),
 							'social_auth_access_token' : jQuery('input:text[name=emailCode]', root).val()
 						});
 						break;
@@ -212,7 +212,7 @@
 				<input class="vote_cancel" type="button" value="Annuler" onclick="jQuery.fancybox.close()" />
 			</p>
 			<p>
-				Vous êtes identifié comme <span class="aef-vote-voter-email"><?php echo $voterEmail ?></span>.
+				Vous êtes identifié comme <span class="spc-vote-voter-email"><?php echo $voterEmail ?></span>.
 				Si ce n'est pas vous, <a href="javascript:void(0);" onclick="voteLogout()">identifiez-vous</a>.
 			</p>
 			<script type="text/javascript">
@@ -225,7 +225,7 @@
 					}; 
 
 					jQuery.post(
-					AefPC.ajaxurl,
+					gSPC.ajaxurl,
 					params,
 					function( jsonString ) {
 						var res = JSON.parse(jsonString);
@@ -256,7 +256,7 @@
 	}
 	else if (!$voterStatus->canVote && isset($photo)) {
 		?>
-		<div id="aef-popup-already-voted">
+		<div id="spc-popup-already-voted">
 			<p>Vous avez déjà voté pour la photo suivante:</p>
 			<p style="text-align: center">
 				<img
@@ -270,10 +270,10 @@
 				<span class="photographer_name"><?php echo $photo['photographer_name'] ?></span>
 			</p>
 			<?php if (!empty($voterStatus->nextVoteDate)) { ?>
-				<p>Vous pourrez de nouveau voter à partir du <?php echo $aefPC->formatDate($voterStatus->nextVoteDate)?></p>
+				<p>Vous pourrez de nouveau voter à partir du <?php echo $gSPC->formatDate($voterStatus->nextVoteDate)?></p>
 			<?php } ?>
 			<p>
-				Vous êtes identifié comme <span class="aef-vote-voter-email"><?php echo $voterEmail ?></span>.
+				Vous êtes identifié comme <span class="spc-vote-voter-email"><?php echo $voterEmail ?></span>.
 				Si ce n'est pas vous, <a href="javascript:void(0);" onclick="voteLogout()">identifiez-vous</a>.
 			</p>
 		</div>

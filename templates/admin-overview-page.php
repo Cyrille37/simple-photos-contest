@@ -11,7 +11,7 @@
 	<h2><?php _e('Photos contest - Overview',
 	self::PLUGIN) ?></h2>
 
-	<h3><?php _e('Infomation') ?></h3>
+	<h3><?php _e('Information') ?></h3>
 
 	<p>
 		<?php
@@ -47,7 +47,7 @@
 
 	<form>
 		<input type="button" value="Export"
-					 onclick="window.location='<?php echo admin_url('admin.php?page=' . AefPhotosContestAdmin::PAGE_OVERVIEW . '&action=export') ?>'"
+					 onclick="window.location='<?php echo admin_url('admin.php?page=' . SimplePhotosContestAdmin::PAGE_OVERVIEW . '&action=export') ?>'"
 					 />
 	</form>
 
@@ -55,6 +55,6 @@
 	<h3><?php _e('Documentation') ?></h3>
 
 	<p>Le code (shortcode) qu'il faut utiliser dans le contenu d'une page pour afficher la galerie du concours photos est:</p>
-	<code><?php echo AefPhotosContest::SHORT_CODE_PHOTOS_CONTEST ?></code>
-	<p>Voir la <a href="<?php echo AefPhotosContest::$plugin_url . 'docs/index.html' ?>" target="aef-spc-documentation">documentation</a>.</p>
+	<code><?php echo SimplePhotosContest::SHORT_CODE_PHOTOS_CONTEST ?></code>
+	<p>Voir la <a href="<?php echo SimplePhotosContest::$plugin_url . 'docs/index.html' ?>" target="spc-documentation">documentation</a>.</p>
 </div>

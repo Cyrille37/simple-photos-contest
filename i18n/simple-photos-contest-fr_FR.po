@@ -1,9 +1,9 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Aef Simple Photo Contest\n"
+"Project-Id-Version: Simple Photo Contest\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-14 23:16+0100\n"
-"PO-Revision-Date: 2013-02-14 23:17+0100\n"
+"POT-Creation-Date: 2013-03-04 16:11+0100\n"
+"PO-Revision-Date: 2013-03-04 16:11+0100\n"
 "Last-Translator: Cyrille37 <cyrille37@gmail.com>\n"
 "Language-Team: \n"
 "Language: \n"
@@ -12,195 +12,209 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-KeywordsList: __;gettext;gettext_noop;_e\n"
 "X-Poedit-Basepath: .\n"
+"X-Poedit-Country: FRANCE\n"
+"X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: ..\n"
 
-#: ../controlers/AefPhotosContestAdmin.php:189
-#: ../controlers/AefPhotosContestAdmin.php:216
-#: ../controlers/AefPhotosContestAdmin.php:234
+#: ../controlers/SimplePhotosContest.php:118
+#, fuzzy
+msgid "Photos Contest"
+msgstr "Concours photos"
+
+#: ../controlers/SimplePhotosContestAdmin.php:193
+#: ../controlers/SimplePhotosContestAdmin.php:237
+#: ../controlers/SimplePhotosContestAdmin.php:257
+#: ../controlers/SimplePhotosContestAdmin.php:276
+#: ../controlers/SimplePhotosContestAdmin.php:294
 msgid "Unknow action"
 msgstr "Action inconnue"
 
-#: ../controlers/AefPhotosContestAdmin.php:257
-#: ../controlers/AefPhotosContestAdmin.php:277
-#: ../controlers/AefPhotosContestAdmin.php:283
+#: ../controlers/SimplePhotosContestAdmin.php:269
+msgid "Forced order done."
+msgstr "L'ordre a été forcé"
+
+#: ../controlers/SimplePhotosContestAdmin.php:287
+msgid "Export done."
+msgstr "Export réussi"
+
+#: ../controlers/SimplePhotosContestAdmin.php:409
+#: ../controlers/SimplePhotosContestAdmin.php:429
+#: ../controlers/SimplePhotosContestAdmin.php:435
 msgid "Requested photo not found"
 msgstr "La photo indiquée n'existe pas"
 
-#: ../controlers/AefPhotosContestAdmin.php:322
+#: ../controlers/SimplePhotosContestAdmin.php:474
 msgid "Photos contest"
 msgstr "Concours photos"
 
-#: ../controlers/AefPhotosContestAdmin.php:325
+#: ../controlers/SimplePhotosContestAdmin.php:477
 msgid "Overview"
 msgstr "Synthèse"
 
-#: ../controlers/AefPhotosContestAdmin.php:328
+#: ../controlers/SimplePhotosContestAdmin.php:480
 msgid "Votes"
 msgstr "Votes"
 
-#: ../controlers/AefPhotosContestAdmin.php:331
+#: ../controlers/SimplePhotosContestAdmin.php:483
+#: ../templates/admin-configuration-page.php:124
 msgid "Photos"
 msgstr "Photos"
 
-#: ../controlers/AefPhotosContestAdmin.php:334
+#: ../controlers/SimplePhotosContestAdmin.php:486
 msgid "Add photo"
 msgstr "Ajouter une photo"
 
-#: ../controlers/AefPhotosContestAdmin.php:337
+#: ../controlers/SimplePhotosContestAdmin.php:489
 msgid "Configuration"
 msgstr "Réglages"
 
-#: ../controlers/AefPhotosContestAdmin.php:341
+#: ../controlers/SimplePhotosContestAdmin.php:493
 msgid "Photos order"
 msgstr "Tri des photos"
 
-#: ../controlers/AefPhotosContestAdmin.php:447
+#: ../controlers/SimplePhotosContestAdmin.php:599
 #, php-format
 msgid "Vote is open since %1s to %2s"
 msgstr "Le vote est ouvert depuis le %1s jusqu'au %2s"
 
-#: ../controlers/AefPhotosContestAdmin.php:453
+#: ../controlers/SimplePhotosContestAdmin.php:604
 #, php-format
 msgid "Vote will be open as from %s"
 msgstr "Le vote sera ouvert le %s"
 
-#: ../controlers/AefPhotosContestAdmin.php:458
+#: ../controlers/SimplePhotosContestAdmin.php:608
 #, php-format
 msgid "Vote completed since %s"
 msgstr "Le vote est fermé depuis le %s"
 
-#: ../controlers/AefPhotosContestAdmin.php:462
+#: ../controlers/SimplePhotosContestAdmin.php:611
 msgid "Vote is not configured"
 msgstr "Le vote n'est pas configuré"
 
-#: ../controlers/AefPhotosContestAdmin.php:503
+#: ../controlers/SimplePhotosContestAdmin.php:652
 msgid "Photos folder is not set"
 msgstr "Le répertoire des photos n'est pas renseigné"
 
-#: ../controlers/AefPhotosContestAdmin.php:510
+#: ../controlers/SimplePhotosContestAdmin.php:659
 msgid "Photos folder path does not exists or is not writable."
 msgstr "Le répertoire des photos n'existe pas ou n'est pas accessible en écriture"
 
-#: ../controlers/AefPhotosContestAdmin.php:522
+#: ../controlers/SimplePhotosContestAdmin.php:671
 msgid "Photo name max length must be set"
 msgstr "La longueur maximal affichée pour le nom des photos doit être indiqué"
 
-#: ../controlers/AefPhotosContestAdmin.php:529
+#: ../controlers/SimplePhotosContestAdmin.php:678
 msgid "Thumbnail width must be set"
 msgstr "La largeur des miniatures doit être indiquée"
 
-#: ../controlers/AefPhotosContestAdmin.php:535
+#: ../controlers/SimplePhotosContestAdmin.php:684
 msgid "Thumbnail height must be set"
 msgstr "La hauteur des miniatures doit être indiquée"
 
-#: ../controlers/AefPhotosContestAdmin.php:542
+#: ../controlers/SimplePhotosContestAdmin.php:691
 msgid "View width must be set"
 msgstr "La largeur des vues des photos doit être renseignée"
 
-#: ../controlers/AefPhotosContestAdmin.php:548
+#: ../controlers/SimplePhotosContestAdmin.php:697
 msgid "View height must be set"
 msgstr "La hauteur des vues des photos doit être renseignée"
 
-#: ../controlers/AefPhotosContestAdmin.php:564
+#: ../controlers/SimplePhotosContestAdmin.php:713
 msgid "Unknown dateFormat"
 msgstr "Format de date inconnu"
 
-#: ../controlers/AefPhotosContestAdmin.php:580
+#: ../controlers/SimplePhotosContestAdmin.php:729
 msgid "Vote open date is not a valid date"
 msgstr "La date d'ouverture du vote est invalide"
 
-#: ../controlers/AefPhotosContestAdmin.php:602
+#: ../controlers/SimplePhotosContestAdmin.php:751
 msgid "Vote close date is not a valid date"
 msgstr "La date de fermeture du vote est invalide"
 
-#: ../controlers/AefPhotosContestAdmin.php:622
+#: ../controlers/SimplePhotosContestAdmin.php:771
 msgid "Vote frequency error, number of hours must be set"
 msgstr "Erreur de fréquence de vote, le nombre d'heures doit être renseigné"
 
-#: ../controlers/AefPhotosContestAdmin.php:664
+#: ../controlers/SimplePhotosContestAdmin.php:813
 msgid "Photographer email is not valid."
 msgstr "L'email du photographe n'est pas valide"
 
-#: ../controlers/AefPhotosContestAdmin.php:674
-#: ../controlers/AefPhotosContestAdmin.php:680
+#: ../controlers/SimplePhotosContestAdmin.php:823
+#: ../controlers/SimplePhotosContestAdmin.php:829
 msgid "Photo name could not be empty."
 msgstr "Le nom de la photo doit être renseigné"
 
-#: ../controlers/AefPhotosContestAdmin.php:708
+#: ../controlers/SimplePhotosContestAdmin.php:857
 msgid "Photo updated"
 msgstr "Photo mise à jour"
 
-#: ../controlers/AefPhotosContestAdmin.php:712
+#: ../controlers/SimplePhotosContestAdmin.php:861
 msgid "Failed to update photo"
 msgstr "Échec de mise à jour de la photo"
 
-#: ../controlers/AefPhotosContestAdmin.php:726
+#: ../controlers/SimplePhotosContestAdmin.php:875
 msgid "Photo saved"
 msgstr "La photo a été enregistrée"
 
-#: ../controlers/AefPhotosContestAdmin.php:730
+#: ../controlers/SimplePhotosContestAdmin.php:879
 msgid "Failed to save photo"
 msgstr "Échec d'enregistrement de la photo"
 
-#: ../controlers/AefPhotosContestAdmin.php:751
+#: ../controlers/SimplePhotosContestAdmin.php:900
 msgid "UPLOAD_ERR_INI_SIZE"
 msgstr ""
 
-#: ../controlers/AefPhotosContestAdmin.php:754
+#: ../controlers/SimplePhotosContestAdmin.php:903
 msgid "UPLOAD_ERR_FORM_SIZE"
 msgstr ""
 
-#: ../controlers/AefPhotosContestAdmin.php:757
+#: ../controlers/SimplePhotosContestAdmin.php:906
 msgid "UPLOAD_ERR_PARTIAL"
 msgstr ""
 
-#: ../controlers/AefPhotosContestAdmin.php:760
+#: ../controlers/SimplePhotosContestAdmin.php:909
 msgid "UPLOAD_ERR_NO_TMP_DIR"
 msgstr ""
 
-#: ../controlers/AefPhotosContestAdmin.php:763
+#: ../controlers/SimplePhotosContestAdmin.php:912
 msgid "UPLOAD_ERR_CANT_WRITE"
 msgstr ""
 
-#: ../controlers/AefPhotosContestAdmin.php:766
+#: ../controlers/SimplePhotosContestAdmin.php:915
 msgid "UPLOAD_ERR_EXTENSION"
 msgstr ""
 
-#: ../controlers/AefPhotosContestAdmin.php:782
+#: ../controlers/SimplePhotosContestAdmin.php:931
 msgid "Photo file is not a valid format: "
 msgstr "Mauvais format de photo: "
 
-#: ../controlers/AefPhotosContestAdmin.php:789
+#: ../controlers/SimplePhotosContestAdmin.php:938
 msgid "Photos path does not exists or is not writable: "
 msgstr "Le répertoire des photos n'existe pas ou n'est pas accessible en écriture"
 
-#: ../controlers/AefPhotosContestAdmin.php:801
+#: ../controlers/SimplePhotosContestAdmin.php:950
 msgid "Upload error, the file could not be moved to: "
 msgstr "Erreur de téléversement, le fichier ne peut être enregistré dans: "
 
-#: ../controlers/AefPhotosContestAdmin.php:805
+#: ../controlers/SimplePhotosContestAdmin.php:954
 msgid "Photo uploaded at path: "
 msgstr "La photo a été téléversée dans le fichier: "
 
-#: ../controlers/AefPhotosContestAdmin.php:859
+#: ../controlers/SimplePhotosContestAdmin.php:1008
 msgid "All photos thumbs were rebuilt"
 msgstr "Toutes les miniatures ont été reconstruites"
 
-#: ../controlers/AefPhotosContestAdmin.php:1003
+#: ../controlers/SimplePhotosContestAdmin.php:1152
 msgid "Photo not found."
 msgstr "Photo non trouvée."
 
-#: ../controlers/AefPhotosContestAdmin.php:1010
+#: ../controlers/SimplePhotosContestAdmin.php:1159
 msgid "Failed to delete photo."
 msgstr "Échec de suppression de la photo."
 
-#: ../controlers/AefPhotosContestAdmin.php:1018
+#: ../controlers/SimplePhotosContestAdmin.php:1167
 msgid "Photo deleted."
 msgstr "Photo supprimée."
-
-#: ../controlers/AefPhotosContest.php:118
-msgid "Concours Photos"
-msgstr ""
 
 #: ../templates/admin-votes-page.php:18
 msgid "vote"
@@ -215,31 +229,31 @@ msgstr "votes"
 msgid "Id"
 msgstr ""
 
-#: ../templates/admin-votes-page.php:26
+#: ../templates/admin-votes-page.php:27
 msgid "Date"
 msgstr ""
 
-#: ../templates/admin-votes-page.php:27
+#: ../templates/admin-votes-page.php:28
 msgid "Photo"
 msgstr ""
 
-#: ../templates/admin-votes-page.php:37
+#: ../templates/admin-votes-page.php:38
 msgid "Confirm deletion of vote from "
-msgstr ""
+msgstr "Confirmer la suppression du vote"
 
-#: ../templates/admin-votes-page.php:118
-msgid "Concours photo - Votes"
-msgstr ""
+#: ../templates/admin-votes-page.php:119
+msgid "Photos contest - Votes"
+msgstr "Concours photos - Votes"
 
 #: ../templates/admin-overview-page.php:11
 msgid "Photos contest - Overview"
 msgstr "Concours photos - Synthèse"
 
-#: ../templates/admin-overview-page.php:13
-msgid "Infomation"
-msgstr ""
+#: ../templates/admin-overview-page.php:14
+msgid "Information"
+msgstr "Information"
 
-#: ../templates/admin-overview-page.php:45
+#: ../templates/admin-overview-page.php:55
 msgid "Documentation"
 msgstr ""
 
@@ -265,15 +279,15 @@ msgstr "Email du photographe"
 
 #: ../templates/admin-photos-page.php:73
 msgid "Confirm deletion of photo id "
-msgstr ""
+msgstr "Confirmez la suppression de la photo id "
 
 #: ../templates/admin-photos-page.php:146
-msgid "Concours photo - Liste des photos"
-msgstr ""
+msgid "Photos contest - Photos list"
+msgstr "Concours photos - Listes des photos"
 
 #: ../templates/admin-photos-order.php:118
-msgid "Concours photo - Tri des photos"
-msgstr ""
+msgid "Photos contest - Order photos"
+msgstr "Concours photos - Ordre des photos"
 
 #: ../templates/admin-configuration-page.php:42
 msgid "Photos contest - Configuration"
@@ -401,3 +415,8 @@ msgstr "Vous pourrez téléverser une photo après l'enregistrement des modifica
 msgid "Unknow error"
 msgstr "Erreur inconnue"
 
+#~ msgid "Concours Photos"
+#~ msgstr "Concours Photos"
+
+#~ msgid "Concours photo - Tri des photos"
+#~ msgstr "Concours photo - Tri des photos"

@@ -18,13 +18,13 @@ try {
 			$email = $attributes['contact/email'];
 			$first_name = isset($attributes['namePerson/first']) ? $attributes['namePerson/first'] : '';
 			$last_name = isset($attributes['namePerson/last']) ? $attributes['namePerson/last'] : '';
-			$signature = aef_auth_generate_signature($google_id);
+			$signature = spc_auth_generate_signature($google_id);
 			?>
 			<html>
 				<head>
 					<script>
 						function init() {
-							window.opener.aef_vote_auth_callback({
+							window.opener.spc_vote_auth_callback({
 								'social_auth_provider' : 'google', 
 								'social_auth_signature' : '<?php echo $signature ?>',
 								'social_auth_openid_identity' : '<?php echo $google_id ?>',

@@ -1,8 +1,8 @@
 <?php
 
 /*
-  Plugin Name: AEF Simple Photos Contest
-  Plugin URI: https://github.com/Cyrille37/aef-photos-contest
+  Plugin Name: Simple Photos Contest
+  Plugin URI: https://github.com/Cyrille37/simple-photos-contest
   Description: A simple photos contest plugin for WordPress
   Author: Artéfacts & Conseil Général de Loir-et-Cher
   Author URI: http://www.artefacts.coop, http://cg41.fr
@@ -25,21 +25,21 @@
   51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-if (!defined('AEF_PHOTOS_CONTEST')) {
+if (!defined('SIMPLE_PHOTOS_CONTEST')) {
 
-	define('AEF_PHOTOS_CONTEST', true);
-		require_once( __DIR__ . '/controlers/AefPhotosContest.php');
+	define('SIMPLE_PHOTOS_CONTEST', true);
+		require_once( __DIR__ . '/controlers/SimplePhotosContest.php');
 
-	global $aefPC;
+	global $gSPC;
 
-	AefPhotosContest::$plugin_file = basename(dirname(__FILE__)) . '/' . basename(__FILE__);
+	SimplePhotosContest::$plugin_file = basename(dirname(__FILE__)) . '/' . basename(__FILE__);
 
 	if (is_admin()) {
-		require_once( __DIR__ . '/controlers/AefPhotosContestAdmin.php');
-		$aefPC = new AefPhotosContestAdmin();
+		require_once( __DIR__ . '/controlers/SimplePhotosContestAdmin.php');
+		$gSPC = new SimplePhotosContestAdmin();
 	}
 	else {
-		require_once( __DIR__ . '/controlers/AefPhotosContestFront.php');
-		$aefPC = new AefPhotosContestFront();
+		require_once( __DIR__ . '/controlers/SimplePhotosContestFront.php');
+		$gSPC = new SimplePhotosContestFront();
 	}
 }

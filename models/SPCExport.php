@@ -6,11 +6,11 @@
 require_once( __DIR__.'/../libs/PHPExcel_1.7.8/PHPExcel.php');
 
 /**
- * Description of AefExport
+ * Description of SPCExport
  *
  * @author cyrille
  */
-class AefExport {
+class SPCExport {
 
 	protected $excel;
 

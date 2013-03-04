@@ -9,7 +9,7 @@ if (!class_exists('WP_List_Table')) {
 }
 
 /**
- * Class AefListTable to manage lists in admin pages.
+ * Class SPCListTable to manage lists in admin pages.
  * Subclass of WP_List_Table.
  * 
  * Doc:
@@ -21,7 +21,7 @@ if (!class_exists('WP_List_Table')) {
  * 
  * @author cyrille
  */
-abstract class AefListTable extends WP_List_Table {
+abstract class SPCListTable extends WP_List_Table {
 
 	const DEFAULT_ORDERBY = 'id'; // 'photo_name';
 	const DEFAULT_ORDER = 'asc';

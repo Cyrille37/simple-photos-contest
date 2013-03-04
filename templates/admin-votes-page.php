@@ -4,11 +4,11 @@
  * and open the template in the editor.
  */
 
-if (!class_exists('AefListTable')) {
-	require_once( __DIR__ . '/../models/AefListTable.php' );
+if (!class_exists('SPCListTable')) {
+	require_once( __DIR__ . '/../models/SPCListTable.php' );
 }
 
-class VotesListTable extends AefListTable {
+class VotesListTable extends SPCListTable {
 
 	protected $columns;
 
@@ -42,27 +42,27 @@ class VotesListTable extends AefListTable {
 
 	function column_photo_id($item) {
 
-		global $aefPC;
+		global $gSPC;
 
 		$photo = array_merge($item);
 		$photo['id'] = $item['photo_id'];
 		
-		return sprintf('<a href="?page=%s&id=%s" title="Edit photo">%d</a>', AefPhotosContestAdmin::PAGE_PHOTO_EDIT,
+		return sprintf('<a href="?page=%s&id=%s" title="Edit photo">%d</a>', SimplePhotosContestAdmin::PAGE_PHOTO_EDIT,
 				$photo['id'], $photo['id'])
 			.'<a class="thickbox" title="´' . $photo['photo_name'] . '´ by ´' . $photo['photographer_name'] . '´"'
-			.' href="' . $aefPC->getPhotoUrl($photo,'view') . '">'
-			. '<img src="' . $aefPC->getPhotoUrl($photo, 'thumb') . '" />'
+			.' href="' . $gSPC->getPhotoUrl($photo,'view') . '">'
+			. '<img src="' . $gSPC->getPhotoUrl($photo, 'thumb') . '" />'
 			. '</a>';
 	}
 
 	/**
 	 * Called befote each render
 	 * 
-	 * @global type $aefPC
+	 * @global type $gSPC
 	 */
 	function prepare_items() {
 
-		global $aefPC;
+		global $gSPC;
 
 		$per_page = self::DEFAULT_ITEMS_PER_PAGE;
 
@@ -74,16 +74,16 @@ class VotesListTable extends AefListTable {
 		$current_page = $this->get_pagenum();
 
 		// First query : count all items
-		$dataCountAll = $aefPC->getDaoVotes()->count();
+		$dataCountAll = $gSPC->getDaoVotes()->count();
 
 		// Second query : select only items to display
-		$queryOptions = new AefQueryOptions();
+		$queryOptions = new SPCQueryOptions();
 		$queryOptions
 			->orderBy((!empty($_REQUEST['orderby']) ? $_REQUEST['orderby'] : self::DEFAULT_ORDERBY),
 				(!empty($_REQUEST['order']) && ( $_REQUEST['order'] == 'asc' || $_REQUEST['order'] == 'desc') ? $_REQUEST['order'] : self::DEFAULT_ORDER))
 			->limit($per_page, (($current_page - 1) * $per_page));
 
-		$data = $aefPC->getDaoVotes()->getAllWithPhotoData($queryOptions);
+		$data = $gSPC->getDaoVotes()->getAllWithPhotoData($queryOptions);
 
 		$this->items = $data;
 		$total_items = $dataCountAll;
@@ -116,7 +116,7 @@ $votesListTable->prepare_items();
 		<br>
 	</div>
 
-	<h2><?php _e('Concours photo - Votes') ?></h2>
+	<h2><?php _e('Photos contest - Votes') ?></h2>
 
 	<form id="votes-list" method="get">
 		<input type="hidden" name="page" value="<?php echo $_REQUEST['page'] ?>" />

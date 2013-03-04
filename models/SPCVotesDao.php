@@ -1,12 +1,12 @@
 <?php
 
 /*
- * model / AefPhotosContestVote
+ * model / SPCVotesDao
  */
 
-require_once(__DIR__ . '/AefPhotosContestDao.php');
+require_once(__DIR__ . '/SPCModelDao.php');
 
-class AefPhotosContestVotes extends AefPhotosContestModelDao {
+class SPCVotesDao extends SPCModelDao {
 
 	public static function getTableName() {
 		return self::DBTABLE_PREFIX . '_votes';
@@ -15,15 +15,15 @@ class AefPhotosContestVotes extends AefPhotosContestModelDao {
 	/**
 	 * @param string $email
 	 * @param int $photoId (optional)
-	 * @param AefQueryOptions $queryOptions (optional)
+	 * @param SPCQueryOptions $queryOptions (optional)
 	 * @return array
 	 */
-	public function findByEmail($email, $photoId = null, AefQueryOptions $queryOptions = null) {
+	public function findByEmail($email, $photoId = null, SPCQueryOptions $queryOptions = null) {
 
 		//return $this->findBy('voter_email', $email, $queryOptions);
 
 		$values = array($email);
-		$sql = 'SELECT * FROM ' . $this->getTableName() . ' WHERE voter_email=%s';
+		$sql = 'SELECT * FROM ' . self::getTableName() . ' WHERE voter_email=%s';
 
 		if (!empty($photoId)) {
 			$sql.=' AND photo_id=%d';
@@ -37,14 +37,14 @@ class AefPhotosContestVotes extends AefPhotosContestModelDao {
 
 	public function getVotersCount() {
 
-		$sql = 'select count( distinct voter_email ) from '. $this->getTableName();
+		$sql = 'select count( distinct voter_email ) from ' . self::getTableName();
 		$count = $this->wpdb->get_var($sql);
 		return $count;
 	}
 
 	public function getVotesCountByVoters() {
 
-		$sql = 'select voter_email, count(id) as votes from ' . $this->getTableName();
+		$sql = 'select voter_email, count(id) as votes from ' . self::getTableName();
 		$sql.=' group by voter_email';
 
 		$rows = $this->wpdb->get_results($sql, ARRAY_A);
@@ -53,14 +53,14 @@ class AefPhotosContestVotes extends AefPhotosContestModelDao {
 
 	public function getVotesCountByPhotos($photo_ids = null) {
 
-		$sql = 'select photo_id, count(id) from ' . $this->getTableName();
+		$sql = 'select photo_id, count(id) from ' . self::getTableName();
 		if (is_array($photo_ids)) {
 			$sql.= ' where photo_id IN (';
 			$sql.= implode(',', array_fill(0, count($photo_ids), '%s'));
 			$sql.=')';
 		}
 
-		$queryOptions = new AefQueryOptions();
+		$queryOptions = new SPCQueryOptions();
 		$queryOptions->groupBy('photo_id');
 		$this->applyQueryOptions($sql, $queryOptions);
 
@@ -69,7 +69,7 @@ class AefPhotosContestVotes extends AefPhotosContestModelDao {
 	}
 
 	public function getVotesCountByPhoto($photo_id) {
-		$sql = 'select count(id) from ' . $this->getTableName();
+		$sql = 'select count(id) from ' . self::getTableName();
 		$sql.= ' where photo_id = %s';
 
 		$count = $this->wpdb->get_var($this->wpdb->prepare($sql, $photo_id));
@@ -79,13 +79,13 @@ class AefPhotosContestVotes extends AefPhotosContestModelDao {
 
 	/**
 	 * Get all vote plus columns wich contains some photo data.
-	 * @param AefQueryOptions $queryOptions
+	 * @param SPCQueryOptions $queryOptions
 	 * @return array Array of votes plus some photo's columns
 	 */
-	public function getAllWithPhotoData(AefQueryOptions $queryOptions = null) {
+	public function getAllWithPhotoData(SPCQueryOptions $queryOptions = null) {
 		$sql = 'select v.*, p.photo_name, p.photographer_name, p.photo_mime_type ';
-		$sql.=' from wp_aef_spc_votes v';
-		$sql.=' left join wp_aef_spc_photos p on (p.id=v.photo_id)';
+		$sql.=' from ' . self::getTableName() . ' v';
+		$sql.=' left join ' . self::getTableName() . ' p on (p.id=v.photo_id)';
 		//$sql.=' group by p.id';
 
 		$this->applyQueryOptions($sql, $queryOptions);

@@ -25,7 +25,7 @@ send_origin_headers();
 send_nosniff_header();
 nocache_headers();
 
-require_once( __DIR__ . '/../../controlers/AefPhotosContestFront.php');
+require_once( __DIR__ . '/../../controlers/SimplePhotosContestFront.php');
 
 $output['command'] = 'error';
 $output['message'] = 'bad vote request';
@@ -42,10 +42,10 @@ if (isset($_REQUEST['action'])) {
 			}
 			else {
 				$pincode = rand(1, 9) . rand(0, 9) . rand(0, 9) . rand(0, 9);
-				$signature = aef_auth_generate_signature($email . $pincode);
+				$signature = spc_auth_generate_signature($email . $pincode);
 				$cookie_pincode = $email . '#' . $signature;
 
-				//setcookie(AefPhotosContestFront::COOKIE_PINCODE, $cookie_pincode, 0, '/');
+				//setcookie(SimplePhotosContestFront::COOKIE_PINCODE, $cookie_pincode, 0, '/');
 
 				add_filter('wp_mail_content_type', create_function('', 'return "text/html";'));
 				$admin_email = get_bloginfo('admin_email');

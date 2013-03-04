@@ -1,19 +1,19 @@
 <?php
 
 /*
- * Admin part of plugin: AEF Simple Photos Contest
+ * Admin part of plugin: Simple Photos Contest
  */
 
-require_once( __DIR__ . '/AefPhotosContest.php');
+require_once( __DIR__ . '/SimplePhotosContest.php');
 
-class AefPhotosContestAdmin extends AefPhotosContest {
+class SimplePhotosContestAdmin extends SimplePhotosContest {
 
-	const PAGE_OVERVIEW = 'aef-photos-contest_overview';
-	const PAGE_VOTES = 'aef-photos-contest_votes';
-	const PAGE_PHOTOS = 'aef-photos-contest_photos';
-	const PAGE_PHOTOS_ORDER = 'aef-photos-contest_photos_order';
-	const PAGE_PHOTO_EDIT = 'aef-photos-contest_photo_edit';
-	const PAGE_CONFIGURATION = 'aef-photos-contest_configuration';
+	const PAGE_OVERVIEW = 'spc_overview';
+	const PAGE_VOTES = 'spc_votes';
+	const PAGE_PHOTOS = 'spc_photos';
+	const PAGE_PHOTOS_ORDER = 'spc_photos-order';
+	const PAGE_PHOTO_EDIT = 'spc_photo-edit';
+	const PAGE_CONFIGURATION = 'spc_configuration';
 	const WP_ROLE = 'edit_pages';
 
 	public static $photo_valid_filetypes = array('image/jpeg', 'image/png', 'image/gif');
@@ -82,8 +82,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 		// FIXME: Update database schema does not works every time, depends of changes ????
 		// dbDelta génère des erreurs et ne fait pas le boulot de DIFF quand il y a des changements ...
 		// Du coup j'ajoute "IF NOT EXISTS" ...
-		//$sql = 'CREATE TABLE IF NOT EXISTS `' . AefPhotosContestPhotos::getTableName() . '` (
-		$sql = 'create table IF NOT EXISTS ' . aefphotoscontestphotos::gettablename() . ' (
+		$sql = 'create table IF NOT EXISTS ' . SPCPhotosDao::gettablename() . ' (
 				id int unsigned NOT NULL AUTO_INCREMENT,
 				photo_name varchar(255) NOT NULL,
 				photo_mime_type varchar(50) NOT NULL,
@@ -103,16 +102,16 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 
 		$res = $wpdb->query($sql);
 		if (!$res) {
-			wp_die('Failed to create table ' . aefphotoscontestphotos::gettablename());
+			wp_die('Failed to create table ' . SPCPhotosDao::gettablename());
 		}
 		else {
-			if ($wpdb->get_var('SHOW TABLES LIKE "' . aefphotoscontestphotos::gettablename() . '"') != aefphotoscontestphotos::gettablename())
-				wp_die('Failed to create table ' . aefphotoscontestphotos::gettablename());
+			if ($wpdb->get_var('SHOW TABLES LIKE "' . SPCPhotosDao::gettablename() . '"') != SPCPhotosDao::gettablename())
+				wp_die('Failed to create table ' . SPCPhotosDao::gettablename());
 		}
 
-		// ALTER TABLE `loiretcher-lemag.fr`.`wp_aef_spc_votes` ADD COLUMN `voter_ip` VARCHAR(255) NULL  AFTER `voter_email` ;
+		// ALTER TABLE `loiretcher-lemag.fr`.`wp_spc_votes` ADD COLUMN `voter_ip` VARCHAR(255) NULL  AFTER `voter_email` ;
 
-		$sql = 'create table IF NOT EXISTS ' . aefphotoscontestvotes::gettablename() . ' (
+		$sql = 'create table IF NOT EXISTS ' . SPCVotesDao::gettablename() . ' (
 				id int unsigned not null auto_increment,
 				voter_name varchar(255) not null,
 				voter_email varchar(255) not null,
@@ -127,11 +126,11 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 
 		$res = $wpdb->query($sql);
 		if (!$res) {
-			wp_die('Failed to create table ' . aefphotoscontestvotes::gettablename());
+			wp_die('Failed to create table ' . SPCVotesDao::gettablename());
 		}
 		else {
-			if ($wpdb->get_var('SHOW TABLES LIKE "' . aefphotoscontestvotes::gettablename() . '"') != aefphotoscontestvotes::gettablename())
-				wp_die('Failed to create table ' . aefphotoscontestvotes::gettablename());
+			if ($wpdb->get_var('SHOW TABLES LIKE "' . SPCVotesDao::gettablename() . '"') != SPCVotesDao::gettablename())
+				wp_die('Failed to create table ' . SPCVotesDao::gettablename());
 		}
 	}
 
@@ -306,8 +305,8 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 
 	protected function export() {
 
-		require_once( __DIR__ . '/../models/AefExport.php');
-		$export = new AefExport();
+		require_once( __DIR__ . '/../models/SPCExport.php');
+		$export = new SPCExport();
 
 		// Photos Votes sheet
 
@@ -315,7 +314,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 			'headers' => array(),
 			'rows'=>array()
 		);
-		$queryOptions = new AefQueryOptions();
+		$queryOptions = new SPCQueryOptions();
 		$queryOptions->orderBy('votes');
 		$photos = $this->getDaoPhotos()->getAllWithVotesCount($queryOptions);
 		foreach (array_keys($photos[0]) as $k) {
@@ -363,13 +362,13 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 		// Shot da file
 
 		$temp_filename = tempnam(sys_get_temp_dir(), 'Tux');
-		//$temp_filename = '/home/cyrille/Taf/CG41/20130124 - Concours photos/www/wp-content/plugins/aef-photos-contest/temp.xlsx' ;
+		//$temp_filename = '/home/cyrille/Taf/CG41/20130124 - Concours photos/www/wp-content/plugins/simple-photos-contest/temp.xlsx' ;
 		$export->save($temp_filename);
 
 		//$finfo = new \finfo(FILEINFO_MIME);
 		//_log( $finfo->file($temp_filename, FILEINFO_MIME_TYPE) );
 
-		$out_filename = 'aef-photos-contest ' .date('Y-m-d_H-i').'.xlsx';
+		$out_filename = 'simple-photos-contest ' .date('Y-m-d_H-i').'.xlsx';
 
 		ob_end_clean();
 		// disable browser caching -- the server may be doing this on its own
@@ -386,7 +385,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 	protected function photos_reorder_force() {
 		_log(__METHOD__);
 
-		$qOptions = new AefQueryOptions();
+		$qOptions = new SPCQueryOptions();
 		$qOptions->orderBy('photo_order', 'ASC');
 		$photos = $this->daoPhotos->getAll($qOptions);
 
@@ -500,7 +499,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 		/**
 		 * Need for templates
 		 */
-		global $aefPC, $wpdb;
+		global $gSPC, $wpdb;
 
 		//_log(__METHOD__.' page='.$_GET['page']);
 
@@ -537,7 +536,7 @@ class AefPhotosContestAdmin extends AefPhotosContest {
 
 		wp_enqueue_script('jquery');
 
-		//wp_enqueue_script('aef-admin', self::$javascript_url . 'aef-admin.js', array('jquery'));
+		//wp_enqueue_script('spc-admin', self::$javascript_url . 'spc-admin.js', array('jquery'));
 
 		wp_enqueue_style('thickbox');
 		wp_enqueue_script('thickbox');

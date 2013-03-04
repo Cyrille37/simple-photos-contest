@@ -1,14 +1,14 @@
 <?php
 
 /*
- * Class AefQueryOptions
- * Class AefPhotosContestModelDao
+ * Class SPCQueryOptions
+ * Class SPCModelDao
  */
 
 /**
  * 
  */
-class AefQueryOptions {
+class SPCQueryOptions {
 
 	const ORDER_ASC = 'ASC';
 	const ORDER_DESC = 'DESC';
@@ -21,7 +21,7 @@ class AefQueryOptions {
 
 	/**
 	 * @param string $fieldName
-	 * @return \AefQueryOptions fluent interface
+	 * @return \SPCQueryOptions fluent interface
 	 */
 	public function orderBy($fieldName, $order = self::ORDER_ASC) {
 		$this->orderBy[] = $fieldName;
@@ -33,7 +33,7 @@ class AefQueryOptions {
 	/**
 	 * @param int $limit
 	 * @param int $offset
-	 * @return \AefQueryOptions fluent interface
+	 * @return \SPCQueryOptions fluent interface
 	 */
 	public function limit($limit, $offset = 0) {
 		$this->limit = intval($limit);
@@ -43,7 +43,7 @@ class AefQueryOptions {
 
 	/**
 	 * @param string $fieldName
-	 * @return \AefQueryOptions fluent interface
+	 * @return \SPCQueryOptions fluent interface
 	 */
 	public function groupBy($fieldName) {
 		$this->groupBy = $fieldName;
@@ -55,9 +55,9 @@ class AefQueryOptions {
 /**
  * 
  */
-abstract class AefPhotosContestModelDao {
+abstract class SPCModelDao {
 
-	const DBTABLE_PREFIX = 'wp_aef_spc';
+	const DBTABLE_PREFIX = 'wp_spc';
 
 	/**
 	 * @var wpdb 
@@ -78,7 +78,7 @@ abstract class AefPhotosContestModelDao {
 	/**
 	 * @return int
 	 */
-	public function count(AefQueryOptions $queryOptions = null) {
+	public function count(SPCQueryOptions $queryOptions = null) {
 
 		$sql = 'SELECT COUNT(*) FROM ' . $this->getTableName();
 
@@ -117,7 +117,7 @@ abstract class AefPhotosContestModelDao {
 		return $var;
 	}
 
-	protected function applyQueryOptions(&$sql, AefQueryOptions $queryOptions = null) {
+	protected function applyQueryOptions(&$sql, SPCQueryOptions $queryOptions = null) {
 
 		if ($queryOptions == null)
 			return;
@@ -142,10 +142,10 @@ abstract class AefPhotosContestModelDao {
 	}
 
 	/**
-	 * @param AefQueryOptions $queryOptions
+	 * @param SPCQueryOptions $queryOptions
 	 * @return array
 	 */
-	public function getAll(AefQueryOptions $queryOptions = null) {
+	public function getAll(SPCQueryOptions $queryOptions = null) {
 
 		$sql = 'SELECT * FROM ' . $this->getTableName();
 
@@ -161,7 +161,7 @@ abstract class AefPhotosContestModelDao {
 	 * @param mixed $value
 	 * @return array
 	 */
-	public function findBy($fieldName, $value, AefQueryOptions $queryOptions = null) {
+	public function findBy($fieldName, $value, SPCQueryOptions $queryOptions = null) {
 
 		$values = array();
 		if ($value != null) {

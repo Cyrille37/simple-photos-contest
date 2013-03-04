@@ -13,8 +13,8 @@
 
 	var onVoteDone = function (photo_votes_count)
 	{
-		var img= jQuery('.aef-vote-opener', '#aef-vote-button') ;
-		img.attr('src', '<?php echo AefPhotosContest::$images_url . 'vote-off-cg41.jpg' ?>' );
+		var img= jQuery('.spc-vote-opener', '#spc-vote-button') ;
+		img.attr('src', '<?php echo SimplePhotosContest::$images_url . 'vote-off-cg41.jpg' ?>' );
 		//img.unbind('click',openVoteBox);
 		//img.css('cursor','auto');
 		//img.css('cursor','pointer');
@@ -36,12 +36,12 @@
 			jQuery(this).removeClass('busy');  
 		});  
 
-		jQuery('#aef-vote-button').hide();
+		jQuery('#spc-vote-button').hide();
 		jQuery('#votes-bulle').hide();
 
 		gallery = jQuery('.ad-gallery').adGallery(
 		{
-			loader_image: '<?php echo AefPhotosContest::$javascript_url; ?>AD_Gallery-1.2.7/loader.gif',
+			loader_image: '<?php echo SimplePhotosContest::$javascript_url; ?>AD_Gallery-1.2.7/loader.gif',
 			slideshow: {
 				enable: false
 			},
@@ -51,7 +51,7 @@
 				},
 				beforeImageVisible: function(new_image, old_image) {
 					<?php if ($this->isVoteOpen()) { ?>
-					jQuery('#aef-vote-button').hide();
+					jQuery('#spc-vote-button').hide();
 					jQuery('#votes-bulle').hide();
 					<?php } ?>
 				},
@@ -94,25 +94,25 @@
 		var gal = jQuery('#gallery');
 		var imgWrap = jQuery('.ad-image-wrapper', gal);
 		var o ;
-		var b = jQuery('#aef-vote-button', imgWrap );
+		var b = jQuery('#spc-vote-button', imgWrap );
 		if( b.length == 0 ){
-			b = jQuery('#aef-vote-button');
+			b = jQuery('#spc-vote-button');
 			imgWrap.append(b);
 			b.css('position', 'relative');
 			b.css('top', (imgWrap.height() - b.height() )+'px' );
 			b.css('z-index', jQuery('.ad-next', gal).css('z-index') );
-			o = jQuery('.aef-vote-opener',b);
+			o = jQuery('.spc-vote-opener',b);
 			o.click(openVoteBox);
 			o.css('cursor','pointer');
 		} else {
-			o = jQuery('.aef-vote-opener', b);
+			o = jQuery('.spc-vote-opener', b);
 		}
 
 		if( can_vote ){
-			o.attr('src', '<?php echo AefPhotosContest::$images_url . 'vote-cg41.jpg' ?>' );
+			o.attr('src', '<?php echo SimplePhotosContest::$images_url . 'vote-cg41.jpg' ?>' );
 			//o.hover( function () { this.src = 'hover.png'; }, function () { this.src = 'normal.png'; });
 		} else {
-			o.attr('src', '<?php echo AefPhotosContest::$images_url . 'vote-off-cg41.jpg' ?>' );
+			o.attr('src', '<?php echo SimplePhotosContest::$images_url . 'vote-off-cg41.jpg' ?>' );
 			//o.hover( function () { this.src = 'hover.png'; }, function () { this.src = 'normal.png'; });
 		}
 		b.show();
@@ -152,7 +152,7 @@
 		{
 			case 'Facebook':
 				url = 'https://www.facebook.com/dialog/feed?link='+encodeURIComponent(window.location)
-					+ '&app_id='+AefPC.facebook_client_id
+					+ '&app_id='+gSPC.facebook_client_id
 					+ '&picture='+ encodeURIComponent(jQuery('.image'+gallery[0].current_index).attr('src') )
 					+ '&redirect_uri='+encodeURIComponent(window.location)
 				;
@@ -191,7 +191,7 @@
 		margin-bottom: 14px;
 	}
 
-	#aef-vote-button  {
+	#spc-vote-button  {
 		margin-right: 0px;
 		text-align: right ;
 	}
@@ -203,7 +203,7 @@
 		line-height: 14px ;
 		background-size: contain;
 		background-repeat: no-repeat;
-		background-image: url('<?php echo AefPhotosContest::$images_url . 'bulle.png' ?>') ;
+		background-image: url('<?php echo SimplePhotosContest::$images_url . 'bulle.png' ?>') ;
 		text-align: center;
 		font-size: 12px;
 		color: white;
@@ -314,8 +314,8 @@
 	</div>
 </div>
 
-<div id="aef-vote-button" >
-	<img class="aef-vote-opener" src="<?php echo AefPhotosContest::$images_url . 'vote-cg41.jpg' ?>"/>	
+<div id="spc-vote-button" >
+	<img class="spc-vote-opener" src="<?php echo SimplePhotosContest::$images_url . 'vote-cg41.jpg' ?>"/>	
 </div>
 
 <div id="votes-bulle" >

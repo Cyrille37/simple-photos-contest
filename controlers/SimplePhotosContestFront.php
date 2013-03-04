@@ -1,14 +1,12 @@
 <?php
 
 /*
- * Front part of plugin: AEF Simple Photos Contest
+ * Front part of plugin: Simple Photos Contest
  */
 
-require_once( __DIR__ . '/AefPhotosContest.php');
+require_once( __DIR__ . '/SimplePhotosContest.php');
 
-class AefPhotosContestFront extends AefPhotosContest {
-
-	//const COOKIE_PINCODE = 'aefPC_PinCode';
+class SimplePhotosContestFront extends SimplePhotosContest {
 
 	public function __construct() {
 
@@ -20,7 +18,7 @@ class AefPhotosContestFront extends AefPhotosContest {
 
 		add_action('wp_enqueue_scripts', array($this, 'wp_enqueue_scripts'));
 
-		add_shortcode(self::SHORT_CODE_PHOTOS_CONTEST, array($this, 'wp_shortcode_aefPhotosContest'));
+		add_shortcode(self::SHORT_CODE_PHOTOS_CONTEST, array($this, 'wp_shortcode_SimplePhotosContest'));
 
 		if (defined('DOING_AJAX') && DOING_AJAX) {
 
@@ -61,10 +59,10 @@ class AefPhotosContestFront extends AefPhotosContest {
 		wp_enqueue_script('fancybox', self::$javascript_url . 'fancybox-1.3.4/jquery.fancybox-1.3.4.pack.js');
 
 		// embed the javascript file that makes the AJAX request
-		wp_enqueue_script('aef-ajax-vote', self::$javascript_url . 'aef.vote.js', array('jquery'));
+		wp_enqueue_script('spc-ajax-vote', self::$javascript_url . 'spc.vote.js', array('jquery'));
 		// declare the URL to the file that handles the AJAX request (wp-admin/admin-ajax.php)
-		//wp_localize_script('my-ajax-request', 'AefPC', array('ajaxurl' => admin_url('admin-ajax.php')));
-		wp_localize_script('aef-ajax-vote', 'AefPC',
+		//wp_localize_script('my-ajax-request', 'gSPC', array('ajaxurl' => admin_url('admin-ajax.php')));
+		wp_localize_script('spc-ajax-vote', 'gSPC',
 			array(
 			'ajaxurl' => self::$plugin_ajax_url,
 			'facebook_client_id' => $this->getOption('facebookClientId'),
@@ -78,16 +76,16 @@ class AefPhotosContestFront extends AefPhotosContest {
 	 * they are lower-cased during shortcode_atts()
 	 * @param array $attrs
 	 */
-	public function wp_shortcode_aefPhotosContest($attrs) {
+	public function wp_shortcode_SimplePhotosContest($attrs) {
 
-		global $aefPC, $wpdb;
+		global $gSPC, $wpdb;
 
 		//_log(__METHOD__);
 
 		//add_filter('the_content', 'lab_add_rel_to_linked_img', 99);
 		remove_filter('the_content', 'lab_add_rel_to_linked_img', 99);
 
-		$qOptions = new AefQueryOptions();
+		$qOptions = new SPCQueryOptions();
 		$qOptions->orderBy('photo_order', 'ASC');
 		$photos = $this->daoPhotos->getAll($qOptions);
 
@@ -166,7 +164,7 @@ class AefPhotosContestFront extends AefPhotosContest {
 
 	public function wp_ajax_vote_init() {
 
-		global $aefPC;
+		global $gSPC;
 
 		$voterEmail = null;
 
@@ -257,12 +255,12 @@ class AefPhotosContestFront extends AefPhotosContest {
 
 			case 'facebook':
 
-				if (!aef_auth_verify_signature($_REQUEST['social_auth_access_token'], $social_auth_signature)) {
+				if (!spc_auth_verify_signature($_REQUEST['social_auth_access_token'], $social_auth_signature)) {
 					$this->ajax_ouput_data['command'] = 'error';
 					$this->ajax_ouput_data['message'] = 'Failed signature verification';
 				}
 				else {
-					$fb_json = json_decode(aef_curl_get_contents("https://graph.facebook.com/me?access_token=" . $_REQUEST['social_auth_access_token']));
+					$fb_json = json_decode(spc_curl_get_contents("https://graph.facebook.com/me?access_token=" . $_REQUEST['social_auth_access_token']));
 					$email = $fb_json->{'email'};
 					$this->ajax_ouput_data['command'] = 'auth_ok';
 					$this->ajax_ouput_data['email'] = $email;
@@ -274,7 +272,7 @@ class AefPhotosContestFront extends AefPhotosContest {
 			case 'google':
 
 				$sc_provider_identity = $_REQUEST['social_auth_openid_identity'];
-				if (!aef_auth_verify_signature($sc_provider_identity, $social_auth_signature)) {
+				if (!spc_auth_verify_signature($sc_provider_identity, $social_auth_signature)) {
 					$this->ajax_ouput_data['command'] = 'error';
 					$this->ajax_ouput_data['message'] = 'Failed signature verification';
 				}
@@ -290,7 +288,7 @@ class AefPhotosContestFront extends AefPhotosContest {
 			case 'mail' :
 
 				$data = $_REQUEST['social_auth_email'] . $_REQUEST['social_auth_access_token'];
-				if (!aef_auth_verify_signature($data, $social_auth_signature)) {
+				if (!spc_auth_verify_signature($data, $social_auth_signature)) {
 					$this->ajax_ouput_data['command'] = 'error';
 					$this->ajax_ouput_data['message'] = 'Le code est erroné ou un problème technique a empêché votre identification';
 				}

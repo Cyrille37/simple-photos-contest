@@ -21,20 +21,20 @@ if(!function_exists('_log')){
 }
 
 
-require_once( __DIR__ . '/../models/AefPhotosContestVotes.php');
-require_once( __DIR__ . '/../models/AefPhotosContestPhotos.php');
+require_once( __DIR__ . '/../models/SPCVotesDao.php');
+require_once( __DIR__ . '/../models/SPCPhotosDao.php');
 
-class AefPhotosContest {
+class SimplePhotosContest {
 
-	const PLUGIN = 'aef-photos-contest';
-	const DBTABLE_PREFIX = 'aef_spc';
+	const PLUGIN = 'simple-photos-contest';
+	const DBTABLE_PREFIX = 'spc';
 	const REQUIRE_VERSION_WP = '3.5';
 	const REQUIRE_VERSION_PHP = '5.1.2';
 	const VERSION = '1.0';
 	const DBVERSION = '1.0';
 
-	const SHORT_CODE_PHOTOS_CONTEST = 'aefPhotosContest';
-	const COOKIE_VOTER = 'aefPC_Voter';
+	const SHORT_CODE_PHOTOS_CONTEST = 'SimplePhotosContest';
+	const COOKIE_VOTER = 'SPC_Voter';
 
 	public static $plugin_name;
 	public static $plugin;
@@ -56,13 +56,13 @@ class AefPhotosContest {
 	protected $errors = array();
 
 	/**
-	 * @var AefPhotosContestVotes
+	 * @var SimplePhotosContestVotes
 	 */
 	protected $daoVotes;
 
 	/**
 	 *
-	 * @var AefPhotosContestPhotos
+	 * @var SimplePhotosContestPhotos
 	 */
 	protected $daoPhotos;
 
@@ -115,9 +115,9 @@ class AefPhotosContest {
 
 		global $wpdb;
 
-		self::$plugin_name = __('Concours Photos', self::PLUGIN);
+		self::$plugin_name = __('Photos Contest', self::PLUGIN);
 		self::$plugin_url = plugins_url(self::PLUGIN) . '/';
-		self::$plugin_ajax_url = self::$plugin_url . 'aef-wp-front-ajax.php';
+		self::$plugin_ajax_url = self::$plugin_url . 'spc-wp-front-ajax.php';
 		self::$images_url = self::$plugin_url . 'images/';
 		self::$styles_url = self::$plugin_url . 'css/';
 		self::$javascript_url = self::$plugin_url . 'js/';
@@ -130,8 +130,8 @@ class AefPhotosContest {
 
 		add_action('init', array($this, 'base_wp_init'));
 
-		$this->daoVotes = new AefPhotosContestVotes($wpdb);
-		$this->daoPhotos = new AefPhotosContestPhotos($wpdb);
+		$this->daoVotes = new SimplePhotosContestVotes($wpdb);
+		$this->daoPhotos = new SimplePhotosContestPhotos($wpdb);
 	}
 
 	public function base_wp_init()
@@ -303,14 +303,14 @@ class AefPhotosContest {
 	}
 
 	/**
-	 * @return AefPhotosContestVotes
+	 * @return SimplePhotosContestVotes
 	 */
 	public function getDaoVotes() {
 		return $this->daoVotes;
 	}
 
 	/**
-	 * @return AefPhotosContestPhotos
+	 * @return SimplePhotosContestPhotos
 	 */
 	public function getDaoPhotos() {
 		return $this->daoPhotos;
@@ -318,9 +318,9 @@ class AefPhotosContest {
 
 	public function getVoterStatusByEmail($email, $photo_id) {
 
-		require_once(__DIR__ . '/../models/AefPhotosContestVoterStatus.php');
+		require_once(__DIR__ . '/../models/SimplePhotosContestVoterStatus.php');
 
-		return AefPhotosContestVoterStatus::getVoterStatus($this, $email, $photo_id);
+		return SimplePhotosContestVoterStatus::getVoterStatus($this, $email, $photo_id);
 	}
 
 	public function formatDate($date) {

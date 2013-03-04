@@ -3,13 +3,13 @@
  * Plugin admin : Photos page
  */
 
-if (!class_exists('AefListTable')) {
-	require_once( __DIR__ . '/../models/AefListTable.php' );
+if (!class_exists('SPCListTable')) {
+	require_once( __DIR__ . '/../models/SPCListTable.php' );
 }
 
 /**
  * Class Photos_List_Table to manage the photos list in admin "photos" page.
- * Subclass of AefListTable
+ * Subclass of SPCListTable
  * 
  * Doc:
  * http://codex.wordpress.org/Class_Reference/WP_List_Table
@@ -18,7 +18,7 @@ if (!class_exists('AefListTable')) {
  * Styling:
  * http://wpengineer.com/2426/wp_list_table-a-step-by-step-guide/
  */
-class Photos_List_Table extends AefListTable {
+class Photos_List_Table extends SPCListTable {
 
 	function __construct() {
 
@@ -40,18 +40,18 @@ class Photos_List_Table extends AefListTable {
 
 	function column_id($item) {
 
-		return sprintf('<a href="?page=%s&id=%s" title="Edit photo">%d</a>', AefPhotosContestAdmin::PAGE_PHOTO_EDIT,
+		return sprintf('<a href="?page=%s&id=%s" title="Edit photo">%d</a>', SimplePhotosContestAdmin::PAGE_PHOTO_EDIT,
 				$item['id'], $item['id']);
 	}
 
 	function column_thumb($item) {
 
-		global $aefPC;
+		global $gSPC;
 
 		return
-			'<a class="thickbox" title="´' . $item['photo_name'] . '´ by ´' . $item['photographer_name'] . '´" href="' . $aefPC->getPhotoUrl($item,
+			'<a class="thickbox" title="´' . $item['photo_name'] . '´ by ´' . $item['photographer_name'] . '´" href="' . $gSPC->getPhotoUrl($item,
 				'view') . '">'
-			. '<img src="' . $aefPC->getPhotoUrl($item, 'thumb') . '" />'
+			. '<img src="' . $gSPC->getPhotoUrl($item, 'thumb') . '" />'
 			. '</a>';
 	}
 
@@ -67,7 +67,7 @@ class Photos_List_Table extends AefListTable {
 
 		;
 		$actions = array(
-			'edit' => sprintf('<a href="?page=%s&id=%s">Edit</a>', AefPhotosContestAdmin::PAGE_PHOTO_EDIT, $item['id']),
+			'edit' => sprintf('<a href="?page=%s&id=%s">Edit</a>', SimplePhotosContestAdmin::PAGE_PHOTO_EDIT, $item['id']),
 			'delete' => sprintf('<a href="?page=%s&paged=%s&action=%s&id=%s" onclick="return confirm(\'%s\')">Delete</a>',
 				$_REQUEST['page'], (isset($_REQUEST['paged']) ? $_REQUEST['paged'] : ''), 'delete', $item['id'],
 				__('Confirm deletion of photo id ') . $item['id']),
@@ -78,11 +78,11 @@ class Photos_List_Table extends AefListTable {
 	/**
 	 * Called befote each render
 	 * 
-	 * @global type $aefPC
+	 * @global type $gSPC
 	 */
 	function prepare_items() {
 
-		global $aefPC;
+		global $gSPC;
 
 		$per_page = self::DEFAULT_ITEMS_PER_PAGE;
 
@@ -94,16 +94,16 @@ class Photos_List_Table extends AefListTable {
 		$current_page = $this->get_pagenum();
 
 		// First query : count all items
-		$dataCountAll = $aefPC->getDaoPhotos()->count();
+		$dataCountAll = $gSPC->getDaoPhotos()->count();
 
 		// Second query : select only items to display
-		$queryOptions = new AefQueryOptions();
+		$queryOptions = new SPCQueryOptions();
 		$queryOptions
 			->orderBy((!empty($_REQUEST['orderby']) ? $_REQUEST['orderby'] : self::DEFAULT_ORDERBY),
 				(!empty($_REQUEST['order']) && ( $_REQUEST['order'] == 'asc' || $_REQUEST['order'] == 'desc') ? $_REQUEST['order'] : self::DEFAULT_ORDER))
 			->limit($per_page, (($current_page - 1) * $per_page));
 
-		$data = $aefPC->getDaoPhotos()->getAllWithVotesCount($queryOptions);
+		$data = $gSPC->getDaoPhotos()->getAllWithVotesCount($queryOptions);
 
 		$this->items = $data;
 		$total_items = $dataCountAll;
@@ -143,10 +143,10 @@ $photosListTable->prepare_items();
 		<br>
 	</div>
 
-	<h2><?php _e('Concours photo - Liste des photos', AefPhotosContest::PLUGIN)?></h2>
+	<h2><?php _e('Photos contest - Photos list', SimplePhotosContest::PLUGIN)?></h2>
 
 	<form id="photos-order">
-		<input type="button" onclick="window.location='<?php echo admin_url('admin.php?page='.AefPhotosContestAdmin::PAGE_PHOTOS_ORDER) ?>'" value="Trier les photos"/>
+		<input type="button" onclick="window.location='<?php echo admin_url('admin.php?page='.SimplePhotosContestAdmin::PAGE_PHOTOS_ORDER) ?>'" value="Trier les photos"/>
 	</form>
 
 	<form id="photos-list" method="get">
@@ -157,7 +157,7 @@ $photosListTable->prepare_items();
 
 	<?php /*
 	<form>
-		<input type="button" onclick="window.location='<?php echo admin_url('admin.php?page='.AefPhotosContestAdmin::PAGE_PHOTOS.'&action=force-commentInPhotographername') ?>'"
+		<input type="button" onclick="window.location='<?php echo admin_url('admin.php?page='.SimplePhotosContestAdmin::PAGE_PHOTOS.'&action=force-commentInPhotographername') ?>'"
 					 value="Copy comment into photographer name"/>
 	</form>
 	 */ ?>

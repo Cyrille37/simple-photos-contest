@@ -23,7 +23,7 @@ try {
 				<head>
 					<script>
 						function init() {
-							window.opener.aef_vote_auth_callback({
+							window.opener.spc_vote_auth_callback({
 								'social_auth_provider' : 'openid', 
 								'social_auth_openid_identity' : '<?php echo $open_id ?>',
 								'social_auth_signature' : '<?php echo $signature ?>',

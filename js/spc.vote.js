@@ -1,11 +1,11 @@
 /*
- * aef.vote.js 
+ * spc.vote.js 
  */
 
 var openVoteBox = function()
 {
 	jQuery.fancybox({
-		href: AefPC.ajaxurl,
+		href: gSPC.ajaxurl,
 		width: 500 ,
 		height: 340,
 		ajax : {
@@ -27,7 +27,7 @@ function voteLogout()
 	params.logout = true ;
 
 	jQuery.post(
-		AefPC.ajaxurl,
+		gSPC.ajaxurl,
 		params,
 		function( jsonString ) {
 			setTimeout( 'openVoteBox()', 1000 );
@@ -37,7 +37,7 @@ function voteLogout()
 
 }
 
-window.aef_vote_auth_callback = function(auth_callback_result) {
+window.spc_vote_auth_callback = function(auth_callback_result) {
 
 	var params = {};
 	jQuery.each(auth_callback_result, function(key, value) { 
@@ -46,7 +46,7 @@ window.aef_vote_auth_callback = function(auth_callback_result) {
 	params.action = 'vote_auth' ;
 
 	jQuery.post(
-		AefPC.ajaxurl,
+		gSPC.ajaxurl,
 		params,
 		function( jsonString ) {
 			var res = JSON.parse(jsonString);
@@ -85,7 +85,7 @@ var galleryAfterImageVisible = function()
 function loadVoteStatus(photo_id, loadVoteStatusCallback )
 {
 	jQuery.post(
-		AefPC.ajaxurl,
+		gSPC.ajaxurl,
 		{
 			action: 'can_vote',
 			photo_id: photo_id
@@ -112,9 +112,5 @@ function loadVoteStatus(photo_id, loadVoteStatusCallback )
 				}
 			}
 		});
-
-}
-
-function AefVotePC( settings ) {
 
 }
