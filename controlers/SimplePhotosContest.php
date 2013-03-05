@@ -56,13 +56,13 @@ class SimplePhotosContest {
 	protected $errors = array();
 
 	/**
-	 * @var SimplePhotosContestVotes
+	 * @var SPCVotesDao
 	 */
 	protected $daoVotes;
 
 	/**
 	 *
-	 * @var SimplePhotosContestPhotos
+	 * @var SPCPhotosDao
 	 */
 	protected $daoPhotos;
 
@@ -100,7 +100,7 @@ class SimplePhotosContest {
 	const OPTION_VOTEFREQUENCYHOURS = 'voteFrequencyHours';
 
 	protected static $options_default = array(
-		'photoFolder' => self::PLUGIN,
+		'photoFolder' => self::PLUGIN, // Default photos folder set to plugin's name
 		'dateFormat' => 1,
 		'thumbW' => 150,
 		'thumbH' => 150,
@@ -130,8 +130,8 @@ class SimplePhotosContest {
 
 		add_action('init', array($this, 'base_wp_init'));
 
-		$this->daoVotes = new SimplePhotosContestVotes($wpdb);
-		$this->daoPhotos = new SimplePhotosContestPhotos($wpdb);
+		$this->daoVotes = new SPCVotesDao($wpdb);
+		$this->daoPhotos = new SPCPhotosDao($wpdb);
 	}
 
 	public function base_wp_init()
@@ -208,6 +208,12 @@ class SimplePhotosContest {
 		return WP_CONTENT_URL . '/' . $this->getOption('photoFolder');
 	}
 
+	/**
+	 * Compute the url for a photo.
+	 * @param array $photo_row The photo's data
+	 * @param type $type The type of photo's view : null, view or thumb
+	 * @return string The photo's url
+	 */
 	public function getPhotoUrl(array $photo_row, $type = null) {
 
 		if (!isset($photo_row['photo_mime_type']) || empty($photo_row['photo_mime_type'])) {
@@ -222,6 +228,7 @@ class SimplePhotosContest {
 	}
 
 	public function truncatePhotoName($photoName) {
+
 		$mLen = $this->getOption('photoDescLengthMax');
 		if (strlen($photoName) > $mLen) {
 			return substr($photoName, 0, $mLen - 2) . '...';
@@ -303,14 +310,14 @@ class SimplePhotosContest {
 	}
 
 	/**
-	 * @return SimplePhotosContestVotes
+	 * @return SPCVotesDao
 	 */
 	public function getDaoVotes() {
 		return $this->daoVotes;
 	}
 
 	/**
-	 * @return SimplePhotosContestPhotos
+	 * @return SPCPhotosDao
 	 */
 	public function getDaoPhotos() {
 		return $this->daoPhotos;
@@ -331,4 +338,3 @@ class SimplePhotosContest {
 	}
 
 }
-
