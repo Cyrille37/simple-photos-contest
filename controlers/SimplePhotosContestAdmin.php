@@ -71,6 +71,51 @@ class SimplePhotosContestAdmin extends SimplePhotosContest {
 		}
 	}
 
+	public function update_database() {
+
+		global $wpdb;
+
+		$old_tablesName = array(
+			'wp_aef_spc_photos' => SPCPhotosDao::getTableName(),
+			'wp_aef_spc_votes' => SPCVotesDao::getTableName()
+		);
+
+		$tablesName = $wpdb->get_results('SHOW TABLES');
+		$todo = array(
+			'rename' => array(),
+			'create' => array(),
+			'migrate' => array()
+			);
+
+		foreach ($old_tablesName as $otn => $ntn) {
+
+			if (in_array($otn, $tablesName) && in_array($ntn, $tablesName)) {
+				wp_die('The 2 tables exists (' . $otn . ', ' . $ntn);
+			}
+			else if (in_array($otn, $tablesName) && !in_array($ntn, $tablesName)) {
+				// todo rename
+				$todo['rename'][$otn] = $ntn;
+				$todo['migrate'][$ntn];
+			}
+			else if (!in_array($otn, $tablesName) && in_array($ntn, $tablesName)) {
+				// todo migrate
+				$todo['migrate'][$ntn];
+			}
+			else {
+				// todo create
+				$todo['create'][$ntn];
+			}
+		}
+
+		foreach( $todo['rename'] as $otn => $ntn)
+		{
+			$wpdb->query('RENAME TABLE '. $otn. ' TO ' . $ntn);
+			$this->notices[] = 'Renamed db table from "'.$otn.' to '.$ntn ;
+		}
+
+		// FIXME: data schema migration not yet implemented
+	}
+
 	public function wp_activate() {
 
 		global $wpdb;
@@ -78,6 +123,8 @@ class SimplePhotosContestAdmin extends SimplePhotosContest {
 		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
 		self::check_requirements();
+
+		$this->update_database();
 
 		// FIXME: Update database schema does not works every time, depends of changes ????
 		// dbDelta génère des erreurs et ne fait pas le boulot de DIFF quand il y a des changements ...
@@ -184,7 +231,7 @@ class SimplePhotosContestAdmin extends SimplePhotosContest {
 							case 'rebuildthumbs':
 								$this->photos_build_thumbs();
 								break;
-							
+
 							case 'buildFakePhotos':
 								$this->photos_build_fake();
 								break;
@@ -219,11 +266,9 @@ class SimplePhotosContestAdmin extends SimplePhotosContest {
 							case 'force-commentInPhotographername':
 
 								$photos = $this->getDaoPhotos()->getAll();
-								foreach( $photos as $photo )
-								{
-									if( !empty($photo['notes']) && empty($photo['photographer_name']))
-									{
-										$this->getDaoPhotos()->updateById($photo['id'], array('photographer_name'=>$photo['notes']) );
+								foreach ($photos as $photo) {
+									if (!empty($photo['notes']) && empty($photo['photographer_name'])) {
+										$this->getDaoPhotos()->updateById($photo['id'], array('photographer_name' => $photo['notes']));
 									}
 								}
 								$current_url = set_url_scheme('http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
@@ -252,7 +297,7 @@ class SimplePhotosContestAdmin extends SimplePhotosContest {
 								wp_redirect($current_url);
 								exit();
 								break;
-							
+
 							default;
 								$this->errors['action'] = __('Unknow action');
 								break;
@@ -312,7 +357,7 @@ class SimplePhotosContestAdmin extends SimplePhotosContest {
 
 		$data = array(
 			'headers' => array(),
-			'rows'=>array()
+			'rows' => array()
 		);
 		$queryOptions = new SPCQueryOptions();
 		$queryOptions->orderBy('votes');
@@ -320,8 +365,7 @@ class SimplePhotosContestAdmin extends SimplePhotosContest {
 		foreach (array_keys($photos[0]) as $k) {
 			$data['headers'][] = array('label' => $k);
 		}
-		foreach( $photos as $photo )
-		{
+		foreach ($photos as $photo) {
 			$data['rows'][] = array_values($photo);
 		}
 		$export->addSheet('photos', $data);
@@ -331,14 +375,13 @@ class SimplePhotosContestAdmin extends SimplePhotosContest {
 
 		$data = array(
 			'headers' => array(),
-			'rows'=>array()
+			'rows' => array()
 		);
 		$votes = $this->getDaoVotes()->getVotesCountByVoters();
 		foreach (array_keys($votes[0]) as $k) {
 			$data['headers'][] = array('label' => $k);
 		}
-		foreach( $votes as $vote )
-		{
+		foreach ($votes as $vote) {
 			$data['rows'][] = array_values($vote);
 		}
 		$export->addSheet('votants', $data);
@@ -347,14 +390,13 @@ class SimplePhotosContestAdmin extends SimplePhotosContest {
 
 		$data = array(
 			'headers' => array(),
-			'rows'=>array()
+			'rows' => array()
 		);
 		$votes = $this->getDaoVotes()->getAll();
 		foreach (array_keys($votes[0]) as $k) {
 			$data['headers'][] = array('label' => $k);
 		}
-		foreach( $votes as $vote )
-		{
+		foreach ($votes as $vote) {
 			$data['rows'][] = array_values($vote);
 		}
 		$export->addSheet('votes', $data);
@@ -368,7 +410,7 @@ class SimplePhotosContestAdmin extends SimplePhotosContest {
 		//$finfo = new \finfo(FILEINFO_MIME);
 		//_log( $finfo->file($temp_filename, FILEINFO_MIME_TYPE) );
 
-		$out_filename = 'simple-photos-contest ' .date('Y-m-d_H-i').'.xlsx';
+		$out_filename = 'simple-photos-contest ' . date('Y-m-d_H-i') . '.xlsx';
 
 		ob_end_clean();
 		// disable browser caching -- the server may be doing this on its own
@@ -376,10 +418,9 @@ class SimplePhotosContestAdmin extends SimplePhotosContest {
 		header('Expires: 0');
 		header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
 		header('Content-Type: application/vnd.ms-excel');
-		header('Content-Disposition: attachment; filename="'.$out_filename.'"');
+		header('Content-Disposition: attachment; filename="' . $out_filename . '"');
 		readfile($temp_filename);
 		exit();
-
 	}
 
 	protected function photos_reorder_force() {
