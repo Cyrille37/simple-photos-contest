@@ -329,9 +329,9 @@ class SimplePhotosContest {
 
 	public function getVoterStatusByEmail($email, $photo_id) {
 
-		require_once(__DIR__ . '/../models/SimplePhotosContestVoterStatus.php');
+		require_once(__DIR__ . '/../models/SPCVoterStatus.php');
 
-		return SimplePhotosContestVoterStatus::getVoterStatus($this, $email, $photo_id);
+		return SPCVoterStatus::getVoterStatus($this, $email, $photo_id);
 	}
 
 	public function formatDate($date) {
