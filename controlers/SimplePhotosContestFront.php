@@ -234,7 +234,7 @@ class SimplePhotosContestFront extends SimplePhotosContest {
 	 */
 	public function init_ajax_vote_auth() {
 
-		_log(__METHOD__);
+		//_log(__METHOD__);
 
 		require_once(__DIR__ . '/../auth/auth.php' );
 
