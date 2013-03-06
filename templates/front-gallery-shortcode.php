@@ -41,7 +41,7 @@
 
 		gallery = jQuery('.pg-gallery').adGallery(
 		{
-			loader_image: '<?php echo SimplePhotosContest::$javascript_url; ?>AD_Gallery-1.2.7/loader.gif',
+			loader_image: '<?php echo SimplePhotosContest::$javascript_url; ?>PG_Gallery-1.2.7/loader.gif',
 			slideshow: {
 				enable: false
 			},
