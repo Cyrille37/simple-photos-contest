@@ -8,16 +8,19 @@ if (!defined('ABSPATH')) {
 	exit();
 }
 
-if(!function_exists('_log')){
-  function _log( $message ) {
-    if( WP_DEBUG === true ){
-      if( is_array( $message ) || is_object( $message ) ){
-        error_log( print_r( $message, true ) );
-      } else {
-        error_log( $message );
-      }
-    }
-  }
+if (!function_exists('_log')) {
+
+	function _log($message) {
+		if (WP_DEBUG === true) {
+			if (is_array($message) || is_object($message)) {
+				error_log(print_r($message, true));
+			}
+			else {
+				error_log($message);
+			}
+		}
+	}
+
 }
 
 
@@ -32,7 +35,6 @@ class SimplePhotosContest {
 	const REQUIRE_VERSION_PHP = '5.1.2';
 	const VERSION = '1.0';
 	const DBVERSION = '1.0';
-
 	const SHORT_CODE_PHOTOS_CONTEST = 'SimplePhotosContest';
 	const COOKIE_VOTER = 'SPC_Voter';
 
@@ -134,13 +136,11 @@ class SimplePhotosContest {
 		$this->daoPhotos = new SPCPhotosDao($wpdb);
 	}
 
-	public function base_wp_init()
-	{
+	public function base_wp_init() {
 		//$locale = apply_filters('plugin_locale', get_locale(), self::PLUGIN);
 		//_log(__METHOD__.' locale : '.$locale);
-		
-		load_plugin_textdomain(self::PLUGIN, false, self::PLUGIN . '/i18n/' );
 
+		load_plugin_textdomain(self::PLUGIN, false, self::PLUGIN . '/i18n/');
 	}
 
 	/**
@@ -254,11 +254,15 @@ class SimplePhotosContest {
 	}
 
 	public function getVoteOpenDate() {
-		return $this->options['voteOpenDate'];
+		if (isset($this->options['voteOpenDate']))
+			return $this->options['voteOpenDate'];
+		return null;
 	}
 
 	public function getVoteCloseDate() {
-		return $this->options['voteCloseDate'];
+		if (isset($this->options['voteCloseDate']))
+			return $this->options['voteCloseDate'];
+		return null;
 	}
 
 	public function isVoteToCome() {

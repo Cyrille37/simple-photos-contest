@@ -69,6 +69,7 @@ class SPCVotesDao extends SPCModelDao {
 	}
 
 	public function getVotesCountByPhoto($photo_id) {
+
 		$sql = 'select count(id) from ' . self::getTableName();
 		$sql.= ' where photo_id = %s';
 
@@ -83,9 +84,10 @@ class SPCVotesDao extends SPCModelDao {
 	 * @return array Array of votes plus some photo's columns
 	 */
 	public function getAllWithPhotoData(SPCQueryOptions $queryOptions = null) {
+
 		$sql = 'select v.*, p.photo_name, p.photographer_name, p.photo_mime_type ';
 		$sql.=' from ' . self::getTableName() . ' v';
-		$sql.=' left join ' . self::getTableName() . ' p on (p.id=v.photo_id)';
+		$sql.=' left join ' . SPCPhotosDao::getTableName() . ' p on (p.id=v.photo_id)';
 		//$sql.=' group by p.id';
 
 		$this->applyQueryOptions($sql, $queryOptions);

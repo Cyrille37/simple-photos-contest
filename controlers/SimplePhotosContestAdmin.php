@@ -8,6 +8,7 @@ require_once( __DIR__ . '/SimplePhotosContest.php');
 
 class SimplePhotosContestAdmin extends SimplePhotosContest {
 
+	const PAGES_PREFIX = 'spc_' ;
 	const PAGE_OVERVIEW = 'spc_overview';
 	const PAGE_VOTES = 'spc_votes';
 	const PAGE_PHOTOS = 'spc_photos';
@@ -66,6 +67,7 @@ class SimplePhotosContestAdmin extends SimplePhotosContest {
 		if (!function_exists('curl_version')) {
 			wp_die('Need curl library');
 		}
+
 		if (!function_exists('hash')) {
 			wp_die('Need hash() function');
 		}
@@ -80,12 +82,19 @@ class SimplePhotosContestAdmin extends SimplePhotosContest {
 			'wp_aef_spc_votes' => SPCVotesDao::getTableName()
 		);
 
-		$tablesName = $wpdb->get_results('SHOW TABLES');
+		$tablesNameRows = $wpdb->get_results('SHOW TABLES', ARRAY_N);
+		$tablesName = array();
+		foreach ($tablesNameRows as $row) {
+			$tablesName[] = $row[0];
+		}
 		$todo = array(
 			'rename' => array(),
 			'create' => array(),
 			'migrate' => array()
-			);
+		);
+
+//		_log('tablesName: '.print_r( $tablesName,true));
+		file_put_contents('/tmp/toto.txt', print_r($tablesName, true));
 
 		foreach ($old_tablesName as $otn => $ntn) {
 
@@ -95,22 +104,21 @@ class SimplePhotosContestAdmin extends SimplePhotosContest {
 			else if (in_array($otn, $tablesName) && !in_array($ntn, $tablesName)) {
 				// todo rename
 				$todo['rename'][$otn] = $ntn;
-				$todo['migrate'][$ntn];
+				$todo['migrate'][] = $ntn;
 			}
 			else if (!in_array($otn, $tablesName) && in_array($ntn, $tablesName)) {
 				// todo migrate
-				$todo['migrate'][$ntn];
+				$todo['migrate'][] = $ntn;
 			}
 			else {
 				// todo create
-				$todo['create'][$ntn];
+				$todo['create'][] = $ntn;
 			}
 		}
 
-		foreach( $todo['rename'] as $otn => $ntn)
-		{
-			$wpdb->query('RENAME TABLE '. $otn. ' TO ' . $ntn);
-			$this->notices[] = 'Renamed db table from "'.$otn.' to '.$ntn ;
+		foreach ($todo['rename'] as $otn => $ntn) {
+			$wpdb->query('RENAME TABLE ' . $otn . ' TO ' . $ntn);
+			$this->notices[] = 'Renamed db table from "' . $otn . ' to ' . $ntn;
 		}
 
 		// FIXME: data schema migration not yet implemented
@@ -205,7 +213,7 @@ class SimplePhotosContestAdmin extends SimplePhotosContest {
 		else {
 			$p = $plugin_page;
 		}
-		if (strpos($p, self::PLUGIN) === 0)
+		if (strpos($p, self::PAGES_PREFIX) === 0)
 			return true;
 		return false;
 	}
@@ -584,8 +592,9 @@ class SimplePhotosContestAdmin extends SimplePhotosContest {
 
 		// using jquery-ui
 		wp_enqueue_script('jquery-ui-core');
-
+_log('coucou');
 		if ($_GET['page'] == self::PAGE_CONFIGURATION) {
+_log('coucou2');
 
 			// using the jquery-ui datepicker
 			wp_enqueue_script('jquery-ui-datepicker');
