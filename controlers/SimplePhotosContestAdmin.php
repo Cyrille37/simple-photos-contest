@@ -592,9 +592,8 @@ class SimplePhotosContestAdmin extends SimplePhotosContest {
 
 		// using jquery-ui
 		wp_enqueue_script('jquery-ui-core');
-_log('coucou');
+
 		if ($_GET['page'] == self::PAGE_CONFIGURATION) {
-_log('coucou2');
 
 			// using the jquery-ui datepicker
 			wp_enqueue_script('jquery-ui-datepicker');

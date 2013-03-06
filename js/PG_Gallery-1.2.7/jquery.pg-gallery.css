@@ -5,30 +5,30 @@
  *
  * Version: 1.2.7
  *
- * Demo and documentation: http://coffeescripter.com/code/ad-gallery/
+ * Demo and documentation: http://coffeescripter.com/code/pg-gallery/
 */
-.ad-gallery {
+.pg-gallery {
   width: 600px;
 }
-.ad-gallery, .ad-gallery * {
+.pg-gallery, .pg-gallery * {
   margin: 0;
   padding: 0;
 }
-.ad-gallery .ad-image-wrapper {
+.pg-gallery .pg-image-wrapper {
 	width: 100%;
 	height: 400px;
 	margin-bottom: 10px;
 	position: relative;
 	overflow: hidden;
 }
-.ad-gallery .ad-image-wrapper .ad-loader {
+.pg-gallery .pg-image-wrapper .pg-loader {
 	position: absolute;
 	z-index: 10;
 	top: 48%;
 	left: 48%;
 	border: 1px solid #CCC;
 }
-.ad-gallery .ad-image-wrapper .ad-next {
+.pg-gallery .pg-image-wrapper .pg-next {
 	position: absolute;
 	right: 0;
 	top: 0;
@@ -38,7 +38,7 @@
 	display: block;
 	z-index: 200;
 }
-.ad-gallery .ad-image-wrapper .ad-prev {
+.pg-gallery .pg-image-wrapper .pg-prev {
 	position: absolute;
 	left: 0;
 	top: 0;
@@ -48,12 +48,12 @@
 	display: block;
 	z-index: 200;
 }
-.ad-gallery .ad-image-wrapper .ad-prev, .ad-gallery .ad-image-wrapper .ad-next {
+.pg-gallery .pg-image-wrapper .pg-prev, .pg-gallery .pg-image-wrapper .pg-next {
 	/* Or else IE will hide it */
 	background: url(trans.gif);
 }
-.ad-gallery .ad-image-wrapper .ad-prev .ad-prev-image, .ad-gallery .ad-image-wrapper .ad-next .ad-next-image {
-	background: url(ad_prev.png);
+.pg-gallery .pg-image-wrapper .pg-prev .pg-prev-image, .pg-gallery .pg-image-wrapper .pg-next .pg-next-image {
+	background: url(pg_prev.png);
 	width: 30px;
 	height: 30px;
 	display: none;
@@ -62,24 +62,24 @@
 	left: 0;
 	z-index: 101;
 }
-.ad-gallery .ad-image-wrapper .ad-next .ad-next-image {
-	background: url(ad_next.png);
+.pg-gallery .pg-image-wrapper .pg-next .pg-next-image {
+	background: url(pg_next.png);
 	width: 30px;
 	height: 30px;
 	right: 0;
 	left: auto;
 }
-.ad-gallery .ad-image-wrapper .ad-image {
+.pg-gallery .pg-image-wrapper .pg-image {
 	position: absolute;
 	overflow: hidden;
 	top: 0;
 	left: 0;
 	z-index: 9;
 }
-.ad-gallery .ad-image-wrapper .ad-image a img {
+.pg-gallery .pg-image-wrapper .pg-image a img {
 	border: 0;
 }
-.ad-gallery .ad-image-wrapper .ad-image .ad-image-description {
+.pg-gallery .pg-image-wrapper .pg-image .pg-image-description {
 	position: absolute;
 	bottom: 0px;
 	left: 0px;
@@ -90,87 +90,87 @@
 	background: url(opa75.png);
 	color: #000;
 }
-* html .ad-gallery .ad-image-wrapper .ad-image .ad-image-description {
+* html .pg-gallery .pg-image-wrapper .pg-image .pg-image-description {
 	background: none;
 	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader (enabled=true, sizingMethod=scale, src='opa75.png');
 }
-.ad-gallery .ad-image-wrapper .ad-image .ad-image-description .ad-description-title {
+.pg-gallery .pg-image-wrapper .pg-image .pg-image-description .pg-description-title {
 	display: block;
 }
-.ad-gallery .ad-controls {
+.pg-gallery .pg-controls {
 	height: 20px;
 }
-.ad-gallery .ad-info {
+.pg-gallery .pg-info {
 	float: left;
 }
-.ad-gallery .ad-slideshow-controls {
+.pg-gallery .pg-slideshow-controls {
 	float: right;
 }
-.ad-gallery .ad-slideshow-controls .ad-slideshow-start, .ad-gallery .ad-slideshow-controls .ad-slideshow-stop {
+.pg-gallery .pg-slideshow-controls .pg-slideshow-start, .pg-gallery .pg-slideshow-controls .pg-slideshow-stop {
 	padding-left: 5px;
 	cursor: pointer;
 }
-.ad-gallery .ad-slideshow-controls .ad-slideshow-countdown {
+.pg-gallery .pg-slideshow-controls .pg-slideshow-countdown {
 	padding-left: 5px;
 	font-size: 0.9em;
 }
-.ad-gallery .ad-slideshow-running .ad-slideshow-start {
+.pg-gallery .pg-slideshow-running .pg-slideshow-start {
 	cursor: default;
 	font-style: italic;
 }
-.ad-gallery .ad-nav {
+.pg-gallery .pg-nav {
 	width: 100%;
 	position: relative;
 }
-.ad-gallery .ad-forward, .ad-gallery .ad-back {
+.pg-gallery .pg-forward, .pg-gallery .pg-back {
 	position: absolute;
 	top: 0;
 	height: 100%;
 	z-index: 10;
 }
 /* IE 6 doesn't like height: 100% */
-* html .ad-gallery .ad-forward, .ad-gallery .ad-back {
+* html .pg-gallery .pg-forward, .pg-gallery .pg-back {
 	height: 100px;
 }
-.ad-gallery .ad-back {
+.pg-gallery .pg-back {
 	cursor: pointer;
 	left: -20px;
 	width: 13px;
 	display: block;
-	background: url(ad_scroll_back.png) 0px 22px no-repeat;
+	background: url(pg_scroll_back.png) 0px 22px no-repeat;
 }
-.ad-gallery .ad-forward {
+.pg-gallery .pg-forward {
 	cursor: pointer;
 	display: block;
 	right: -20px;
 	width: 13px;
-	background: url(ad_scroll_forward.png) 0px 22px no-repeat;
+	background: url(pg_scroll_forward.png) 0px 22px no-repeat;
 }
-.ad-gallery .ad-nav .ad-thumbs {
+.pg-gallery .pg-nav .pg-thumbs {
 	overflow: hidden;
 	width: 100%;
 }
-.ad-gallery .ad-thumbs .ad-thumb-list {
+.pg-gallery .pg-thumbs .pg-thumb-list {
 	float: left;
 	width: 9000px;
 	list-style: none;
 }
-.ad-gallery .ad-thumbs li {
+.pg-gallery .pg-thumbs li {
 	float: left;
 	padding-right: 5px;
 }
-.ad-gallery .ad-thumbs li a {
+.pg-gallery .pg-thumbs li a {
 	display: block;
 }
-.ad-gallery .ad-thumbs li a img {
+.pg-gallery .pg-thumbs li a img {
 	border: 3px solid #CCC;
 	display: block;
 }
-.ad-gallery .ad-thumbs li a.ad-active img {
+.pg-gallery .pg-thumbs li a.pg-active img {
 	border: 3px solid #616161;
 }
 /* Can't do display none, since Opera won't load the images then */
-.ad-preloads {
+.pg-preloads {
   position: absolute;
   left: -9000px;
   top: -9000px;

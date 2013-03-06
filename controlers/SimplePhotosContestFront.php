@@ -51,9 +51,10 @@ class SimplePhotosContestFront extends SimplePhotosContest {
 
 		wp_enqueue_script('jquery');
 		// using AD Gallery
-		//wp_enqueue_style('ad-gallery-css', self::$javascript_url . 'AD_Gallery-1.2.7/jquery.ad-gallery.css');
-		wp_enqueue_style('ad-gallery-css', self::$styles_url . 'ad-gallery/ad-gallery.css');
-		wp_enqueue_script('ad-gallery', self::$javascript_url . 'AD_Gallery-1.2.7/jquery.ad-gallery.min.js');
+		//wp_enqueue_style('ad-gallery-css', self::$javascript_url . 'PG_Gallery-1.2.7/jquery.pg-gallery.css');
+		wp_enqueue_style('ad-gallery-css', self::$styles_url . 'pg-gallery/pg-gallery.css');
+		wp_enqueue_script('ad-gallery', self::$javascript_url . 'PG_Gallery-1.2.7/jquery.pg-gallery.min.js');
+
 		// Fancybox
 		wp_enqueue_style('fancybox-css', self::$javascript_url . 'fancybox-1.3.4/jquery.fancybox-1.3.4.css');
 		wp_enqueue_script('fancybox', self::$javascript_url . 'fancybox-1.3.4/jquery.fancybox-1.3.4.pack.js');
@@ -82,7 +83,6 @@ class SimplePhotosContestFront extends SimplePhotosContest {
 
 		//_log(__METHOD__);
 
-		//add_filter('the_content', 'lab_add_rel_to_linked_img', 99);
 		remove_filter('the_content', 'lab_add_rel_to_linked_img', 99);
 
 		$qOptions = new SPCQueryOptions();

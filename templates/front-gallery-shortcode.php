@@ -39,7 +39,7 @@
 		jQuery('#spc-vote-button').hide();
 		jQuery('#votes-bulle').hide();
 
-		gallery = jQuery('.ad-gallery').adGallery(
+		gallery = jQuery('.pg-gallery').adGallery(
 		{
 			loader_image: '<?php echo SimplePhotosContest::$javascript_url; ?>AD_Gallery-1.2.7/loader.gif',
 			slideshow: {
@@ -64,8 +64,7 @@
 			}
 		});
 
-		jQuery('.ad-gallery').on("click", ".ad-image", function() {
-
+		jQuery('.pg-gallery').on("click", ".pg-image", function() {
 			var href = jQuery(this).find("img").attr("src");
 			jQuery.fancybox({
 				href : href,
@@ -92,7 +91,7 @@
 	function loadVoteStatusCallback(can_vote, photo_votes_count)
 	{
 		var gal = jQuery('#gallery');
-		var imgWrap = jQuery('.ad-image-wrapper', gal);
+		var imgWrap = jQuery('.pg-image-wrapper', gal);
 		var o ;
 		var b = jQuery('#spc-vote-button', imgWrap );
 		if( b.length == 0 ){
@@ -100,7 +99,7 @@
 			imgWrap.append(b);
 			b.css('position', 'relative');
 			b.css('top', (imgWrap.height() - b.height() )+'px' );
-			b.css('z-index', jQuery('.ad-next', gal).css('z-index') );
+			b.css('z-index', jQuery('.pg-next', gal).css('z-index') );
 			o = jQuery('.spc-vote-opener',b);
 			o.click(openVoteBox);
 			o.css('cursor','pointer');
@@ -123,7 +122,7 @@
 			imgWrap.prepend(b);
 			b.css('position', 'relative');
 			b.css('float', 'right');
-			b.css('z-index', jQuery('.ad-next', gal).css('z-index')-1 );
+			b.css('z-index', jQuery('.pg-next', gal).css('z-index')-1 );
 		}
 		if( photo_votes_count > 1 ){
 			b.html( photo_votes_count + '<br/>votes');
@@ -133,7 +132,7 @@
 		}
 		b.show();
 
-		var im = jQuery('.ad-image', gal);
+		var im = jQuery('.pg-image', gal);
 		b.css('left', '-' + (gal.width() - (im.position().left + im.width() )) +'px');
 
 	}
@@ -182,11 +181,11 @@
 		cursor: wait !important;  
 	}
 
-	.ad-gallery * {
+	.pg-gallery * {
 		font-family: Arial,​Helvetica,​sans-serif ;
 	}
 
-	.ad-gallery .ad-controls {
+	.pg-gallery .pg-controls {
 		margin-top: 4px;
 		margin-bottom: 14px;
 	}
@@ -210,7 +209,7 @@
 	}
 
 	/* if fancybox used, make the image seem clickable */
-	.ad-image {
+	.pg-image {
 		cursor: pointer;
 	}
 
@@ -258,10 +257,10 @@
 
 </style>
 
-<div id="gallery" class="ad-gallery">
-	<div class="ad-image-wrapper">
+<div id="gallery" class="pg-gallery">
+	<div class="pg-image-wrapper">
 	</div>
-	<div class="ad-controls">
+	<div class="pg-controls">
 
 		<ul class="ss-share">Partager cette photo sur
 			<li class="ss-share-item">
@@ -285,9 +284,9 @@
 		</ul>
 
 	</div>
-	<div class="ad-nav">
-		<div class="ad-thumbs">
-			<ul class="ad-thumb-list">
+	<div class="pg-nav">
+		<div class="pg-thumbs">
+			<ul class="pg-thumb-list">
 				<?php
 				$gallery_idx = 0;
 				foreach ($photos as $row) {
