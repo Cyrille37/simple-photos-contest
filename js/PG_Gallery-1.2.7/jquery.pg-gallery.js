@@ -538,31 +538,30 @@
 			this.image_wrapper.append(this.next_link);
 			this.image_wrapper.append(this.prev_link);
 			var context = this;
-			this.prev_link.add(this.next_link).mouseover(
-				function(e) {
-					// IE 6 hides the wrapper div, so we have to set it's width
-					$(this).css('height', context.image_wrapper_height);
-					$(this).find('div').show();
+			this.prev_link.add(this.next_link)
+			.mouseover( function(e) {
+				// IE 6 hides the wrapper div, so we have to set it's width
+				$(this).css('height', context.image_wrapper_height);
+				$(this).find('div').show();
+			})
+			.mouseout( function(e) {
+				$(this).find('div').hide();
+			})
+			.click( function() {
+				if( this.isWorking!='undefined' && this.isWorking ){
+					return ;
 				}
-				).mouseout(
-				function(e) {
-					$(this).find('div').hide();
+				this.isWorking = true ;
+				if($(this).is('.pg-next')) {
+					context.nextImage();
+					context.slideshow.stop();
+				} else {
+					context.prevImage();
+					context.slideshow.stop();
 				}
-				).click(
-				function() {
-					if( context.isWorking)
-						return ;
-					context.isWorking = true ;
-					if($(this).is('.pg-next')) {
-						context.nextImage();
-						context.slideshow.stop();
-					} else {
-						context.prevImage();
-						context.slideshow.stop();
-					}
-					context.isWorking = false ;
-				}
-				).find('div').css('opacity', 0.7);
+				this.isWorking = false ;
+			})
+			.find('div').css('opacity', 0.7);
 		},
 		initBackAndForward: function() {
 			var context = this;
