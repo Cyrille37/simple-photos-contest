@@ -188,4 +188,6 @@
   position: absolute;
   left: -9000px;
   top: -9000px;
+	max-width: 8900px;
+	overflow: hidden;
 }

@@ -53,7 +53,7 @@ class SimplePhotosContestFront extends SimplePhotosContest {
 		// using AD Gallery
 		//wp_enqueue_style('ad-gallery-css', self::$javascript_url . 'PG_Gallery-1.2.7/jquery.pg-gallery.css');
 		wp_enqueue_style('ad-gallery-css', self::$styles_url . 'pg-gallery/pg-gallery.css');
-		wp_enqueue_script('ad-gallery', self::$javascript_url . 'PG_Gallery-1.2.7/jquery.pg-gallery.min.js');
+		wp_enqueue_script('ad-gallery', self::$javascript_url . 'PG_Gallery-1.2.7/jquery.pg-gallery.js');
 
 		// Fancybox
 		wp_enqueue_style('fancybox-css', self::$javascript_url . 'fancybox-1.3.4/jquery.fancybox-1.3.4.css');
