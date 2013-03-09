@@ -531,6 +531,7 @@
 				}, 200);
 			}
 		},
+		isWorking: false,
 		initNextAndPrev: function() {
 			this.next_link = $('<div class="pg-next"><div class="pg-next-image"></div></div>');
 			this.prev_link = $('<div class="pg-prev"><div class="pg-prev-image"></div></div>');
@@ -549,6 +550,9 @@
 				}
 				).click(
 				function() {
+					if( context.isWorking)
+						return ;
+					context.isWorking = true ;
 					if($(this).is('.pg-next')) {
 						context.nextImage();
 						context.slideshow.stop();
@@ -556,6 +560,7 @@
 						context.prevImage();
 						context.slideshow.stop();
 					}
+					context.isWorking = false ;
 				}
 				).find('div').css('opacity', 0.7);
 		},
