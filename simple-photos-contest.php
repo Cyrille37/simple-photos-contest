@@ -5,8 +5,8 @@
   Plugin URI: https://github.com/Cyrille37/simple-photos-contest
   Description: A simple photos contest plugin for WordPress
   Author: Artéfacts & Conseil Général de Loir-et-Cher
-  Author URI: http://www.artefacts.coop, http://cg41.fr
-  Version: 0.3
+  Author URI: https://github.com/Cyrille37/simple-photos-contest
+  Version: 0.4
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
