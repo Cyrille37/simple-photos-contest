@@ -3,8 +3,10 @@ simple-photos-contest
 
 A simple photos contest plugin for WordPress.
 
+*Plugin has moved* to http://wordpress.org/plugins/simple-photos-contest/
+
 * Plugin URI
- * https://github.com/Cyrille37/simple-photos-contest
+ * http://wordpress.org/plugins/simple-photos-contest/
 * Coders: Cyrille Giquello (Artéfacts), Marc Frèrebeau (Artéfacts)
  * http://www.artefacts.coop
 * Sponsor: Conseil Général de Loir-et-Cher (CG41)
